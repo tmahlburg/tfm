@@ -55,8 +55,8 @@ class tfm(QWidget):
         # connect model to view
         self.ui.fs_tree.setModel(self.fs_tree_model)
         # hide unneeded columns
-        for i in range(1, self.ui.fs_tree.header().count()):
-            self.ui.fs_tree.hideColumn(i)
+        for column in range(1, self.ui.fs_tree.header().count()):
+            self.ui.fs_tree.hideColumn(column)
         # expand root item
         self.ui.fs_tree.expand(self.fs_tree_model.index(0, 0))
 
