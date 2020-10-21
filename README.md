@@ -33,6 +33,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * auto extract
 * mount ISOs etc.
 * file property dialog
+* localization
 
 ### Infrastructure
 
