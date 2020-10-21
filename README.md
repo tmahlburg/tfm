@@ -16,7 +16,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * cut, copy, paste, link, delete (with confirmation)
 * drag and drop between windows
 * file context menu
-* file property dialog
+* dotfile handling
 
 ### Wanted:
 * mount and unmount devices using udevil or pmount
@@ -32,6 +32,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * context sensitive views and columns
 * auto extract
 * mount ISOs etc.
+* file property dialog
 
 ### Infrastructure
 
