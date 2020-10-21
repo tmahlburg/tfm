@@ -8,11 +8,13 @@ from PySide2.QtWidgets import (QApplication, QMainWindow, QFileSystemModel,
 from PySide2.QtCore import QFile, QDir, QFileInfo, QProcess
 from PySide2.QtUiTools import QUiLoader
 
+from stack import stack
 
 class tfm(QWidget):
-
     def __init__(self):
         super(tfm, self).__init__()
+
+        self.back_stack = stack()
 
         loader = QUiLoader()
         path = os.path.join(os.path.dirname(__file__), "form.ui")
@@ -62,6 +64,11 @@ class tfm(QWidget):
         self.ui.fs_tree.clicked.connect(self.fs_tree_event)
 
         ## TOOLBAR ##
+
+        # initially disable back/forward navigation
+        self.ui.action_back.setEnabled(False)
+        self.ui.action_forward.setEnabled(False)
+
         # adress bar
         self.adressbar = QLineEdit()
         self.adressbar.setText(self.current_path)
@@ -74,6 +81,8 @@ class tfm(QWidget):
         # TODO: move Home action to future bookmark menu
         self.ui.action_home.triggered.connect(self.action_home_event)
         self.ui.action_up.triggered.connect(self.action_up_event)
+
+        self.ui.action_back.triggered.connect(self.action_back_event)
 
 
     def action_go_event(self):
@@ -97,6 +106,12 @@ class tfm(QWidget):
         else:
             # TODO: Error Handling
             print("ERROR: No dir up exisiting")
+
+    def action_back_event(self):
+        next_path = self.back_stack.pop()
+        if (self.back_stack.empty()):
+            self.ui.action_back.setEnabled(False)
+        self.update_current_path(next_path, skip_stack=True)
 
     def item_open_event(self):
         selected_item = QFileInfo(os.path.join(self.current_path,
@@ -128,6 +143,12 @@ class tfm(QWidget):
         self.ui.table_view.setRootIndex(
             self.filesystem.index(next_path))
         self.adressbar.setText(next_path)
+        # handle back stack
+        if (not skip_stack):
+            if (self.back_stack.empty() or self.back_stack.top() != self.current_path):
+                self.back_stack.push(self.current_path)
+                # reenable back navigation
+                self.ui.action_back.setEnabled(True)
 
         self.current_path = next_path
 
