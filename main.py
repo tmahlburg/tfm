@@ -104,7 +104,7 @@ class tfm(QWidget):
             next_path = dir_up.path()
             self.update_current_path(next_path)
         else:
-            # TODO: Error Handling
+            # TODO: Error Handling -> this should never occur, since the action gets disabledyy1
             print("ERROR: No dir up exisiting")
 
     def action_back_event(self):
@@ -143,6 +143,11 @@ class tfm(QWidget):
         self.ui.table_view.setRootIndex(
             self.filesystem.index(next_path))
         self.adressbar.setText(next_path)
+        # disable up navigation if in fs root
+        if (next_path == QDir().rootPath()):
+            self.ui.action_up.setEnabled(False)
+        else:
+            self.ui.action_up.setEnabled(True)
         # handle back stack
         if (not skip_stack):
             if (self.back_stack.empty() or self.back_stack.top() != self.current_path):
