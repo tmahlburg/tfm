@@ -3,7 +3,7 @@ import sys
 import os
 
 from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
-                               QLineEdit)
+                               QLineEdit, QLabel)
 from PySide2.QtCore import QFile, QDir, QFileInfo, QProcess
 from PySide2.QtUiTools import QUiLoader
 
@@ -64,6 +64,15 @@ class tfm(QWidget):
 
         # connect selection action
         self.ui.fs_tree.clicked.connect(self.fs_tree_event)
+
+        # STATUSBAR #
+        #self.update_statusbar()
+        self.item_info = QLabel()
+        self.dir_info = QLabel()
+        self.part_info = QLabel()
+        self.ui.statusbar.addPermanentWidget(self.item_info)
+        self.ui.statusbar.addPermanentWidget(self.dir_info)
+        self.ui.statusbar.addPermanentWidget(self.part_info)
 
         # TOOLBAR #
         # initially disable back/forward navigation
@@ -180,6 +189,9 @@ class tfm(QWidget):
             self.forward_stack.drop()
             self.ui.action_forward.setEnabled(False)
         self.current_path = next_path
+
+    def update_statusbar():
+        pass
 
 
 if __name__ == "__main__":
