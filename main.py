@@ -15,6 +15,7 @@ class tfm(QWidget):
         super(tfm, self).__init__()
 
         self.back_stack = stack()
+        self.forward_stack = stack()
 
         loader = QUiLoader()
         path = os.path.join(os.path.dirname(__file__), "form.ui")
@@ -83,6 +84,7 @@ class tfm(QWidget):
         self.ui.action_up.triggered.connect(self.action_up_event)
 
         self.ui.action_back.triggered.connect(self.action_back_event)
+        self.ui.action_forward.triggered.connect(self.action_forward_event)
 
 
     def action_go_event(self):
@@ -109,9 +111,22 @@ class tfm(QWidget):
 
     def action_back_event(self):
         next_path = self.back_stack.pop()
+        self.forward_stack.push(self.current_path)
+        self.ui.action_forward.setEnabled(True)
         if (self.back_stack.empty()):
             self.ui.action_back.setEnabled(False)
-        self.update_current_path(next_path, skip_stack=True)
+        self.update_current_path(next_path, skip_stack=True, reset_forward_stack=False)
+
+    def action_forward_event(self):
+        if (not self.forward_stack.empty()):
+            next_path = self.forward_stack.pop()
+            self.update_current_path(next_path, reset_forward_stack=False)
+            # disable forward action if there are no more forward actions
+            if (self.forward_stack.empty()):
+                self.ui.action_forward.setEnabled(False)
+        else:
+            # TODO: Error Handling
+            print('ERROR: Forward Stack unexpectedly empty')
 
     def item_open_event(self):
         selected_item = QFileInfo(os.path.join(self.current_path,
@@ -138,7 +153,7 @@ class tfm(QWidget):
         self.update_current_path(next_path)
 
     # TODO: Performance
-    def update_current_path(self, next_path:str, skip_stack=False):
+    def update_current_path(self, next_path:str, skip_stack=False, reset_forward_stack=True):
         self.filesystem.setRootPath(next_path)
         self.ui.table_view.setRootIndex(
             self.filesystem.index(next_path))
@@ -154,7 +169,9 @@ class tfm(QWidget):
                 self.back_stack.push(self.current_path)
                 # reenable back navigation
                 self.ui.action_back.setEnabled(True)
-
+        if (reset_forward_stack):
+            self.forward_stack.drop()
+            self.ui.action_forward.setEnabled(False)
         self.current_path = next_path
 
 
