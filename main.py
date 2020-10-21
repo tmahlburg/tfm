@@ -7,6 +7,8 @@ from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
 from PySide2.QtCore import QFile, QDir, QFileInfo, QProcess
 from PySide2.QtUiTools import QUiLoader
 
+from prefixed import Float
+
 from stack import stack
 
 
@@ -47,6 +49,7 @@ class tfm(QWidget):
 
         # connect double click action
         self.ui.table_view.doubleClicked.connect(self.item_open_event)
+        self.ui.table_view.clicked.connect(self.item_selected_event)
 
         # FS TREE #
         # create seperate FileSystemModel for the fs tree
@@ -94,6 +97,7 @@ class tfm(QWidget):
 
         self.ui.action_back.triggered.connect(self.action_back_event)
         self.ui.action_forward.triggered.connect(self.action_forward_event)
+
 
     def action_go_event(self):
         next_dir = QDir(self.adressbar.text())
@@ -160,6 +164,18 @@ class tfm(QWidget):
             # TODO: Error Handling
             print("ERROR: Can't obtain the type of the selected file")
 
+    def item_selected_event(self):
+        # Update item_info in the statusbar
+        name = self.ui.table_view.currentIndex().data()
+        selected_item = QFileInfo(
+            os.path.join(self.current_path, name))
+        if (selected_item.isFile()):
+            # this uses the prefixed library
+            size = '{:!.2j}B'.format(Float(selected_item.size()))
+            self.item_info.setText(name + ': ' + size)
+        else:
+            self.item_info.setText(name)
+
     def fs_tree_event(self):
         next_path = self.fs_tree_model.filePath(self.ui.fs_tree.currentIndex())
         self.update_current_path(next_path)
@@ -189,9 +205,6 @@ class tfm(QWidget):
             self.forward_stack.drop()
             self.ui.action_forward.setEnabled(False)
         self.current_path = next_path
-
-    def update_statusbar():
-        pass
 
 
 if __name__ == "__main__":
