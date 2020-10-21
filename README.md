@@ -9,9 +9,9 @@ These are the features, I would like to implement. Everything in italics is alre
 * window layout:
   * top: *toolbar* with: old Opera style menu button, navigation controls (*up* and back/forward through the navigation history), new {file|dir}, *adress bar*
   * middle:
-    * left (hideable): fs tree, favorites / bookmarks, devices
+    * left (individually hideable): *fs tree*, favorites / bookmarks
     * *right: current dir file listing*
-  * bottom: statusbar with item count, directory size, selcted file size, free space on disk
+  * bottom: *statusbar* with item count, directory size, selcted file size, free space on disk
 * *xdg-open*
 * cut, copy, paste, link, delete (with confirmation)
 * drag and drop between windows
@@ -19,7 +19,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * dotfile handling
 
 ### Wanted:
-* mount and unmount devices using udevil or pmount
+* show, mount and unmount devices using udevil or pmount
 * xdg-trash
 * user configurable views and columns
 
