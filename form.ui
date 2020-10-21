@@ -187,6 +187,21 @@
     <string>Forward</string>
    </property>
   </action>
+  <action name="action_copy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+  </action>
+  <action name="action_paste">
+   <property name="text">
+    <string>Paste</string>
+   </property>
+  </action>
+  <action name="action_cut">
+   <property name="text">
+    <string>Cut</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

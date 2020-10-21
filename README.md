@@ -11,7 +11,7 @@ These are the features, I would like to implement. Everything in italics is alre
   * middle:
     * left (individually hideable): *fs tree*, favorites / bookmarks
     * *right: current dir file listing*
-  * bottom: *statusbar* with item count, directory size, selcted file size, free space on disk
+  * *bottom: statusbar with item count, selcted file size, free space on disk*
 * *xdg-open*
 * cut, copy, paste, link, delete (with confirmation)
 * file context menu
@@ -22,6 +22,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * xdg-trash
 * user configurable views and columns
 * drag and drop between windows
+* handle multi selection statusbar information
 
 ### Far away:
 * optimize network mounts, especially SMB shares
@@ -34,6 +35,9 @@ These are the features, I would like to implement. Everything in italics is alre
 * mount ISOs etc.
 * file property dialog
 * localization
+* open multiple selected files
+* statusbar directory informations
+* rename in place
 
 ### Infrastructure
 

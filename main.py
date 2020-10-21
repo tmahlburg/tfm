@@ -4,7 +4,7 @@ import os
 
 from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
                                QLineEdit, QLabel)
-from PySide2.QtCore import QFile, QDir, QFileInfo, QProcess
+from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess)
 from PySide2.QtUiTools import QUiLoader
 
 from prefixed import Float
@@ -15,6 +15,8 @@ from stack import stack
 class tfm(QWidget):
     def __init__(self):
         super(tfm, self).__init__()
+
+        self.clipboard = QApplication.clipboard()
 
         self.back_stack = stack()
         self.forward_stack = stack()
@@ -71,11 +73,13 @@ class tfm(QWidget):
         # STATUSBAR #
         #self.update_statusbar()
         self.item_info = QLabel()
-        self.dir_info = QLabel()
+        #self.dir_info = QLabel()
         self.part_info = QLabel()
         self.ui.statusbar.addPermanentWidget(self.item_info)
-        self.ui.statusbar.addPermanentWidget(self.dir_info)
+        #self.ui.statusbar.addPermanentWidget(self.dir_info)
         self.ui.statusbar.addPermanentWidget(self.part_info)
+
+        self.update_part_info(self.current_path)
 
         # TOOLBAR #
         # initially disable back/forward navigation
@@ -189,6 +193,9 @@ class tfm(QWidget):
         self.ui.table_view.setRootIndex(
             self.filesystem.index(next_path))
         self.adressbar.setText(next_path)
+        # update directory and partition information
+        #self.update_dir_info(next_path)
+        self.update_part_info(next_path)
         # disable up navigation if in fs root
         if (next_path == QDir().rootPath()):
             self.ui.action_up.setEnabled(False)
@@ -205,6 +212,19 @@ class tfm(QWidget):
             self.forward_stack.drop()
             self.ui.action_forward.setEnabled(False)
         self.current_path = next_path
+
+    # updates directory information in the statusbar
+    # TODO: find an efficient way or multithread this
+    def update_dir_info(self, path: str):
+        pass
+
+    # updates partition information
+    def update_part_info(self, path: str):
+        # get fs statistics using statvfs system call
+        part_stats = os.statvfs(path)
+        fs_size = '{:!.1j}B'.format(Float(part_stats.f_frsize * part_stats.f_blocks))
+        fs_free = '{:!.1j}B'.format(Float(part_stats.f_frsize * part_stats.f_bfree))
+        self.part_info.setText(fs_free + ' of ' + fs_size + ' free')
 
 
 if __name__ == "__main__":
