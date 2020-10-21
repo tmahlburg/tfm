@@ -79,21 +79,21 @@ class tfm(QWidget):
     def action_go_event(self):
         next_dir = QDir(self.adressbar.text())
         if (next_dir.isAbsolute() and next_dir.exists()):
-            self.current_path = next_dir.path()
-            self.update_ui_to_path()
+            next_path = next_dir.path()
+            self.update_current_path(next_path)
         else:
             # TODO: Error handling
             print("ERROR: Path doesn't exist")
 
     def action_home_event(self):
-        self.current_path = QDir().homePath()
-        self.update_ui_to_path()
+        next_path = QDir().homePath()
+        self.update_current_path(next_path)
 
     def action_up_event(self):
         dir_up = QDir(self.current_path)
         if (dir_up.cdUp()):
-            self.current_path = dir_up.path()
-            self.update_ui_to_path()
+            next_path = dir_up.path()
+            self.update_current_path(next_path)
         else:
             # TODO: Error Handling
             print("ERROR: No dir up exisiting")
@@ -102,8 +102,8 @@ class tfm(QWidget):
         selected_item = QFileInfo(os.path.join(self.current_path,
                                                self.ui.table_view.currentIndex().data()))
         if (selected_item.isDir()):
-            self.current_path = selected_item.absoluteFilePath()
-            self.update_ui_to_path()
+            next_path = selected_item.absoluteFilePath()
+            self.update_current_path(next_path)
         elif (selected_item.isFile()):
             if (selected_item.isExecutable()):
                 QProcess().startDetached(selected_item.absoluteFilePath(),
@@ -119,15 +119,17 @@ class tfm(QWidget):
             print("ERROR: Can't obtain the type of the selected file")
 
     def fs_tree_event(self):
-        self.current_path = self.fs_tree_model.filePath(self.ui.fs_tree.currentIndex())
-        self.update_ui_to_path()
+        next_path = self.fs_tree_model.filePath(self.ui.fs_tree.currentIndex())
+        self.update_current_path(next_path)
 
-    # TODO: Use Qt signal
-    def update_ui_to_path(self):
-        self.filesystem.setRootPath(self.current_path)
+    # TODO: Performance
+    def update_current_path(self, next_path:str, skip_stack=False):
+        self.filesystem.setRootPath(next_path)
         self.ui.table_view.setRootIndex(
-            self.filesystem.index(self.current_path))
-        self.adressbar.setText(self.current_path)
+            self.filesystem.index(next_path))
+        self.adressbar.setText(next_path)
+
+        self.current_path = next_path
 
 
 if __name__ == "__main__":
