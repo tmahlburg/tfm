@@ -33,6 +33,11 @@ These are the features, I would like to implement. Everything in italics is alre
 * auto extract
 * mount ISOs etc.
 
+### Infrastructure
+
+* test suite with github actions
+* proper error handling and logging
+
 ## Unwishlist
 
 These features are going to be intentionally omitted:
