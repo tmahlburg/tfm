@@ -21,6 +21,7 @@ class tfm(QWidget):
         self.ui = loader.load(ui_file, self)
         ui_file.close()
 
+        ## MAIN VIEW ##
         # set up QFileSystemModel
         self.current_path = QDir.homePath()
         self.filesystem = QFileSystemModel()
@@ -40,6 +41,28 @@ class tfm(QWidget):
         # type
         self.horizontal_header.resizeSection(2, 100)
 
+        # connect double click action
+        self.ui.table_view.doubleClicked.connect(self.item_open_event)
+
+        ## FS TREE ##
+        # create seperate FileSystemModel for the fs tree
+        self.fs_tree_model = QFileSystemModel()
+        self.fs_tree_model.setFilter(QDir.AllDirs | QDir.NoDotAndDotDot)
+        self.fs_tree_model.setRootPath(QDir.rootPath())
+
+        # connect model to view
+        self.ui.fs_tree.setModel(self.fs_tree_model)
+        # hide unneeded columns
+        for i in range(1, self.ui.fs_tree.header().count()):
+            self.ui.fs_tree.hideColumn(i)
+        # expand root item
+        self.ui.fs_tree.expand(self.fs_tree_model.index(0, 0))
+
+        # connect selection action
+        self.ui.fs_tree.clicked.connect(self.fs_tree_event)
+
+        ## TOOLBAR ##
+        # adress bar
         self.adressbar = QLineEdit()
         self.adressbar.setText(self.current_path)
         self.ui.toolbar.insertWidget(self.ui.action_go, self.adressbar)
@@ -48,10 +71,10 @@ class tfm(QWidget):
         self.adressbar.returnPressed.connect(self.action_go_event)
         self.ui.action_go.triggered.connect(self.action_go_event)
 
+        # TODO: move Home action to future bookmark menu
         self.ui.action_home.triggered.connect(self.action_home_event)
         self.ui.action_up.triggered.connect(self.action_up_event)
 
-        self.ui.table_view.doubleClicked.connect(self.item_open_event)
 
     def action_go_event(self):
         next_dir = QDir(self.adressbar.text())
@@ -76,7 +99,8 @@ class tfm(QWidget):
             print("ERROR: No dir up exisiting")
 
     def item_open_event(self):
-        selected_item = QFileInfo(os.path.join(self.current_path, self.ui.table_view.currentIndex().data()))
+        selected_item = QFileInfo(os.path.join(self.current_path,
+                                               self.ui.table_view.currentIndex().data()))
         if (selected_item.isDir()):
             self.current_path = selected_item.absoluteFilePath()
             self.update_ui_to_path()
@@ -93,6 +117,10 @@ class tfm(QWidget):
         else:
             # TODO: Error Handling
             print("ERROR: Can't obtain the type of the selected file")
+
+    def fs_tree_event(self):
+        self.current_path = self.fs_tree_model.filePath(self.ui.fs_tree.currentIndex())
+        self.update_ui_to_path()
 
     # TODO: Use Qt signal
     def update_ui_to_path(self):
