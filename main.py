@@ -2,13 +2,13 @@
 import sys
 import os
 
-from PySide2.QtWidgets import (QApplication, QMainWindow, QFileSystemModel,
-                               QTableView, QToolBar, QStatusBar, QLineEdit,
-                               QWidget, QHeaderView)
+from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
+                               QLineEdit)
 from PySide2.QtCore import QFile, QDir, QFileInfo, QProcess
 from PySide2.QtUiTools import QUiLoader
 
 from stack import stack
+
 
 class tfm(QWidget):
     def __init__(self):
@@ -24,7 +24,7 @@ class tfm(QWidget):
         self.ui = loader.load(ui_file, self)
         ui_file.close()
 
-        ## MAIN VIEW ##
+        # MAIN VIEW #
         # set up QFileSystemModel
         self.current_path = QDir.homePath()
         self.filesystem = QFileSystemModel()
@@ -32,7 +32,8 @@ class tfm(QWidget):
 
         # connect QFileSystemModel to View
         self.ui.table_view.setModel(self.filesystem)
-        self.ui.table_view.setRootIndex(self.filesystem.index(self.current_path))
+        self.ui.table_view.setRootIndex(
+            self.filesystem.index(self.current_path))
 
         # set up header
         self.horizontal_header = self.ui.table_view.horizontalHeader()
@@ -47,7 +48,7 @@ class tfm(QWidget):
         # connect double click action
         self.ui.table_view.doubleClicked.connect(self.item_open_event)
 
-        ## FS TREE ##
+        # FS TREE #
         # create seperate FileSystemModel for the fs tree
         self.fs_tree_model = QFileSystemModel()
         self.fs_tree_model.setFilter(QDir.AllDirs | QDir.NoDotAndDotDot)
@@ -64,8 +65,7 @@ class tfm(QWidget):
         # connect selection action
         self.ui.fs_tree.clicked.connect(self.fs_tree_event)
 
-        ## TOOLBAR ##
-
+        # TOOLBAR #
         # initially disable back/forward navigation
         self.ui.action_back.setEnabled(False)
         self.ui.action_forward.setEnabled(False)
@@ -86,7 +86,6 @@ class tfm(QWidget):
         self.ui.action_back.triggered.connect(self.action_back_event)
         self.ui.action_forward.triggered.connect(self.action_forward_event)
 
-
     def action_go_event(self):
         next_dir = QDir(self.adressbar.text())
         if (next_dir.isAbsolute() and next_dir.exists()):
@@ -106,7 +105,8 @@ class tfm(QWidget):
             next_path = dir_up.path()
             self.update_current_path(next_path)
         else:
-            # TODO: Error Handling -> this should never occur, since the action gets disabledyy1
+            # TODO: Error Handling
+            # -> this should never occur, since the action should be disabled
             print("ERROR: No dir up exisiting")
 
     def action_back_event(self):
@@ -115,7 +115,9 @@ class tfm(QWidget):
         self.ui.action_forward.setEnabled(True)
         if (self.back_stack.empty()):
             self.ui.action_back.setEnabled(False)
-        self.update_current_path(next_path, skip_stack=True, reset_forward_stack=False)
+        self.update_current_path(next_path,
+                                 skip_stack=True,
+                                 reset_forward_stack=False)
 
     def action_forward_event(self):
         if (not self.forward_stack.empty()):
@@ -129,8 +131,9 @@ class tfm(QWidget):
             print('ERROR: Forward Stack unexpectedly empty')
 
     def item_open_event(self):
-        selected_item = QFileInfo(os.path.join(self.current_path,
-                                               self.ui.table_view.currentIndex().data()))
+        selected_item = QFileInfo(
+            os.path.join(self.current_path,
+                         self.ui.table_view.currentIndex().data()))
         if (selected_item.isDir()):
             next_path = selected_item.absoluteFilePath()
             self.update_current_path(next_path)
@@ -153,7 +156,10 @@ class tfm(QWidget):
         self.update_current_path(next_path)
 
     # TODO: Performance
-    def update_current_path(self, next_path:str, skip_stack=False, reset_forward_stack=True):
+    def update_current_path(self,
+                            next_path: str,
+                            skip_stack=False,
+                            reset_forward_stack=True):
         self.filesystem.setRootPath(next_path)
         self.ui.table_view.setRootIndex(
             self.filesystem.index(next_path))
@@ -165,7 +171,8 @@ class tfm(QWidget):
             self.ui.action_up.setEnabled(True)
         # handle back stack
         if (not skip_stack):
-            if (self.back_stack.empty() or self.back_stack.top() != self.current_path):
+            if (self.back_stack.empty()
+                    or self.back_stack.top() != self.current_path):
                 self.back_stack.push(self.current_path)
                 # reenable back navigation
                 self.ui.action_back.setEnabled(True)
