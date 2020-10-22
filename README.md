@@ -13,8 +13,8 @@ These are the features, I would like to implement. Everything in italics is alre
     * *right: current dir file listing*
   * *bottom: statusbar with item count, selcted file size, free space on disk*
 * *xdg-open*
-* cut, copy, paste, link, delete (with confirmation)
-* file context menu
+* cut, *copy*, paste, link, delete (with confirmation)
+* *file context menu*
 * dotfile handling
 
 ### Wanted:
@@ -38,6 +38,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * open multiple selected files
 * statusbar directory informations
 * rename in place
+* search in folder
 
 ### Infrastructure
 
