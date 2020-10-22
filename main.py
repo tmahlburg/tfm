@@ -107,12 +107,11 @@ class tfm(QWidget):
         self.ui.action_back.triggered.connect(self.action_back_event)
         self.ui.action_forward.triggered.connect(self.action_forward_event)
 
-        print(QKeySequence.listToString(QKeySequence.keyBindings(QKeySequence.Copy)))
         self.ui.action_copy.setShortcuts(QKeySequence.keyBindings(QKeySequence.Copy))
-        print(QKeySequence.listToString(self.ui.action_copy.shortcuts()))
         self.ui.action_copy.triggered.connect(self.action_copy_event)
 
 
+    # ---------------- events ---------------------------------------------- #
     def action_go_event(self):
         next_dir = QDir(self.adressbar.text())
         if (next_dir.isAbsolute() and next_dir.exists()):
@@ -201,9 +200,9 @@ class tfm(QWidget):
         for index in current_selection_as_index:
             if (index.column() == 0):
                 current_selection_as_path.append(QFileSystemModel().filePath(index))
-        print(current_selection_as_path)
         self.copy_files(current_selection_as_path)
 
+    # ---------------- functions ------------------------------------------- #
     # TODO: Performance
     def update_current_path(self,
                             next_path: str,
