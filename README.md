@@ -44,6 +44,7 @@ These are the features, I would like to implement. Everything in italics is alre
 
 * test suite with github actions
 * proper error handling and logging
+* complete pydoc style documentation
 
 ## Unwishlist
 
