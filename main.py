@@ -4,8 +4,10 @@ import os
 
 from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
                                QLineEdit, QLabel)
-from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess)
+from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
+                            )
 from PySide2.QtUiTools import QUiLoader
+from PySide2.QtGui import QKeySequence
 
 from prefixed import Float
 
@@ -48,6 +50,9 @@ class tfm(QWidget):
         self.horizontal_header.resizeSection(1, 85)
         # type
         self.horizontal_header.resizeSection(2, 100)
+
+        # setup context menu
+        self.ui.table_view.addAction(self.ui.action_copy)
 
         # connect double click action
         self.ui.table_view.doubleClicked.connect(self.item_open_event)
@@ -101,6 +106,11 @@ class tfm(QWidget):
 
         self.ui.action_back.triggered.connect(self.action_back_event)
         self.ui.action_forward.triggered.connect(self.action_forward_event)
+
+        print(QKeySequence.listToString(QKeySequence.keyBindings(QKeySequence.Copy)))
+        self.ui.action_copy.setShortcuts(QKeySequence.keyBindings(QKeySequence.Copy))
+        print(QKeySequence.listToString(self.ui.action_copy.shortcuts()))
+        self.ui.action_copy.triggered.connect(self.action_copy_event)
 
 
     def action_go_event(self):
@@ -184,6 +194,16 @@ class tfm(QWidget):
         next_path = self.fs_tree_model.filePath(self.ui.fs_tree.currentIndex())
         self.update_current_path(next_path)
 
+    def action_copy_event(self):
+        # get current selection
+        current_selection_as_index = self.ui.table_view.selectionModel().selectedIndexes()
+        current_selection_as_path = []
+        for index in current_selection_as_index:
+            if (index.column() == 0):
+                current_selection_as_path.append(QFileSystemModel().filePath(index))
+        print(current_selection_as_path)
+        self.copy_files(current_selection_as_path)
+
     # TODO: Performance
     def update_current_path(self,
                             next_path: str,
@@ -225,6 +245,17 @@ class tfm(QWidget):
         fs_size = '{:!.1j}B'.format(Float(part_stats.f_frsize * part_stats.f_blocks))
         fs_free = '{:!.1j}B'.format(Float(part_stats.f_frsize * part_stats.f_bfree))
         self.part_info.setText(fs_free + ' of ' + fs_size + ' free')
+
+    def copy_files(self, files_as_path: list[str]):
+        file_urls = []
+
+        for file in files_as_path:
+            file_urls.append(QUrl.fromLocalFile(file))
+
+        mime_data = QMimeData()
+        mime_data.setUrls(file_urls)
+
+        self.clipboard.setMimeData(mime_data)
 
 
 if __name__ == "__main__":
