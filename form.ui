@@ -16,11 +16,11 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QSplitter" name="splitter_2">
+     <widget class="QSplitter" name="vsplit">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QSplitter" name="splitter">
+      <widget class="QSplitter" name="hsplit">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -45,12 +45,6 @@
         </attribute>
        </widget>
        <widget class="QListView" name="bookmarks">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="frameShadow">
          <enum>QFrame::Sunken</enum>
         </property>
