@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
 import os
+import collections
 
 from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
                                QLineEdit, QLabel)
@@ -19,6 +20,7 @@ class tfm(QWidget):
         super(tfm, self).__init__()
 
         self.clipboard = QApplication.clipboard()
+        self.marked_to_cut = []
 
         self.back_stack = stack()
         self.forward_stack = stack()
@@ -54,6 +56,7 @@ class tfm(QWidget):
         # setup context menu
         self.ui.table_view.addAction(self.ui.action_copy)
         self.ui.table_view.addAction(self.ui.action_paste)
+        self.ui.table_view.addAction(self.ui.action_cut)
 
         # connect double click action
         self.ui.table_view.doubleClicked.connect(self.item_open_event)
@@ -112,6 +115,8 @@ class tfm(QWidget):
         self.ui.action_copy.triggered.connect(self.action_copy_event)
         self.ui.action_paste.setShortcuts(QKeySequence.keyBindings(QKeySequence.Paste))
         self.ui.action_paste.triggered.connect(self.action_paste_event)
+        self.ui.action_cut.setShortcuts(QKeySequence.keyBindings(QKeySequence.Cut))
+        self.ui.action_cut.triggered.connect(self.action_cut_event)
 
 
     # ---------------- events ---------------------------------------------- #
@@ -198,16 +203,11 @@ class tfm(QWidget):
 
     def action_copy_event(self):
         # get current selection
-        current_selection_as_index = self.ui.table_view.selectionModel().selectedIndexes()
-        current_selection_as_path = []
-        for index in current_selection_as_index:
-            if (index.column() == 0):
-                current_selection_as_path.append(QFileSystemModel().filePath(index))
-        self.copy_files(current_selection_as_path)
-        # TODO: Multithreaded and progress / status information
-        # TODO: support folders
-        # TODO: handle existing file
+        self.copy_files(self.ui.table_view.selectionModel().selectedIndexes())
 
+    # TODO: Multithreaded and progress / status information
+    # TODO: support folders
+    # TODO: handle existing file
     def action_paste_event(self):
         if self.clipboard.mimeData().hasUrls():
             file_path_list = []
@@ -220,6 +220,17 @@ class tfm(QWidget):
                 if (QFile().exists(file_path)
                         and not QFile().exists(new_file_path)):
                     QFile().copy(file_path, new_file_path)
+            # remove pasted files, if they were cut
+            print(file_path_list)
+            print(self.marked_to_cut)
+            if (collections.Counter(file_path_list)
+                    == collections.Counter(self.marked_to_cut)):
+                for file_path in file_path_list:
+                    QFile().remove(file_path)
+
+    # TODO: visual feedback for cut files
+    def action_cut_event(self):
+        self.marked_to_cut = self.copy_files(self.ui.table_view.selectionModel().selectedIndexes())
 
 
     # ---------------- functions ------------------------------------------- #
@@ -267,7 +278,15 @@ class tfm(QWidget):
                                     * part_stats.f_bfree))
         self.part_info.setText(fs_free + ' of ' + fs_size + ' free')
 
-    def copy_files(self, files_as_path: list[str]):
+    # TODO: proper type hints
+    def copy_files(self, files_as_indexes):
+        """
+        :returns: files as str list of paths, which were copied to clipboard
+        """
+        files_as_path = []
+        for index in files_as_indexes:
+            if (index.column() == 0):
+                files_as_path.append(QFileSystemModel().filePath(index))
         file_urls = []
 
         for file in files_as_path:
@@ -277,7 +296,7 @@ class tfm(QWidget):
         mime_data.setUrls(file_urls)
 
         self.clipboard.setMimeData(mime_data)
-
+        return files_as_path
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
