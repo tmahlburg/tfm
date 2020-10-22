@@ -205,6 +205,14 @@
     <string>Cut</string>
    </property>
   </action>
+  <action name="action_show_hidden">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show hidden files</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

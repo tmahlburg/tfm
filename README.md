@@ -13,9 +13,9 @@ These are the features, I would like to implement. Everything in italics is alre
     * *right: current dir file listing*
   * *bottom: statusbar with item count, selcted file size, free space on disk*
 * *xdg-open*
-* *cut*, *copy*, paste, link, delete (with confirmation)
+* *cut, copy*, paste *partially done*, link, delete (with confirmation)
 * *file context menu*
-* dotfile handling
+* *dotfile handling*
 
 ### Wanted:
 * show, mount and unmount devices using udevil or pmount

@@ -57,6 +57,7 @@ class tfm(QWidget):
         self.ui.table_view.addAction(self.ui.action_copy)
         self.ui.table_view.addAction(self.ui.action_paste)
         self.ui.table_view.addAction(self.ui.action_cut)
+        self.ui.table_view.addAction(self.ui.action_show_hidden)
 
         # connect double click action
         self.ui.table_view.doubleClicked.connect(self.item_open_event)
@@ -117,6 +118,10 @@ class tfm(QWidget):
         self.ui.action_paste.triggered.connect(self.action_paste_event)
         self.ui.action_cut.setShortcuts(QKeySequence.keyBindings(QKeySequence.Cut))
         self.ui.action_cut.triggered.connect(self.action_cut_event)
+
+        # raises a TypeError, but works as expected?
+        self.ui.action_show_hidden.setShortcuts(QKeySequence('Ctrl+H'))
+        self.ui.action_show_hidden.toggled.connect(self.action_show_hidden_event)
 
 
     # ---------------- events ---------------------------------------------- #
@@ -231,6 +236,13 @@ class tfm(QWidget):
     # TODO: visual feedback for cut files
     def action_cut_event(self):
         self.marked_to_cut = self.copy_files(self.ui.table_view.selectionModel().selectedIndexes())
+
+
+    def action_show_hidden_event(self):
+        if self.ui.action_show_hidden.isChecked():
+            self.filesystem.setFilter(QDir.AllEntries | QDir.NoDotAndDotDot | QDir.AllDirs | QDir.Hidden)
+        else:
+            self.filesystem.setFilter(QDir.AllEntries | QDir.NoDotAndDotDot | QDir.AllDirs)
 
 
     # ---------------- functions ------------------------------------------- #
