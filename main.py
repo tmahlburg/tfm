@@ -53,6 +53,7 @@ class tfm(QWidget):
 
         # setup context menu
         self.ui.table_view.addAction(self.ui.action_copy)
+        self.ui.table_view.addAction(self.ui.action_paste)
 
         # connect double click action
         self.ui.table_view.doubleClicked.connect(self.item_open_event)
@@ -109,6 +110,8 @@ class tfm(QWidget):
 
         self.ui.action_copy.setShortcuts(QKeySequence.keyBindings(QKeySequence.Copy))
         self.ui.action_copy.triggered.connect(self.action_copy_event)
+        self.ui.action_paste.setShortcuts(QKeySequence.keyBindings(QKeySequence.Paste))
+        self.ui.action_paste.triggered.connect(self.action_paste_event)
 
 
     # ---------------- events ---------------------------------------------- #
@@ -201,6 +204,23 @@ class tfm(QWidget):
             if (index.column() == 0):
                 current_selection_as_path.append(QFileSystemModel().filePath(index))
         self.copy_files(current_selection_as_path)
+        # TODO: Multithreaded and progress / status information
+        # TODO: support folders
+        # TODO: handle existing file
+
+    def action_paste_event(self):
+        if self.clipboard.mimeData().hasUrls():
+            file_path_list = []
+            for url in self.clipboard.mimeData().urls():
+                if (url.isLocalFile()):
+                    file_path_list.append(url.toLocalFile())
+            for file_path in file_path_list:
+                new_file_path = os.path.join(self.current_path,
+                                             os.path.basename(file_path))
+                if (QFile().exists(file_path)
+                        and not QFile().exists(new_file_path)):
+                    QFile().copy(file_path, new_file_path)
+
 
     # ---------------- functions ------------------------------------------- #
     # TODO: Performance
@@ -241,8 +261,10 @@ class tfm(QWidget):
     def update_part_info(self, path: str):
         # get fs statistics using statvfs system call
         part_stats = os.statvfs(path)
-        fs_size = '{:!.1j}B'.format(Float(part_stats.f_frsize * part_stats.f_blocks))
-        fs_free = '{:!.1j}B'.format(Float(part_stats.f_frsize * part_stats.f_bfree))
+        fs_size = '{:!.1j}B'.format(Float(part_stats.f_frsize
+                                    * part_stats.f_blocks))
+        fs_free = '{:!.1j}B'.format(Float(part_stats.f_frsize
+                                    * part_stats.f_bfree))
         self.part_info.setText(fs_free + ' of ' + fs_size + ' free')
 
     def copy_files(self, files_as_path: list[str]):
