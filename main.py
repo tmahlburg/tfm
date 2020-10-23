@@ -4,11 +4,11 @@ import os
 import collections
 
 from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
-                               QLineEdit, QLabel)
+                               QLineEdit, QLabel, QMenu, QToolButton)
 from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
                             )
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtGui import QKeySequence
+from PySide2.QtGui import QKeySequence, QIcon
 
 from prefixed import Float
 
@@ -101,6 +101,18 @@ class tfm(QWidget):
         self.adressbar.setText(self.current_path)
         self.ui.toolbar.insertWidget(self.ui.action_go, self.adressbar)
 
+        # menu for new file or directory
+        self.new_menu = QMenu()
+        self.new_menu.addAction(self.ui.action_new_dir)
+        self.new_menu.addAction(self.ui.action_new_file)
+
+        self.new_button = QToolButton()
+        self.new_button.setMenu(self.new_menu)
+        self.new_button.setPopupMode(QToolButton().MenuButtonPopup)
+        self.new_button.setDefaultAction(self.ui.action_new_dir)
+
+        self.ui.toolbar.insertWidget(self.ui.action_back, self.new_button)
+
         # connect actions to their event functions
         self.adressbar.returnPressed.connect(self.action_go_event)
         self.ui.action_go.triggered.connect(self.action_go_event)
@@ -119,9 +131,26 @@ class tfm(QWidget):
         self.ui.action_cut.setShortcuts(QKeySequence.keyBindings(QKeySequence.Cut))
         self.ui.action_cut.triggered.connect(self.action_cut_event)
 
-        # raises a TypeError, but works as expected?
-        self.ui.action_show_hidden.setShortcuts(QKeySequence('Ctrl+H'))
         self.ui.action_show_hidden.toggled.connect(self.action_show_hidden_event)
+
+
+        # SETUP ICONS #
+        self.ui.action_back.setIcon(QIcon.fromTheme('go-previous'))
+        self.ui.action_forward.setIcon(QIcon.fromTheme('go-next'))
+
+        self.ui.action_home.setIcon(QIcon.fromTheme('go-home'))
+        self.ui.action_up.setIcon(QIcon.fromTheme('go-up'))
+
+        self.ui.action_new_dir.setIcon(QIcon.fromTheme('folder-new'))
+        self.ui.action_new_file.setIcon(QIcon.fromTheme('document-new'))
+
+        self.ui.action_go.setIcon(QIcon.fromTheme('go-jump'))
+
+        self.ui.action_menu.setIcon(QIcon.fromTheme('start-here'))
+
+        self.ui.action_copy.setIcon(QIcon.fromTheme('edit-copy'))
+        self.ui.action_cut.setIcon(QIcon.fromTheme('edit-cut'))
+        self.ui.action_paste.setIcon(QIcon.fromTheme('edit-paste'))
 
 
     # ---------------- events ---------------------------------------------- #

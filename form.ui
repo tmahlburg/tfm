@@ -141,8 +141,6 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_menu"/>
-   <addaction name="action_new_dir"/>
-   <addaction name="action_new_file"/>
    <addaction name="action_back"/>
    <addaction name="action_forward"/>
    <addaction name="action_up"/>
@@ -213,6 +211,9 @@
    </property>
    <property name="text">
     <string>Show hidden files</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
    </property>
   </action>
  </widget>
