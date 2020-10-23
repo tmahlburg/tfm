@@ -7,7 +7,7 @@ The Project is in a proof of concept stage right now and it is not advise to use
 These are the features, I would like to implement. Everything in italics is already implemented in some way.
 ### Essential:
 * window layout:
-  * top: *toolbar* with: old Opera style menu button, *navigation controls (up and back/forward through the navigation history)*, new {file|dir}, *adress bar*
+  * top: *toolbar* with: *old Opera style menu button, navigation controls (up and back/forward through the navigation history)*, new {file|dir}, *adress bar*
   * middle:
     * left *(individually hideable)*: *fs tree*, favorites / bookmarks
     * *right: current dir file listing*

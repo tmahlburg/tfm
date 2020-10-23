@@ -96,6 +96,17 @@ class tfm(QWidget):
         self.ui.action_back.setEnabled(False)
         self.ui.action_forward.setEnabled(False)
 
+        # main menu
+        self.main_menu = QMenu()
+        self.main_menu.addAction(self.ui.action_show_hidden)
+
+        self.menu_button = QToolButton()
+        self.menu_button.setMenu(self.main_menu)
+        self.menu_button.setPopupMode(QToolButton().InstantPopup)
+        self.menu_button.setDefaultAction(self.ui.action_menu)
+
+        self.ui.toolbar.insertWidget(self.ui.action_back, self.menu_button)
+
         # adress bar
         self.adressbar = QLineEdit()
         self.adressbar.setText(self.current_path)
