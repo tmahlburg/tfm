@@ -190,6 +190,7 @@ class tfm(QWidget):
             with open(os.path.join(self.current_path, file_name), 'w') as f:
                 pass
 
+
     def action_go_event(self):
         next_dir = QDir(self.adressbar.text())
         if (next_dir.isAbsolute() and next_dir.exists()):
@@ -317,12 +318,7 @@ class tfm(QWidget):
 
         if (button_clicked == QMessageBox.Yes):
             for file in selected_files:
-                if os.path.exists(file):
-                    os.remove(file)
-                else:
-                    # TODO: proper Error Handling
-                    print('ERROR: file could not be deleted')
-
+                QFile().remove(file)
 
     def action_show_hidden_event(self):
         if self.ui.action_show_hidden.isChecked():
