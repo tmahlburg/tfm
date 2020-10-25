@@ -5,7 +5,7 @@ import collections
 
 from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
                                QLineEdit, QLabel, QMenu, QToolButton,
-                               QInputDialog)
+                               QInputDialog, QMessageBox)
 from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
                             )
 from PySide2.QtUiTools import QUiLoader
@@ -58,6 +58,7 @@ class tfm(QWidget):
         self.ui.table_view.addAction(self.ui.action_copy)
         self.ui.table_view.addAction(self.ui.action_paste)
         self.ui.table_view.addAction(self.ui.action_cut)
+        self.ui.table_view.addAction(self.ui.action_delete)
         self.ui.table_view.addAction(self.ui.action_show_hidden)
 
         # connect double click action
@@ -142,6 +143,8 @@ class tfm(QWidget):
         self.ui.action_paste.triggered.connect(self.action_paste_event)
         self.ui.action_cut.setShortcuts(QKeySequence.keyBindings(QKeySequence.Cut))
         self.ui.action_cut.triggered.connect(self.action_cut_event)
+        self.ui.action_delete.setShortcuts(QKeySequence.keyBindings(QKeySequence.Delete))
+        self.ui.action_delete.triggered.connect(self.action_delete_event)
 
         self.ui.action_show_hidden.toggled.connect(self.action_show_hidden_event)
 
@@ -165,6 +168,7 @@ class tfm(QWidget):
         self.ui.action_copy.setIcon(QIcon.fromTheme('edit-copy'))
         self.ui.action_cut.setIcon(QIcon.fromTheme('edit-cut'))
         self.ui.action_paste.setIcon(QIcon.fromTheme('edit-paste'))
+        self.ui.action_delete.setIcon(QIcon.fromTheme('edit-delete'))
 
 
     # ---------------- events ---------------------------------------------- #
@@ -298,6 +302,27 @@ class tfm(QWidget):
     def action_cut_event(self):
         self.marked_to_cut = self.copy_files(self.ui.table_view.selectionModel().selectedIndexes())
 
+    def action_delete_event(self):
+        selected_files = self.indexes_to_files(self.ui.table_view.selectionModel().selectedIndexes())
+        if (len(selected_files) == 1):
+            confirmation_message = 'Do you want to delete "' + os.path.basename(selected_files[0]) + '"?'
+        else:
+            confirmation_message = 'Do you want to delete the ' + str(len(selected_files)) + ' selected items?'
+        msg_box = QMessageBox()
+        msg_box.setText(confirmation_message)
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+        msg_box.setDefaultButton(QMessageBox.Yes)
+        msg_box.setIcon(QMessageBox.Question)
+        button_clicked = msg_box.exec()
+
+        if (button_clicked == QMessageBox.Yes):
+            for file in selected_files:
+                if os.path.exists(file):
+                    os.remove(file)
+                else:
+                    # TODO: proper Error Handling
+                    print('ERROR: file could not be deleted')
+
 
     def action_show_hidden_event(self):
         if self.ui.action_show_hidden.isChecked():
@@ -356,10 +381,7 @@ class tfm(QWidget):
         """
         :returns: files as str list of paths, which were copied to clipboard
         """
-        files_as_path = []
-        for index in files_as_indexes:
-            if (index.column() == 0):
-                files_as_path.append(QFileSystemModel().filePath(index))
+        files_as_path = self.indexes_to_files(files_as_indexes)
         file_urls = []
 
         for file in files_as_path:
@@ -370,6 +392,15 @@ class tfm(QWidget):
 
         self.clipboard.setMimeData(mime_data)
         return files_as_path
+
+    # TODO: proper type hints
+    def indexes_to_files(self, files_as_indexes):
+        files_as_path = []
+        for index in files_as_indexes:
+            if (index.column() == 0):
+                files_as_path.append(QFileSystemModel().filePath(index))
+        return files_as_path
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
