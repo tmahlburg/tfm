@@ -403,4 +403,4 @@ if __name__ == "__main__":
     app.setQuitOnLastWindowClosed(False)
     window = tfm()
     window.ui.show()
-    sys.exit(app.exec_())
+    app.exec_()
