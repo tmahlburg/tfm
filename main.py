@@ -146,6 +146,7 @@ class tfm(QWidget):
         self.ui.action_show_hidden.toggled.connect(self.action_show_hidden_event)
 
         self.ui.action_new_dir.triggered.connect(self.action_new_dir_event)
+        self.ui.action_new_file.triggered.connect(self.action_new_file_event)
 
         # SETUP ICONS #
         self.ui.action_back.setIcon(QIcon.fromTheme('go-previous'))
@@ -169,11 +170,21 @@ class tfm(QWidget):
     # ---------------- events ---------------------------------------------- #
     def action_new_dir_event(self):
         dir_name, ok = QInputDialog().getText(self,
-                                              'Create new directory...',
+                                              'Create new directory',
                                               'Directory name:')
+        # TODO: Error handling
         if (dir_name, ok):
             if not QDir().mkpath(os.path.join(self.current_path, dir_name)):
                 print('ERROR: could not create directory')
+
+    def action_new_file_event(self):
+        file_name, ok = QInputDialog().getText(self,
+                                              'Create new file',
+                                              'File name:')
+        # TODO: Error handling
+        if (file_name, ok):
+            with open(os.path.join(self.current_path, file_name), 'w') as f:
+                pass
 
     def action_go_event(self):
         next_dir = QDir(self.adressbar.text())
