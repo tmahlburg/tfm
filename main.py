@@ -4,7 +4,8 @@ import os
 import collections
 
 from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
-                               QLineEdit, QLabel, QMenu, QToolButton)
+                               QLineEdit, QLabel, QMenu, QToolButton,
+                               QInputDialog)
 from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
                             )
 from PySide2.QtUiTools import QUiLoader
@@ -144,6 +145,7 @@ class tfm(QWidget):
 
         self.ui.action_show_hidden.toggled.connect(self.action_show_hidden_event)
 
+        self.ui.action_new_dir.triggered.connect(self.action_new_dir_event)
 
         # SETUP ICONS #
         self.ui.action_back.setIcon(QIcon.fromTheme('go-previous'))
@@ -165,6 +167,14 @@ class tfm(QWidget):
 
 
     # ---------------- events ---------------------------------------------- #
+    def action_new_dir_event(self):
+        dir_name, ok = QInputDialog().getText(self,
+                                              'Create new directory...',
+                                              'Directory name:')
+        if (dir_name, ok):
+            if not QDir().mkpath(os.path.join(self.current_path, dir_name)):
+                print('ERROR: could not create directory')
+
     def action_go_event(self):
         next_dir = QDir(self.adressbar.text())
         if (next_dir.isAbsolute() and next_dir.exists()):
@@ -352,6 +362,7 @@ class tfm(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setQuitOnLastWindowClosed(False)
     window = tfm()
     window.ui.show()
     sys.exit(app.exec_())
