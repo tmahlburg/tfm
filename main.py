@@ -5,7 +5,7 @@ import collections
 
 from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
                                QLineEdit, QLabel, QMenu, QToolButton,
-                               QInputDialog, QMessageBox)
+                               QInputDialog, QMessageBox, QMainWindow)
 from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
                             )
 from PySide2.QtUiTools import QUiLoader
@@ -16,7 +16,7 @@ from prefixed import Float
 from stack import stack
 
 
-class tfm(QWidget):
+class tfm(QMainWindow):
     def __init__(self):
         super(tfm, self).__init__()
 
@@ -190,7 +190,6 @@ class tfm(QWidget):
             with open(os.path.join(self.current_path, file_name), 'w') as f:
                 pass
 
-
     def action_go_event(self):
         next_dir = QDir(self.adressbar.text())
         if (next_dir.isAbsolute() and next_dir.exists()):
@@ -281,21 +280,28 @@ class tfm(QWidget):
     # TODO: handle existing file
     def action_paste_event(self):
         if self.clipboard.mimeData().hasUrls():
-            file_path_list = []
+            path_list = []
             for url in self.clipboard.mimeData().urls():
                 if (url.isLocalFile()):
-                    file_path_list.append(url.toLocalFile())
-            for file_path in file_path_list:
-                new_file_path = os.path.join(self.current_path,
-                                             os.path.basename(file_path))
-                if (QFile().exists(file_path)
-                        and not QFile().exists(new_file_path)):
-                    QFile().copy(file_path, new_file_path)
-            # remove pasted files, if they were cut
-            print(file_path_list)
-            print(self.marked_to_cut)
-            if (collections.Counter(file_path_list)
-                    == collections.Counter(self.marked_to_cut)):
+                    path_list.append(url.toLocalFile())
+            cut = (collections.Counter(path_list)
+                    == collections.Counter(self.marked_to_cut))
+            paths_to_add = []
+            for path in path_list:
+                if (QDir().exists(path)):
+                    paths_to_add.extend(self.traverse_dir(path))
+            path_list.extend(paths_to_add)
+            base_path = os.path.dirname(os.path.commonpath(path_list)) + '/'
+            for path in path_list:
+                new_path = os.path.join(self.current_path,
+                                        path.replace(base_path, ''))
+                if (os.path.isdir(path)
+                        and not QDir().exists(new_path)):
+                    QDir().mkpath(new_path)
+                elif (QFile().exists(path)
+                        and not QFile().exists(new_path)):
+                    QFile().copy(path, new_path)
+            if cut:
                 for file_path in file_path_list:
                     QFile().remove(file_path)
 
@@ -397,10 +403,24 @@ class tfm(QWidget):
                 files_as_path.append(QFileSystemModel().filePath(index))
         return files_as_path
 
+    def traverse_dir(self, path):
+        """
+        Traverses the given directory and returns all files and dirs inside as
+        paths.
+        """
+        dir = QDir(path)
+        path_list = []
+        for file_name in dir.entryList(filters=QDir.AllDirs|QDir.NoDotAndDotDot|QDir.Files):
+            current_path = os.path.join(path, file_name)
+            path_list.append(current_path)
+            if (QDir().exists(current_path)):
+                path_list.extend(self.traverse_dir(current_path))
+        return path_list
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(False)
+    #app.setQuitOnLastWindowClosed(False)
     window = tfm()
     window.ui.show()
-    app.exec_()
+    sys.exit(app.exec_())
