@@ -284,6 +284,7 @@ class tfm(QMainWindow):
             for url in self.clipboard.mimeData().urls():
                 if (url.isLocalFile()):
                     path_list.append(url.toLocalFile())
+            multiple_paths = (len(path_list) > 1)
             cut = (collections.Counter(path_list)
                     == collections.Counter(self.marked_to_cut))
             paths_to_add = []
@@ -291,7 +292,11 @@ class tfm(QMainWindow):
                 if (QDir().exists(path)):
                     paths_to_add.extend(self.traverse_dir(path))
             path_list.extend(paths_to_add)
-            base_path = os.path.dirname(os.path.commonpath(path_list)) + '/'
+            base_path = ''
+            if (multiple_paths):
+                base_path = os.path.commonpath(path_list) + '/'
+            else:
+                base_path = os.path.dirname(os.path.commonpath(path_list)) + '/'
             for path in path_list:
                 new_path = os.path.join(self.current_path,
                                         path.replace(base_path, ''))
