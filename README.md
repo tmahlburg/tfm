@@ -13,7 +13,7 @@ These are the features, I would like to implement. Everything in italics is alre
     * *right: current dir file listing*
   * *bottom: statusbar with item count, selcted file size, free space on disk*
 * *xdg-open*
-* *cut, copy, paste*, link, delete (with confirmation), renaming
+* *cut, copy, paste*, link, *delete (with confirmation)*, renaming
 * *file context menu*
 * *dotfile handling*
 
@@ -24,6 +24,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * drag and drop between windows
 * handle multi selection statusbar information
 * pasting status window on longer pastes
+* link files
 
 ### Far away:
 * optimize network mounts, especially SMB shares
@@ -40,6 +41,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * statusbar directory informations
 * rename in place
 * search in folder
+* make links visually distinguishable
 
 ### Infrastructure
 
