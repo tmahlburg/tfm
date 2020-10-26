@@ -225,6 +225,11 @@
     <string>Rename</string>
    </property>
   </action>
+  <action name="action_add_to_bookmarks">
+   <property name="text">
+    <string>Add to bookmarks</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

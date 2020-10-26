@@ -63,6 +63,7 @@ class tfm(QMainWindow):
         self.ui.table_view.addAction(self.ui.action_cut)
         self.ui.table_view.addAction(self.ui.action_rename)
         self.ui.table_view.addAction(self.ui.action_delete)
+        self.ui.table_view.addAction(self.ui.action_add_to_bookmarks)
         self.ui.table_view.addAction(self.ui.action_show_hidden)
 
         # connect double click action
@@ -173,6 +174,8 @@ class tfm(QMainWindow):
         self.ui.action_cut.setIcon(QIcon.fromTheme('edit-cut'))
         self.ui.action_paste.setIcon(QIcon.fromTheme('edit-paste'))
         self.ui.action_delete.setIcon(QIcon.fromTheme('edit-delete'))
+
+        self.ui.action_add_to_bookmarks.setIcon(QIcon.fromTheme('list-add'))
 
 
     # ---------------- events ---------------------------------------------- #
