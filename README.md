@@ -13,7 +13,7 @@ These are the features, I would like to implement. Everything in italics is alre
     * *right: current dir file listing*
   * *bottom: statusbar with item count, selcted file size, free space on disk*
 * *xdg-open*
-* *cut, copy, paste, delete (with confirmation)*, renaming
+* *cut, copy, paste, delete (with confirmation), renaming*
 * *file context menu*
 * *dotfile handling*
 
@@ -48,6 +48,10 @@ These are the features, I would like to implement. Everything in italics is alre
 * test suite with github actions
 * proper error handling and logging
 * complete pydoc style documentation
+* python package
+* voidlinux package
+* archlinux package
+* AppImage
 
 ## Unwishlist
 
