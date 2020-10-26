@@ -17,7 +17,7 @@ from stack import stack
 
 
 class tfm(QMainWindow):
-    def __init__(self):
+    def __init__(self, default_path: str):
         super(tfm, self).__init__()
 
         self.clipboard = QApplication.clipboard()
@@ -35,7 +35,10 @@ class tfm(QMainWindow):
 
         # MAIN VIEW #
         # set up QFileSystemModel
-        self.current_path = QDir.homePath()
+        if os.path.isdir(default_path):
+            self.current_path = default_path
+        else:
+            self.current_path = QDir.homePath()
         self.filesystem = QFileSystemModel()
         self.filesystem.setRootPath(self.current_path)
 
@@ -450,8 +453,14 @@ class tfm(QMainWindow):
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = QApplication()
     #app.setQuitOnLastWindowClosed(False)
-    window = tfm()
+    # TODO: create clean CLI
+    # TODO: document CLI
+    if len(sys.argv) > 1:
+        default_path = sys.argv[1]
+    else:
+        default_path = ''
+    window = tfm(default_path)
     window.ui.show()
     sys.exit(app.exec_())

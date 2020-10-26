@@ -16,6 +16,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * *cut, copy, paste, delete (with confirmation), renaming*
 * *file context menu*
 * *dotfile handling*
+* *open path set by argument*
 
 ### Wanted:
 * show, mount and unmount devices using udevil or pmount
