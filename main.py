@@ -58,6 +58,7 @@ class tfm(QMainWindow):
         self.ui.table_view.addAction(self.ui.action_copy)
         self.ui.table_view.addAction(self.ui.action_paste)
         self.ui.table_view.addAction(self.ui.action_cut)
+        self.ui.table_view.addAction(self.ui.action_rename)
         self.ui.table_view.addAction(self.ui.action_delete)
         self.ui.table_view.addAction(self.ui.action_show_hidden)
 
@@ -83,7 +84,6 @@ class tfm(QMainWindow):
         self.ui.fs_tree.clicked.connect(self.fs_tree_event)
 
         # STATUSBAR #
-        #self.update_statusbar()
         self.item_info = QLabel()
         #self.dir_info = QLabel()
         self.part_info = QLabel()
@@ -145,6 +145,7 @@ class tfm(QMainWindow):
         self.ui.action_cut.triggered.connect(self.action_cut_event)
         self.ui.action_delete.setShortcuts(QKeySequence.keyBindings(QKeySequence.Delete))
         self.ui.action_delete.triggered.connect(self.action_delete_event)
+        self.ui.action_rename.triggered.connect(self.action_rename_event)
 
         self.ui.action_show_hidden.toggled.connect(self.action_show_hidden_event)
 
@@ -344,6 +345,16 @@ class tfm(QMainWindow):
                     dir_list.append(path)
             for dir in dir_list:
                 QDir().rmpath(dir)
+
+    # TODO: warn, if extension gets changed
+    def action_rename_event(self):
+        file_name = self.ui.table_view.currentIndex().data()
+        new_file_name, ok = QInputDialog().getText(self,
+                                                   'Rename ' + file_name,
+                                                   'New name:')
+        if (new_file_name, ok):
+            QFile().rename(os.path.join(self.current_path, file_name),
+                           os.path.join(self.current_path, new_file_name))
 
     def action_show_hidden_event(self):
         if self.ui.action_show_hidden.isChecked():

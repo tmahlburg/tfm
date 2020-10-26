@@ -220,6 +220,11 @@
     <string>Delete</string>
    </property>
   </action>
+  <action name="action_rename">
+   <property name="text">
+    <string>Rename</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
