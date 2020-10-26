@@ -289,7 +289,7 @@ class tfm(QMainWindow):
                     == collections.Counter(self.marked_to_cut))
             paths_to_add = []
             for path in path_list:
-                if (QDir().exists(path)):
+                if (os.path.isdir(path)):
                     paths_to_add.extend(self.traverse_dir(path))
             path_list.extend(paths_to_add)
             base_path = ''
@@ -315,11 +315,19 @@ class tfm(QMainWindow):
         self.marked_to_cut = self.copy_files(self.ui.table_view.selectionModel().selectedIndexes())
 
     def action_delete_event(self):
-        selected_files = self.indexes_to_files(self.ui.table_view.selectionModel().selectedIndexes())
-        if (len(selected_files) == 1):
-            confirmation_message = 'Do you want to delete "' + os.path.basename(selected_files[0]) + '"?'
+        path_list = self.indexes_to_files(self.ui.table_view.selectionModel().selectedIndexes())
+        if len(path_list) < 0:
+            return
+        paths_to_add = []
+        for path in path_list:
+            if (os.path.isdir(path)):
+                paths_to_add.extend(self.traverse_dir(path))
+        path_list.extend(paths_to_add)
+
+        if (len(path_list) == 1):
+            confirmation_message = 'Do you want to delete "' + os.path.basename(path_list[0]) + '"?'
         else:
-            confirmation_message = 'Do you want to delete the ' + str(len(selected_files)) + ' selected items?'
+            confirmation_message = 'Do you want to delete the ' + str(len(path_list)) + ' selected items?'
         msg_box = QMessageBox()
         msg_box.setText(confirmation_message)
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
@@ -328,8 +336,14 @@ class tfm(QMainWindow):
         button_clicked = msg_box.exec()
 
         if (button_clicked == QMessageBox.Yes):
-            for file in selected_files:
-                QFile().remove(file)
+            dir_list = []
+            for path in path_list:
+                if (os.path.isfile(path)):
+                    QFile().remove(path)
+                elif (os.path.isdir(path)):
+                    dir_list.append(path)
+            for dir in dir_list:
+                QDir().rmpath(dir)
 
     def action_show_hidden_event(self):
         if self.ui.action_show_hidden.isChecked():
@@ -408,6 +422,7 @@ class tfm(QMainWindow):
                 files_as_path.append(QFileSystemModel().filePath(index))
         return files_as_path
 
+    # TODO: replace with os.walk from python std lib.....
     def traverse_dir(self, path):
         """
         Traverses the given directory and returns all files and dirs inside as
