@@ -444,7 +444,7 @@ class tfm(QMainWindow, Ui_tfm):
         """
         dir = QDir(path)
         path_list = []
-        for file_name in dir.entryList(filters=QDir.AllDirs|QDir.NoDotAndDotDot|QDir.Files):
+        for file_name in dir.entryList(filters=QDir.AllDirs|QDir.NoDotAndDotDot|QDir.Files|QDir.Hidden):
             current_path = os.path.join(path, file_name)
             path_list.append(current_path)
             if (QDir().exists(current_path)):
