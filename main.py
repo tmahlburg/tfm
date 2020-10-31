@@ -11,27 +11,23 @@ from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtGui import QKeySequence, QIcon
 
+from form import Ui_tfm
+
 from prefixed import Float
 
 from stack import stack
 
 
-class tfm(QMainWindow):
+class tfm(QMainWindow, Ui_tfm):
     def __init__(self, default_path: str):
         super(tfm, self).__init__()
+        self.setupUi(self)
 
         self.clipboard = QApplication.clipboard()
         self.marked_to_cut = []
 
         self.back_stack = stack()
         self.forward_stack = stack()
-
-        loader = QUiLoader()
-        path = os.path.join(os.path.dirname(__file__), "form.ui")
-        ui_file = QFile(path)
-        ui_file.open(QFile.ReadOnly)
-        self.ui = loader.load(ui_file, self)
-        ui_file.close()
 
         # MAIN VIEW #
         # set up QFileSystemModel
@@ -43,12 +39,12 @@ class tfm(QMainWindow):
         self.filesystem.setRootPath(self.current_path)
 
         # connect QFileSystemModel to View
-        self.ui.table_view.setModel(self.filesystem)
-        self.ui.table_view.setRootIndex(
+        self.table_view.setModel(self.filesystem)
+        self.table_view.setRootIndex(
             self.filesystem.index(self.current_path))
 
         # set up header
-        self.horizontal_header = self.ui.table_view.horizontalHeader()
+        self.horizontal_header = self.table_view.horizontalHeader()
         self.horizontal_header.setSectionsMovable(True)
         # name
         self.horizontal_header.resizeSection(0, 200)
@@ -58,17 +54,18 @@ class tfm(QMainWindow):
         self.horizontal_header.resizeSection(2, 100)
 
         # setup context menu
-        self.ui.table_view.addAction(self.ui.action_copy)
-        self.ui.table_view.addAction(self.ui.action_paste)
-        self.ui.table_view.addAction(self.ui.action_cut)
-        self.ui.table_view.addAction(self.ui.action_rename)
-        self.ui.table_view.addAction(self.ui.action_delete)
-        self.ui.table_view.addAction(self.ui.action_add_to_bookmarks)
-        self.ui.table_view.addAction(self.ui.action_show_hidden)
+        self.table_view.addAction(self.action_copy)
+        self.table_view.addAction(self.action_paste)
+        self.table_view.addAction(self.action_cut)
+        self.table_view.addAction(self.action_rename)
+        self.table_view.addAction(self.action_delete)
+        # TODO: only show, if selected item is a folder
+        self.table_view.addAction(self.action_add_to_bookmarks)
+        self.table_view.addAction(self.action_show_hidden)
 
         # connect double click action
-        self.ui.table_view.doubleClicked.connect(self.item_open_event)
-        self.ui.table_view.clicked.connect(self.item_selected_event)
+        self.table_view.doubleClicked.connect(self.item_open_event)
+        self.table_view.clicked.connect(self.item_selected_event)
 
         # FS TREE #
         # create seperate FileSystemModel for the fs tree
@@ -77,105 +74,105 @@ class tfm(QMainWindow):
         self.fs_tree_model.setRootPath(QDir.rootPath())
 
         # connect model to view
-        self.ui.fs_tree.setModel(self.fs_tree_model)
+        self.fs_tree.setModel(self.fs_tree_model)
         # hide unneeded columns
-        for column in range(1, self.ui.fs_tree.header().count()):
-            self.ui.fs_tree.hideColumn(column)
+        for column in range(1, self.fs_tree.header().count()):
+            self.fs_tree.hideColumn(column)
         # expand root item
-        self.ui.fs_tree.expand(self.fs_tree_model.index(0, 0))
+        self.fs_tree.expand(self.fs_tree_model.index(0, 0))
 
         # connect selection action
-        self.ui.fs_tree.clicked.connect(self.fs_tree_event)
+        self.fs_tree.clicked.connect(self.fs_tree_event)
 
         # STATUSBAR #
         self.item_info = QLabel()
         #self.dir_info = QLabel()
         self.part_info = QLabel()
-        self.ui.statusbar.addPermanentWidget(self.item_info)
-        #self.ui.statusbar.addPermanentWidget(self.dir_info)
-        self.ui.statusbar.addPermanentWidget(self.part_info)
+        self.statusbar.addPermanentWidget(self.item_info)
+        #self.statusbar.addPermanentWidget(self.dir_info)
+        self.statusbar.addPermanentWidget(self.part_info)
 
         self.update_part_info(self.current_path)
 
         # TOOLBAR #
         # initially disable back/forward navigation
-        self.ui.action_back.setEnabled(False)
-        self.ui.action_forward.setEnabled(False)
+        self.action_back.setEnabled(False)
+        self.action_forward.setEnabled(False)
 
         # main menu
         self.main_menu = QMenu()
-        self.main_menu.addAction(self.ui.action_show_hidden)
+        self.main_menu.addAction(self.action_show_hidden)
 
         self.menu_button = QToolButton()
         self.menu_button.setMenu(self.main_menu)
         self.menu_button.setPopupMode(QToolButton().InstantPopup)
-        self.menu_button.setDefaultAction(self.ui.action_menu)
+        self.menu_button.setDefaultAction(self.action_menu)
 
-        self.ui.toolbar.insertWidget(self.ui.action_back, self.menu_button)
+        self.toolbar.insertWidget(self.action_back, self.menu_button)
 
         # adress bar
         self.adressbar = QLineEdit()
         self.adressbar.setText(self.current_path)
-        self.ui.toolbar.insertWidget(self.ui.action_go, self.adressbar)
+        self.toolbar.insertWidget(self.action_go, self.adressbar)
 
         # menu for new file or directory
         self.new_menu = QMenu()
-        self.new_menu.addAction(self.ui.action_new_dir)
-        self.new_menu.addAction(self.ui.action_new_file)
+        self.new_menu.addAction(self.action_new_dir)
+        self.new_menu.addAction(self.action_new_file)
 
         self.new_button = QToolButton()
         self.new_button.setMenu(self.new_menu)
         self.new_button.setPopupMode(QToolButton().MenuButtonPopup)
-        self.new_button.setDefaultAction(self.ui.action_new_dir)
+        self.new_button.setDefaultAction(self.action_new_dir)
 
-        self.ui.toolbar.insertWidget(self.ui.action_back, self.new_button)
+        self.toolbar.insertWidget(self.action_back, self.new_button)
 
         # connect actions to their event functions
         self.adressbar.returnPressed.connect(self.action_go_event)
-        self.ui.action_go.triggered.connect(self.action_go_event)
+        self.action_go.triggered.connect(self.action_go_event)
 
         # TODO: move Home action to future bookmark menu
-        self.ui.action_home.triggered.connect(self.action_home_event)
-        self.ui.action_up.triggered.connect(self.action_up_event)
+        self.action_home.triggered.connect(self.action_home_event)
+        self.action_up.triggered.connect(self.action_up_event)
 
-        self.ui.action_back.triggered.connect(self.action_back_event)
-        self.ui.action_forward.triggered.connect(self.action_forward_event)
+        self.action_back.triggered.connect(self.action_back_event)
+        self.action_forward.triggered.connect(self.action_forward_event)
 
-        self.ui.action_copy.setShortcuts(QKeySequence.keyBindings(QKeySequence.Copy))
-        self.ui.action_copy.triggered.connect(self.action_copy_event)
-        self.ui.action_paste.setShortcuts(QKeySequence.keyBindings(QKeySequence.Paste))
-        self.ui.action_paste.triggered.connect(self.action_paste_event)
-        self.ui.action_cut.setShortcuts(QKeySequence.keyBindings(QKeySequence.Cut))
-        self.ui.action_cut.triggered.connect(self.action_cut_event)
-        self.ui.action_delete.setShortcuts(QKeySequence.keyBindings(QKeySequence.Delete))
-        self.ui.action_delete.triggered.connect(self.action_delete_event)
-        self.ui.action_rename.triggered.connect(self.action_rename_event)
+        self.action_copy.setShortcuts(QKeySequence.keyBindings(QKeySequence.Copy))
+        self.action_copy.triggered.connect(self.action_copy_event)
+        self.action_paste.setShortcuts(QKeySequence.keyBindings(QKeySequence.Paste))
+        self.action_paste.triggered.connect(self.action_paste_event)
+        self.action_cut.setShortcuts(QKeySequence.keyBindings(QKeySequence.Cut))
+        self.action_cut.triggered.connect(self.action_cut_event)
+        self.action_delete.setShortcuts(QKeySequence.keyBindings(QKeySequence.Delete))
+        self.action_delete.triggered.connect(self.action_delete_event)
+        self.action_rename.triggered.connect(self.action_rename_event)
 
-        self.ui.action_show_hidden.toggled.connect(self.action_show_hidden_event)
+        self.action_show_hidden.toggled.connect(self.action_show_hidden_event)
 
-        self.ui.action_new_dir.triggered.connect(self.action_new_dir_event)
-        self.ui.action_new_file.triggered.connect(self.action_new_file_event)
+        self.action_new_dir.triggered.connect(self.action_new_dir_event)
+        self.action_new_file.triggered.connect(self.action_new_file_event)
 
         # SETUP ICONS #
-        self.ui.action_back.setIcon(QIcon.fromTheme('go-previous'))
-        self.ui.action_forward.setIcon(QIcon.fromTheme('go-next'))
+        self.action_back.setIcon(QIcon.fromTheme('go-previous'))
+        self.action_forward.setIcon(QIcon.fromTheme('go-next'))
 
-        self.ui.action_home.setIcon(QIcon.fromTheme('go-home'))
-        self.ui.action_up.setIcon(QIcon.fromTheme('go-up'))
+        self.action_home.setIcon(QIcon.fromTheme('go-home'))
+        self.action_up.setIcon(QIcon.fromTheme('go-up'))
 
-        self.ui.action_new_dir.setIcon(QIcon.fromTheme('folder-new'))
-        self.ui.action_new_file.setIcon(QIcon.fromTheme('document-new'))
+        self.action_new_dir.setIcon(QIcon.fromTheme('folder-new'))
+        self.action_new_file.setIcon(QIcon.fromTheme('document-new'))
 
-        self.ui.action_go.setIcon(QIcon.fromTheme('go-jump'))
+        self.action_go.setIcon(QIcon.fromTheme('go-jump'))
 
-        self.ui.action_menu.setIcon(QIcon.fromTheme('start-here'))
+        self.action_menu.setIcon(QIcon.fromTheme('start-here'))
 
-        self.ui.action_copy.setIcon(QIcon.fromTheme('edit-copy'))
-        self.ui.action_cut.setIcon(QIcon.fromTheme('edit-cut'))
-        self.ui.action_paste.setIcon(QIcon.fromTheme('edit-paste'))
-        self.ui.action_delete.setIcon(QIcon.fromTheme('edit-delete'))
+        self.action_copy.setIcon(QIcon.fromTheme('edit-copy'))
+        self.action_cut.setIcon(QIcon.fromTheme('edit-cut'))
+        self.action_paste.setIcon(QIcon.fromTheme('edit-paste'))
+        self.action_delete.setIcon(QIcon.fromTheme('edit-delete'))
 
-        self.ui.action_add_to_bookmarks.setIcon(QIcon.fromTheme('list-add'))
+        self.action_add_to_bookmarks.setIcon(QIcon.fromTheme('list-add'))
 
 
     # ---------------- events ---------------------------------------------- #
@@ -223,9 +220,9 @@ class tfm(QMainWindow):
     def action_back_event(self):
         next_path = self.back_stack.pop()
         self.forward_stack.push(self.current_path)
-        self.ui.action_forward.setEnabled(True)
+        self.action_forward.setEnabled(True)
         if (self.back_stack.empty()):
-            self.ui.action_back.setEnabled(False)
+            self.action_back.setEnabled(False)
         self.update_current_path(next_path,
                                  skip_stack=True,
                                  reset_forward_stack=False)
@@ -236,7 +233,7 @@ class tfm(QMainWindow):
             self.update_current_path(next_path, reset_forward_stack=False)
             # disable forward action if there are no more forward actions
             if (self.forward_stack.empty()):
-                self.ui.action_forward.setEnabled(False)
+                self.action_forward.setEnabled(False)
         else:
             # TODO: Error Handling
             print('ERROR: Forward Stack unexpectedly empty')
@@ -244,7 +241,7 @@ class tfm(QMainWindow):
     def item_open_event(self):
         selected_item = QFileInfo(
             os.path.join(self.current_path,
-                         self.ui.table_view.currentIndex().data()))
+                         self.table_view.currentIndex().data()))
         if (selected_item.isDir()):
             next_path = selected_item.absoluteFilePath()
             self.update_current_path(next_path)
@@ -264,7 +261,7 @@ class tfm(QMainWindow):
 
     def item_selected_event(self):
         # Update item_info in the statusbar
-        name = self.ui.table_view.currentIndex().data()
+        name = self.table_view.currentIndex().data()
         selected_item = QFileInfo(
             os.path.join(self.current_path, name))
         if (selected_item.isFile()):
@@ -275,12 +272,12 @@ class tfm(QMainWindow):
             self.item_info.setText(name)
 
     def fs_tree_event(self):
-        next_path = self.fs_tree_model.filePath(self.ui.fs_tree.currentIndex())
+        next_path = self.fs_tree_model.filePath(self.fs_tree.currentIndex())
         self.update_current_path(next_path)
 
     def action_copy_event(self):
         # get current selection
-        self.copy_files(self.ui.table_view.selectionModel().selectedIndexes())
+        self.copy_files(self.table_view.selectionModel().selectedIndexes())
 
     # TODO: Multithreaded and progress / status information
     # TODO: support folders
@@ -319,10 +316,10 @@ class tfm(QMainWindow):
 
     # TODO: visual feedback for cut files
     def action_cut_event(self):
-        self.marked_to_cut = self.copy_files(self.ui.table_view.selectionModel().selectedIndexes())
+        self.marked_to_cut = self.copy_files(self.table_view.selectionModel().selectedIndexes())
 
     def action_delete_event(self):
-        path_list = self.indexes_to_files(self.ui.table_view.selectionModel().selectedIndexes())
+        path_list = self.indexes_to_files(self.table_view.selectionModel().selectedIndexes())
         if len(path_list) < 0:
             return
         paths_to_add = []
@@ -354,7 +351,7 @@ class tfm(QMainWindow):
 
     # TODO: warn, if extension gets changed
     def action_rename_event(self):
-        file_name = self.ui.table_view.currentIndex().data()
+        file_name = self.table_view.currentIndex().data()
         new_file_name, ok = QInputDialog().getText(self,
                                                    'Rename ' + file_name,
                                                    'New name:')
@@ -363,7 +360,7 @@ class tfm(QMainWindow):
                            os.path.join(self.current_path, new_file_name))
 
     def action_show_hidden_event(self):
-        if self.ui.action_show_hidden.isChecked():
+        if self.action_show_hidden.isChecked():
             self.filesystem.setFilter(QDir.AllEntries | QDir.NoDotAndDotDot | QDir.AllDirs | QDir.Hidden)
         else:
             self.filesystem.setFilter(QDir.AllEntries | QDir.NoDotAndDotDot | QDir.AllDirs)
@@ -376,7 +373,7 @@ class tfm(QMainWindow):
                             skip_stack=False,
                             reset_forward_stack=True):
         self.filesystem.setRootPath(next_path)
-        self.ui.table_view.setRootIndex(
+        self.table_view.setRootIndex(
             self.filesystem.index(next_path))
         self.adressbar.setText(next_path)
         # update directory and partition information
@@ -384,19 +381,19 @@ class tfm(QMainWindow):
         self.update_part_info(next_path)
         # disable up navigation if in fs root
         if (next_path == QDir().rootPath()):
-            self.ui.action_up.setEnabled(False)
+            self.action_up.setEnabled(False)
         else:
-            self.ui.action_up.setEnabled(True)
+            self.action_up.setEnabled(True)
         # handle back stack
         if (not skip_stack):
             if (self.back_stack.empty()
                     or self.back_stack.top() != self.current_path):
                 self.back_stack.push(self.current_path)
                 # reenable back navigation
-                self.ui.action_back.setEnabled(True)
+                self.action_back.setEnabled(True)
         if (reset_forward_stack):
             self.forward_stack.drop()
-            self.ui.action_forward.setEnabled(False)
+            self.action_forward.setEnabled(False)
         self.current_path = next_path
 
     # updates directory information in the statusbar
@@ -465,5 +462,5 @@ if __name__ == "__main__":
     else:
         default_path = ''
     window = tfm(default_path)
-    window.ui.show()
+    window.show()
     sys.exit(app.exec_())
