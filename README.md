@@ -1,25 +1,25 @@
-,# tfm
+# tfm
 Simple file manager implemented in Qt for Python. This project aims to create a simple, desktop agnostic, unix file-manager.
-The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problems.
-The Project is in a proof of concept stage right now and it is not advise to use it at the moment.
+The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problemss.
+The Project is in a proof of concept stage right now and it is not advised to use it at the moment.
 
-## Wishlist
-These are the features, I would like to implement. Everything in italics is already implemented in some way.
+## Features:
+* basic directory traversal
+* window layout with toolbar, statusbar, main table view, fs tree and bookmarks
+* open files using xdg-open
+* cut, copy, paste, delete (with confirmation), renaming
+* named bookmarks to folders
+* show/hide dotfiles
 
-### Essential:
-* window layout:
-  * *top: toolbar with: old Opera style menu button, navigation controls (up and back/forward through the navigation history), new {file|dir}, adress bar*
-  * middle:
-    * *left (individually hideable): fs tree, favorites / bookmarks*
-    * *right: current dir file listing*
-  * *bottom: statusbar with item count, selcted file size, free space on disk*
-* *xdg-open*
-* *cut, copy, paste, delete (with confirmation), renaming*
-* *file context menu*
-* *dotfile handling*
-* *open path set by argument*
+## How to install
+Don't right now. Making packages is the next item on my list though.
 
-### Wanted:
+## Screenshots
+Are going to be here soon.
+
+## Roadmap
+
+### Next features to implement:
 * show, mount and unmount devices using udevil or pmount
 * xdg-trash
 * drag and drop between windows
@@ -54,7 +54,7 @@ These are the features, I would like to implement. Everything in italics is alre
 * archlinux package
 * AppImage
 
-## Unwishlist
+## Non-Features
 These features are going to be intentionally omitted:
 
 * dependencies on specific desktop environments
