@@ -16,6 +16,7 @@ from form import Ui_tfm
 from prefixed import Float
 
 from stack import stack
+from bookmarks import bookmarks as bm
 
 
 class tfm(QMainWindow, Ui_tfm):
@@ -87,14 +88,13 @@ class tfm(QMainWindow, Ui_tfm):
         self.fs_tree.clicked.connect(self.fs_tree_event)
 
         # BOOKMARKS #
-        # set of dicts: {'name': '', 'path': ''}
-        self.bookmark_list = self.get_bookmarks()
-        for bookmark in self.bookmark_list:
-            self.bookmarks.addItem(bookmark['name'])
+        self.bookmarks = bm(os.path.join(self.config_dir, 'bookmarks'))
+        for bookmark in self.bookmarks.get_all():
+            self.bookmark_view.addItem(bookmark['name'])
 
-        self.bookmarks.clicked.connect(self.bookmark_selected_event)
+        self.bookmark_view.clicked.connect(self.bookmark_selected_event)
 
-        self.bookmarks.addAction(self.action_remove_bookmark)
+        self.bookmark_view.addAction(self.action_remove_bookmark)
 
         # STATUSBAR #
         self.item_info = QLabel()
@@ -389,14 +389,12 @@ class tfm(QMainWindow, Ui_tfm):
                                               'Bookmark name:',
                                               text=self.table_view.currentIndex().data())
             # TODO: Error handling
-            if (name, ok and not self.bookmark_exists(name) and not '|' in name):
-                self.bookmark_list.append({'name': name, 'path': path})
-                self.bookmarks.addItem(name)
-                with open(os.path.join(self.config_dir, 'bookmarks'), 'a') as bookmark_file:
-                    bookmark_file.write(name + '|' + path + '\n')
+            if (name, ok):
+                self.bookmarks.add_bookmark(name, path)
+                self.bookmark_view.addItem(name)
 
     def action_remove_bookmark_event(self):
-        name = self.bookmarks.currentIndex().data()
+        name = self.bookmark_view.currentIndex().data()
         msg_box = QMessageBox()
         msg_box.setText('Do you really want to delete this bookmark (' + name + ')?')
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
@@ -405,20 +403,14 @@ class tfm(QMainWindow, Ui_tfm):
         button_clicked = msg_box.exec()
 
         if (button_clicked == QMessageBox.Yes):
-            self.bookmarks.takeItem(
-                self.bookmarks.row(self.bookmarks.itemFromIndex(self.bookmarks.currentIndex())))
-            new_bookmark_list = []
-            for bookmark in self.bookmark_list:
-                if bookmark['name'] != name:
-                    new_bookmark_list.append(bookmark)
-            self.bookmark_list = new_bookmark_list
-            with open(os.path.join(self.config_dir, 'bookmarks'), 'w') as bookmark_file:
-                for bookmark in self.bookmark_list:
-                    bookmark_file.write(bookmark['name'] + '|' + bookmark['path'] + '\n')
-
+            self.bookmark_view.takeItem(
+                self.bookmark_view.row(
+                    self.bookmark_view.itemFromIndex(
+                        self.bookmark_view.currentIndex())))
+            self.bookmarks.remove_bookmark(name)
 
     def bookmark_selected_event(self):
-        next_path = self.get_bookmark_path(self.bookmarks.currentIndex().data())
+        next_path = self.bookmarks.get_path_from_name(self.bookmark_view.currentIndex().data())
         self.update_current_path(next_path)
 
 
@@ -515,27 +507,6 @@ class tfm(QMainWindow, Ui_tfm):
         if (not os.path.exists(path)):
             os.makedirs(path)
         return path
-
-    def get_bookmarks(self):
-        bookmark_list = []
-        if QFile().exists(os.path.join(self.config_dir, 'bookmarks')):
-            with open(os.path.join(self.config_dir, 'bookmarks')) as bookmarks:
-                for bookmark in bookmarks:
-                    bookmark_list.append({'name': bookmark.split('|')[0], 'path': bookmark.split('|')[1].rstrip()})
-        return bookmark_list
-
-    def get_bookmark_path(self, name: str):
-        for bookmark in self.bookmark_list:
-            if name == bookmark['name']:
-                return bookmark['path']
-        return False
-
-    def bookmark_exists(self, name: str):
-        for bookmark in self.bookmark_list:
-            if name == bookmark['name']:#
-                return True
-        return False
-
 
 
 if __name__ == "__main__":
