@@ -405,10 +405,13 @@ class tfm(QMainWindow, Ui_tfm):
         button_clicked = msg_box.exec()
 
         if (button_clicked == QMessageBox.Yes):
-            self.bookmarks.removeItemWidget(self.bookmarks.itemFromIndex(self.bookmarks.currentIndex()))
+            self.bookmarks.takeItem(
+                self.bookmarks.row(self.bookmarks.itemFromIndex(self.bookmarks.currentIndex())))
+            new_bookmark_list = []
             for bookmark in self.bookmark_list:
-                if bookmark['name'] == name:
-                    del bookmark
+                if bookmark['name'] != name:
+                    new_bookmark_list.append(bookmark)
+            self.bookmark_list = new_bookmark_list
             with open(os.path.join(self.config_dir, 'bookmarks'), 'w') as bookmark_file:
                 for bookmark in self.bookmark_list:
                     bookmark_file.write(bookmark['name'] + '|' + bookmark['path'] + '\n')
