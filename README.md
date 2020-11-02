@@ -1,10 +1,11 @@
-# tfm
+,# tfm
 Simple file manager implemented in Qt for Python. This project aims to create a simple, desktop agnostic, unix file-manager.
 The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problems.
 The Project is in a proof of concept stage right now and it is not advise to use it at the moment.
 
 ## Wishlist
 These are the features, I would like to implement. Everything in italics is already implemented in some way.
+
 ### Essential:
 * window layout:
   * *top: toolbar with: old Opera style menu button, navigation controls (up and back/forward through the navigation history), new {file|dir}, adress bar*
@@ -21,7 +22,6 @@ These are the features, I would like to implement. Everything in italics is alre
 ### Wanted:
 * show, mount and unmount devices using udevil or pmount
 * xdg-trash
-* user configurable views and columns
 * drag and drop between windows
 * handle multi selection statusbar information
 * pasting status window on longer pastes
@@ -43,9 +43,9 @@ These are the features, I would like to implement. Everything in italics is alre
 * rename in place
 * search in folder
 * make links visually distinguishable
+* user configurable views and columns
 
 ### Infrastructure
-
 * test suite with github actions
 * proper error handling and logging
 * complete pydoc style documentation
@@ -55,7 +55,6 @@ These are the features, I would like to implement. Everything in italics is alre
 * AppImage
 
 ## Unwishlist
-
 These features are going to be intentionally omitted:
 
 * dependencies on specific desktop environments

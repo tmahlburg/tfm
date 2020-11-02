@@ -29,6 +29,8 @@ class tfm(QMainWindow, Ui_tfm):
         self.back_stack = stack()
         self.forward_stack = stack()
 
+        self.config_dir = self.get_config_dir()
+
         # MAIN VIEW #
         # set up QFileSystemModel
         if os.path.isdir(default_path):
@@ -83,6 +85,14 @@ class tfm(QMainWindow, Ui_tfm):
 
         # connect selection action
         self.fs_tree.clicked.connect(self.fs_tree_event)
+
+        # BOOKMARKS #
+        # set of dicts: {'name': '', 'path': ''}
+        self.bookmark_list = self.get_bookmarks()
+        for bookmark in self.bookmark_list:
+            self.bookmarks.addItem(bookmark['name'])
+
+        self.bookmarks.clicked.connect(self.bookmark_selected_event)
 
         # STATUSBAR #
         self.item_info = QLabel()
@@ -152,6 +162,8 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.action_new_dir.triggered.connect(self.action_new_dir_event)
         self.action_new_file.triggered.connect(self.action_new_file_event)
+
+        self.action_add_to_bookmarks.triggered.connect(self.action_add_to_bookmarks_event)
 
         # SETUP ICONS #
         self.action_back.setIcon(QIcon.fromTheme('go-previous'))
@@ -365,6 +377,23 @@ class tfm(QMainWindow, Ui_tfm):
         else:
             self.filesystem.setFilter(QDir.AllEntries | QDir.NoDotAndDotDot | QDir.AllDirs)
 
+    def action_add_to_bookmarks_event(self):
+        path = os.path.join(self.current_path, self.table_view.currentIndex().data())
+        if (os.path.isdir(path)):
+            name, ok = QInputDialog().getText(self,
+                                              'Create new bookmark',
+                                              'Bookmark name:',
+                                              text=self.table_view.currentIndex().data())
+            # TODO: Error handling
+            if (name, ok and not self.bookmark_exists(name) and not '|' in name):
+                self.bookmark_list.append({'name': name, 'path': path})
+                self.bookmarks.addItem(name)
+                with open(os.path.join(self.config_dir, 'bookmarks'), 'a') as bookmark_file:
+                    bookmark_file.write(name + '|' + path + '\n')
+
+    def bookmark_selected_event(self):
+        next_path = self.get_bookmark_path(self.bookmarks.currentIndex().data())
+        self.update_current_path(next_path)
 
     # ---------------- functions ------------------------------------------- #
     # TODO: Performance
@@ -451,10 +480,40 @@ class tfm(QMainWindow, Ui_tfm):
                 path_list.extend(self.traverse_dir(current_path))
         return path_list
 
+    def get_config_dir(self):
+        if os.environ.get('XDG_CONFIG_HOME'):
+            path = os.path.join(os.environ.get('XDG_CONFIG_HOME'), 'tfm')
+        else:
+            path = os.path.join(os.environ.get('HOME'), '.config/tfm')
+        if (not os.path.exists(path)):
+            os.makedirs(path)
+        return path
+
+    def get_bookmarks(self):
+        bookmark_list = []
+        if QFile().exists(os.path.join(self.config_dir, 'bookmarks')):
+            with open(os.path.join(self.config_dir, 'bookmarks')) as bookmarks:
+                for bookmark in bookmarks:
+                    bookmark_list.append({'name': bookmark.split('|')[0], 'path': bookmark.split('|')[1].rstrip()})
+        print(bookmark_list)
+        return bookmark_list
+
+    def get_bookmark_path(self, name: str):
+        for bookmark in self.bookmark_list:
+            if name == bookmark['name']:
+                return bookmark['path']
+        return False
+
+    def bookmark_exists(self, name: str):
+        for bookmark in self.bookmark_list:
+            if name == bookmark['name']:#
+                return True
+        return False
+
+
 
 if __name__ == "__main__":
     app = QApplication()
-    #app.setQuitOnLastWindowClosed(False)
     # TODO: create clean CLI
     # TODO: document CLI
     if len(sys.argv) > 1:

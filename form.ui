@@ -44,7 +44,7 @@
          <bool>false</bool>
         </attribute>
        </widget>
-       <widget class="QListView" name="bookmarks">
+       <widget class="QListWidget" name="bookmarks">
         <property name="frameShadow">
          <enum>QFrame::Sunken</enum>
         </property>
@@ -228,6 +228,11 @@
   <action name="action_add_to_bookmarks">
    <property name="text">
     <string>Add to bookmarks</string>
+   </property>
+  </action>
+  <action name="action_remove_from_bookmarks">
+   <property name="text">
+    <string>Remove from bookmarks</string>
    </property>
   </action>
  </widget>
