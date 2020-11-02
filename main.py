@@ -94,6 +94,8 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.bookmarks.clicked.connect(self.bookmark_selected_event)
 
+        self.bookmarks.addAction(self.action_remove_bookmark)
+
         # STATUSBAR #
         self.item_info = QLabel()
         #self.dir_info = QLabel()
@@ -164,6 +166,7 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_new_file.triggered.connect(self.action_new_file_event)
 
         self.action_add_to_bookmarks.triggered.connect(self.action_add_to_bookmarks_event)
+        self.action_remove_bookmark.triggered.connect(self.action_remove_bookmark_event)
 
         # SETUP ICONS #
         self.action_back.setIcon(QIcon.fromTheme('go-previous'))
@@ -185,6 +188,7 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_delete.setIcon(QIcon.fromTheme('edit-delete'))
 
         self.action_add_to_bookmarks.setIcon(QIcon.fromTheme('list-add'))
+        self.action_remove_bookmark.setIcon(QIcon.fromTheme('list-remove'))
 
 
     # ---------------- events ---------------------------------------------- #
@@ -391,9 +395,29 @@ class tfm(QMainWindow, Ui_tfm):
                 with open(os.path.join(self.config_dir, 'bookmarks'), 'a') as bookmark_file:
                     bookmark_file.write(name + '|' + path + '\n')
 
+    def action_remove_bookmark_event(self):
+        name = self.bookmarks.currentIndex().data()
+        msg_box = QMessageBox()
+        msg_box.setText('Do you really want to delete this bookmark (' + name + ')?')
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+        msg_box.setDefaultButton(QMessageBox.Yes)
+        msg_box.setIcon(QMessageBox.Question)
+        button_clicked = msg_box.exec()
+
+        if (button_clicked == QMessageBox.Yes):
+            self.bookmarks.removeItemWidget(self.bookmarks.itemFromIndex(self.bookmarks.currentIndex()))
+            for bookmark in self.bookmark_list:
+                if bookmark['name'] == name:
+                    del bookmark
+            with open(os.path.join(self.config_dir, 'bookmarks'), 'w') as bookmark_file:
+                for bookmark in self.bookmark_list:
+                    bookmark_file.write(bookmark['name'] + '|' + bookmark['path'] + '\n')
+
+
     def bookmark_selected_event(self):
         next_path = self.get_bookmark_path(self.bookmarks.currentIndex().data())
         self.update_current_path(next_path)
+
 
     # ---------------- functions ------------------------------------------- #
     # TODO: Performance
@@ -495,7 +519,6 @@ class tfm(QMainWindow, Ui_tfm):
             with open(os.path.join(self.config_dir, 'bookmarks')) as bookmarks:
                 for bookmark in bookmarks:
                     bookmark_list.append({'name': bookmark.split('|')[0], 'path': bookmark.split('|')[1].rstrip()})
-        print(bookmark_list)
         return bookmark_list
 
     def get_bookmark_path(self, name: str):

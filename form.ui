@@ -45,6 +45,9 @@
         </attribute>
        </widget>
        <widget class="QListWidget" name="bookmarks">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
         <property name="frameShadow">
          <enum>QFrame::Sunken</enum>
         </property>
@@ -230,9 +233,12 @@
     <string>Add to bookmarks</string>
    </property>
   </action>
-  <action name="action_remove_from_bookmarks">
+  <action name="action_remove_bookmark">
    <property name="text">
-    <string>Remove from bookmarks</string>
+    <string>Remove bookmark</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove bookmark</string>
    </property>
   </action>
  </widget>
