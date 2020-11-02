@@ -6,7 +6,8 @@ import collections
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
                                QMessageBox, QMainWindow)
-from PySide2.QtCore import QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl
+from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
+                            QStandardPaths)
 from PySide2.QtGui import QKeySequence, QIcon
 
 from form import Ui_tfm
@@ -28,7 +29,10 @@ class tfm(QMainWindow, Ui_tfm):
         self.back_stack = stack()
         self.forward_stack = stack()
 
-        self.config_dir = self.get_config_dir()
+        self.config_dir = os.path.join(
+                            QStandardPaths.writableLocation(
+                                QStandardPaths().ConfigLocation),
+                            type(self).__name__)
 
         # MAIN VIEW #
         # set up QFileSystemModel
@@ -64,8 +68,6 @@ class tfm(QMainWindow, Ui_tfm):
         self.table_view.addAction(self.action_add_to_bookmarks)
         self.table_view.addAction(self.action_show_hidden)
 
-        # connect double click action
-
         # FS TREE #
         # create seperate FileSystemModel for the fs tree
         self.fs_tree_model = QFileSystemModel()
@@ -88,6 +90,7 @@ class tfm(QMainWindow, Ui_tfm):
         for bookmark in self.bookmarks.get_all():
             self.bookmark_view.addItem(bookmark['name'])
 
+        # context menu
         self.bookmark_view.addAction(self.action_remove_bookmark)
 
         # STATUSBAR #
@@ -524,15 +527,6 @@ class tfm(QMainWindow, Ui_tfm):
             if (QDir().exists(current_path)):
                 path_list.extend(self.traverse_dir(current_path))
         return path_list
-
-    def get_config_dir(self):
-        if os.environ.get('XDG_CONFIG_HOME'):
-            path = os.path.join(os.environ.get('XDG_CONFIG_HOME'), 'tfm')
-        else:
-            path = os.path.join(os.environ.get('HOME'), '.config/tfm')
-        if (not os.path.exists(path)):
-            os.makedirs(path)
-        return path
 
 
 if __name__ == "__main__":
