@@ -3,12 +3,10 @@ import sys
 import os
 import collections
 
-from PySide2.QtWidgets import (QApplication, QWidget, QFileSystemModel,
-                               QLineEdit, QLabel, QMenu, QToolButton,
-                               QInputDialog, QMessageBox, QMainWindow)
-from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
-                            )
-from PySide2.QtUiTools import QUiLoader
+from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
+                               QLabel, QMenu, QToolButton, QInputDialog,
+                               QMessageBox, QMainWindow)
+from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl)
 from PySide2.QtGui import QKeySequence, QIcon
 
 from form import Ui_tfm
@@ -150,13 +148,17 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_back.triggered.connect(self.action_back_event)
         self.action_forward.triggered.connect(self.action_forward_event)
 
-        self.action_copy.setShortcuts(QKeySequence.keyBindings(QKeySequence.Copy))
+        self.action_copy.setShortcuts(
+            QKeySequence.keyBindings(QKeySequence.Copy))
         self.action_copy.triggered.connect(self.action_copy_event)
-        self.action_paste.setShortcuts(QKeySequence.keyBindings(QKeySequence.Paste))
+        self.action_paste.setShortcuts(
+            QKeySequence.keyBindings(QKeySequence.Paste))
         self.action_paste.triggered.connect(self.action_paste_event)
-        self.action_cut.setShortcuts(QKeySequence.keyBindings(QKeySequence.Cut))
+        self.action_cut.setShortcuts(
+            QKeySequence.keyBindings(QKeySequence.Cut))
         self.action_cut.triggered.connect(self.action_cut_event)
-        self.action_delete.setShortcuts(QKeySequence.keyBindings(QKeySequence.Delete))
+        self.action_delete.setShortcuts(
+            QKeySequence.keyBindings(QKeySequence.Delete))
         self.action_delete.triggered.connect(self.action_delete_event)
         self.action_rename.triggered.connect(self.action_rename_event)
 
@@ -165,8 +167,10 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_new_dir.triggered.connect(self.action_new_dir_event)
         self.action_new_file.triggered.connect(self.action_new_file_event)
 
-        self.action_add_to_bookmarks.triggered.connect(self.action_add_to_bookmarks_event)
-        self.action_remove_bookmark.triggered.connect(self.action_remove_bookmark_event)
+        self.action_add_to_bookmarks.triggered.connect(
+            self.action_add_to_bookmarks_event)
+        self.action_remove_bookmark.triggered.connect(
+            self.action_remove_bookmark_event)
 
         # SETUP ICONS #
         self.action_back.setIcon(QIcon.fromTheme('go-previous'))
@@ -190,24 +194,23 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_add_to_bookmarks.setIcon(QIcon.fromTheme('list-add'))
         self.action_remove_bookmark.setIcon(QIcon.fromTheme('list-remove'))
 
-
     # ---------------- events ---------------------------------------------- #
     def action_new_dir_event(self):
         dir_name, ok = QInputDialog().getText(self,
                                               'Create new directory',
                                               'Directory name:')
         # TODO: Error handling
-        if (dir_name, ok):
+        if (dir_name and ok):
             if not QDir().mkpath(os.path.join(self.current_path, dir_name)):
                 print('ERROR: could not create directory')
 
     def action_new_file_event(self):
         file_name, ok = QInputDialog().getText(self,
-                                              'Create new file',
-                                              'File name:')
+                                               'Create new file',
+                                               'File name:')
         # TODO: Error handling
-        if (file_name, ok):
-            with open(os.path.join(self.current_path, file_name), 'w') as f:
+        if (file_name and ok):
+            with open(os.path.join(self.current_path, file_name), 'a'):
                 pass
 
     def action_go_event(self):
@@ -306,7 +309,7 @@ class tfm(QMainWindow, Ui_tfm):
                     path_list.append(url.toLocalFile())
             multiple_paths = (len(path_list) > 1)
             cut = (collections.Counter(path_list)
-                    == collections.Counter(self.marked_to_cut))
+                   == collections.Counter(self.marked_to_cut))
             paths_to_add = []
             for path in path_list:
                 if (os.path.isdir(path)):
@@ -316,7 +319,8 @@ class tfm(QMainWindow, Ui_tfm):
             if (multiple_paths):
                 base_path = os.path.commonpath(path_list) + '/'
             else:
-                base_path = os.path.dirname(os.path.commonpath(path_list)) + '/'
+                base_path = os.path.dirname(
+                                os.path.commonpath(path_list)) + '/'
             for path in path_list:
                 new_path = os.path.join(self.current_path,
                                         path.replace(base_path, ''))
@@ -327,15 +331,17 @@ class tfm(QMainWindow, Ui_tfm):
                         and not QFile().exists(new_path)):
                     QFile().copy(path, new_path)
             if cut:
-                for file_path in file_path_list:
+                for file_path in path_list:
                     QFile().remove(file_path)
 
     # TODO: visual feedback for cut files
     def action_cut_event(self):
-        self.marked_to_cut = self.copy_files(self.table_view.selectionModel().selectedIndexes())
+        self.marked_to_cut = self.copy_files(
+            self.table_view.selectionModel().selectedIndexes())
 
     def action_delete_event(self):
-        path_list = self.indexes_to_files(self.table_view.selectionModel().selectedIndexes())
+        path_list = self.indexes_to_files(
+            self.table_view.selectionModel().selectedIndexes())
         if len(path_list) < 0:
             return
         paths_to_add = []
@@ -345,9 +351,13 @@ class tfm(QMainWindow, Ui_tfm):
         path_list.extend(paths_to_add)
 
         if (len(path_list) == 1):
-            confirmation_message = 'Do you want to delete "' + os.path.basename(path_list[0]) + '"?'
+            confirmation_message = ('Do you want to delete "'
+                                    + os.path.basename(path_list[0])
+                                    + '"?')
         else:
-            confirmation_message = 'Do you want to delete the ' + str(len(path_list)) + ' selected items?'
+            confirmation_message = ('Do you want to delete the '
+                                    + str(len(path_list))
+                                    + ' selected items?')
         msg_box = QMessageBox()
         msg_box.setText(confirmation_message)
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
@@ -371,32 +381,40 @@ class tfm(QMainWindow, Ui_tfm):
         new_file_name, ok = QInputDialog().getText(self,
                                                    'Rename ' + file_name,
                                                    'New name:')
-        if (new_file_name, ok):
+        if (new_file_name and ok):
             QFile().rename(os.path.join(self.current_path, file_name),
                            os.path.join(self.current_path, new_file_name))
 
     def action_show_hidden_event(self):
         if self.action_show_hidden.isChecked():
-            self.filesystem.setFilter(QDir.AllEntries | QDir.NoDotAndDotDot | QDir.AllDirs | QDir.Hidden)
+            self.filesystem.setFilter(QDir.AllEntries
+                                      | QDir.NoDotAndDotDot
+                                      | QDir.AllDirs
+                                      | QDir.Hidden)
         else:
-            self.filesystem.setFilter(QDir.AllEntries | QDir.NoDotAndDotDot | QDir.AllDirs)
+            self.filesystem.setFilter(QDir.AllEntries
+                                      | QDir.NoDotAndDotDot
+                                      | QDir.AllDirs)
 
     def action_add_to_bookmarks_event(self):
-        path = os.path.join(self.current_path, self.table_view.currentIndex().data())
+        path = os.path.join(self.current_path,
+                            self.table_view.currentIndex().data())
         if (os.path.isdir(path)):
             name, ok = QInputDialog().getText(self,
                                               'Create new bookmark',
                                               'Bookmark name:',
-                                              text=self.table_view.currentIndex().data())
+                                              text=self.table_view.
+                                              currentIndex().data())
             # TODO: Error handling
-            if (name, ok):
+            if (name and ok):
                 self.bookmarks.add_bookmark(name, path)
                 self.bookmark_view.addItem(name)
 
     def action_remove_bookmark_event(self):
         name = self.bookmark_view.currentIndex().data()
         msg_box = QMessageBox()
-        msg_box.setText('Do you really want to delete this bookmark (' + name + ')?')
+        msg_box.setText(
+            'Do you really want to delete this bookmark (' + name + ')?')
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
         msg_box.setDefaultButton(QMessageBox.Yes)
         msg_box.setIcon(QMessageBox.Question)
@@ -410,9 +428,9 @@ class tfm(QMainWindow, Ui_tfm):
             self.bookmarks.remove_bookmark(name)
 
     def bookmark_selected_event(self):
-        next_path = self.bookmarks.get_path_from_name(self.bookmark_view.currentIndex().data())
+        next_path = self.bookmarks.get_path_from_name(
+            self.bookmark_view.currentIndex().data())
         self.update_current_path(next_path)
-
 
     # ---------------- functions ------------------------------------------- #
     # TODO: Performance
@@ -492,7 +510,10 @@ class tfm(QMainWindow, Ui_tfm):
         """
         dir = QDir(path)
         path_list = []
-        for file_name in dir.entryList(filters=QDir.AllDirs|QDir.NoDotAndDotDot|QDir.Files|QDir.Hidden):
+        for file_name in dir.entryList(filters=QDir.AllDirs
+                                       | QDir.NoDotAndDotDot
+                                       | QDir.Files
+                                       | QDir.Hidden):
             current_path = os.path.join(path, file_name)
             path_list.append(current_path)
             if (QDir().exists(current_path)):
