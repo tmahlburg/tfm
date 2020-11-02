@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import os
 
+
 class bookmarks:
     def __init__(self, path_to_bookmark_file: str):
         self.list = []
@@ -14,12 +15,13 @@ class bookmarks:
         list = []
         with open(path) as bookmarks:
             for bookmark in bookmarks:
-                list.append({'name': bookmark.split('|')[0], 'path': bookmark.split('|')[1].rstrip()})
+                list.append({'name': bookmark.split('|')[0],
+                             'path': bookmark.split('|')[1].rstrip()})
         return list
 
     def add_bookmark(self, name: str, path: str):
         # TODO: error handling
-        if not self.bookmark_exists(name) and not '|' in name:
+        if not self.bookmark_exists(name) and '|' not in name:
             self.list.append({'name': name, 'path': path})
             with open(self.path_to_bookmark_file, 'a') as bookmarks:
                 bookmarks.write(name + '|' + path + '\n')
@@ -32,7 +34,10 @@ class bookmarks:
         self.list = new_list
         with open(self.path_to_bookmark_file, 'w') as bookmarks:
             for bookmark in self.list:
-                bookmarks.write(bookmark['name'] + '|' + bookmark['path'] + '\n')
+                bookmarks.write(bookmark['name']
+                                + '|'
+                                + bookmark['path']
+                                + '\n')
 
     def get_path_from_name(self, name: str):
         for bookmark in self.list:
@@ -42,7 +47,7 @@ class bookmarks:
 
     def bookmark_exists(self, name: str):
         for bookmark in self.list:
-            if name == bookmark['name']:#
+            if name == bookmark['name']:
                 return True
         return False
 
