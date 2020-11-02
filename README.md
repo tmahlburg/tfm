@@ -26,6 +26,7 @@ Are going to be here soon.
 * handle multi selection statusbar information
 * pasting status window on longer pastes
 * link files
+* basic cli, especially for being run by xdg-open
 
 ### Far away:
 * optimize network mounts, especially SMB shares
