@@ -6,7 +6,7 @@ import collections
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
                                QMessageBox, QMainWindow)
-from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl)
+from PySide2.QtCore import QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl
 from PySide2.QtGui import QKeySequence, QIcon
 
 from form import Ui_tfm
@@ -65,8 +65,6 @@ class tfm(QMainWindow, Ui_tfm):
         self.table_view.addAction(self.action_show_hidden)
 
         # connect double click action
-        self.table_view.doubleClicked.connect(self.item_open_event)
-        self.table_view.clicked.connect(self.item_selected_event)
 
         # FS TREE #
         # create seperate FileSystemModel for the fs tree
@@ -90,11 +88,10 @@ class tfm(QMainWindow, Ui_tfm):
         for bookmark in self.bookmarks.get_all():
             self.bookmark_view.addItem(bookmark['name'])
 
-        self.bookmark_view.clicked.connect(self.bookmark_selected_event)
-
         self.bookmark_view.addAction(self.action_remove_bookmark)
 
         # STATUSBAR #
+        # TODO: dir info
         self.item_info = QLabel()
         #self.dir_info = QLabel()
         self.part_info = QLabel()
@@ -137,28 +134,44 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.toolbar.insertWidget(self.action_back, self.new_button)
 
-        # connect actions to their event functions
+        self.connect_actions_to_events()
+        self.set_shortcuts()
+        self.set_icons()
+
+    # ---------------- setup ----------------------------------------------- #
+    def set_icons(self):
+        self.action_back.setIcon(QIcon.fromTheme('go-previous'))
+        self.action_forward.setIcon(QIcon.fromTheme('go-next'))
+        self.action_home.setIcon(QIcon.fromTheme('go-home'))
+        self.action_up.setIcon(QIcon.fromTheme('go-up'))
+        self.action_go.setIcon(QIcon.fromTheme('go-jump'))
+
+        self.action_new_dir.setIcon(QIcon.fromTheme('folder-new'))
+        self.action_new_file.setIcon(QIcon.fromTheme('document-new'))
+
+        self.action_menu.setIcon(QIcon.fromTheme('start-here'))
+
+        self.action_copy.setIcon(QIcon.fromTheme('edit-copy'))
+        self.action_cut.setIcon(QIcon.fromTheme('edit-cut'))
+        self.action_paste.setIcon(QIcon.fromTheme('edit-paste'))
+        self.action_delete.setIcon(QIcon.fromTheme('edit-delete'))
+
+        self.action_add_to_bookmarks.setIcon(QIcon.fromTheme('list-add'))
+        self.action_remove_bookmark.setIcon(QIcon.fromTheme('list-remove'))
+
+    def connect_actions_to_events(self):
         self.adressbar.returnPressed.connect(self.action_go_event)
         self.action_go.triggered.connect(self.action_go_event)
 
-        # TODO: move Home action to future bookmark menu
         self.action_home.triggered.connect(self.action_home_event)
         self.action_up.triggered.connect(self.action_up_event)
 
         self.action_back.triggered.connect(self.action_back_event)
         self.action_forward.triggered.connect(self.action_forward_event)
 
-        self.action_copy.setShortcuts(
-            QKeySequence.keyBindings(QKeySequence.Copy))
         self.action_copy.triggered.connect(self.action_copy_event)
-        self.action_paste.setShortcuts(
-            QKeySequence.keyBindings(QKeySequence.Paste))
         self.action_paste.triggered.connect(self.action_paste_event)
-        self.action_cut.setShortcuts(
-            QKeySequence.keyBindings(QKeySequence.Cut))
         self.action_cut.triggered.connect(self.action_cut_event)
-        self.action_delete.setShortcuts(
-            QKeySequence.keyBindings(QKeySequence.Delete))
         self.action_delete.triggered.connect(self.action_delete_event)
         self.action_rename.triggered.connect(self.action_rename_event)
 
@@ -171,28 +184,20 @@ class tfm(QMainWindow, Ui_tfm):
             self.action_add_to_bookmarks_event)
         self.action_remove_bookmark.triggered.connect(
             self.action_remove_bookmark_event)
+        self.bookmark_view.clicked.connect(self.bookmark_selected_event)
 
-        # SETUP ICONS #
-        self.action_back.setIcon(QIcon.fromTheme('go-previous'))
-        self.action_forward.setIcon(QIcon.fromTheme('go-next'))
+        self.table_view.doubleClicked.connect(self.item_open_event)
+        self.table_view.clicked.connect(self.item_selected_event)
 
-        self.action_home.setIcon(QIcon.fromTheme('go-home'))
-        self.action_up.setIcon(QIcon.fromTheme('go-up'))
-
-        self.action_new_dir.setIcon(QIcon.fromTheme('folder-new'))
-        self.action_new_file.setIcon(QIcon.fromTheme('document-new'))
-
-        self.action_go.setIcon(QIcon.fromTheme('go-jump'))
-
-        self.action_menu.setIcon(QIcon.fromTheme('start-here'))
-
-        self.action_copy.setIcon(QIcon.fromTheme('edit-copy'))
-        self.action_cut.setIcon(QIcon.fromTheme('edit-cut'))
-        self.action_paste.setIcon(QIcon.fromTheme('edit-paste'))
-        self.action_delete.setIcon(QIcon.fromTheme('edit-delete'))
-
-        self.action_add_to_bookmarks.setIcon(QIcon.fromTheme('list-add'))
-        self.action_remove_bookmark.setIcon(QIcon.fromTheme('list-remove'))
+    def set_shortcuts(self):
+        self.action_copy.setShortcuts(
+            QKeySequence.keyBindings(QKeySequence.Copy))
+        self.action_paste.setShortcuts(
+            QKeySequence.keyBindings(QKeySequence.Paste))
+        self.action_cut.setShortcuts(
+            QKeySequence.keyBindings(QKeySequence.Cut))
+        self.action_delete.setShortcuts(
+          QKeySequence.keyBindings(QKeySequence.Delete))
 
     # ---------------- events ---------------------------------------------- #
     def action_new_dir_event(self):
