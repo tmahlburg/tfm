@@ -95,10 +95,10 @@ class tfm(QMainWindow, Ui_tfm):
         # STATUSBAR #
         # TODO: dir info
         self.item_info = QLabel()
-        #self.dir_info = QLabel()
+        # self.dir_info = QLabel()
         self.part_info = QLabel()
         self.statusbar.addPermanentWidget(self.item_info)
-        #self.statusbar.addPermanentWidget(self.dir_info)
+        # self.statusbar.addPermanentWidget(self.dir_info)
         self.statusbar.addPermanentWidget(self.part_info)
 
         self.update_part_info(self.current_path)
@@ -450,7 +450,7 @@ class tfm(QMainWindow, Ui_tfm):
             self.filesystem.index(next_path))
         self.adressbar.setText(next_path)
         # update directory and partition information
-        #self.update_dir_info(next_path)
+        # self.update_dir_info(next_path)
         self.update_part_info(next_path)
         # disable up navigation if in fs root
         if (next_path == QDir().rootPath()):

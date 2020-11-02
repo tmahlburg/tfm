@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 pyside2 = "*"
 prefixed = "*"
+setuptools = "*"
+wheel = "*"
 
 [requires]
 python_version = "3.9"

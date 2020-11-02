@@ -2,6 +2,7 @@
 Simple file manager implemented in Qt for Python. This project aims to create a simple, desktop agnostic, unix file-manager.
 The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problemss.
 The Project is in a proof of concept stage right now and it is not advised to use it at the moment.
+If you still want to try it, a python package is available in the ```dist``` directory of this repository
 
 ## Features:
 * basic directory traversal
@@ -50,7 +51,6 @@ Are going to be here soon.
 * test suite with github actions
 * proper error handling and logging
 * complete pydoc style documentation
-* python package
 * voidlinux package
 * archlinux package
 * AppImage
