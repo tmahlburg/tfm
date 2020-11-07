@@ -16,6 +16,7 @@ from prefixed import Float
 
 from stack import stack
 from bookmarks import bookmarks as bm
+import utility
 
 
 class tfm(QMainWindow, Ui_tfm):
@@ -115,7 +116,7 @@ class tfm(QMainWindow, Ui_tfm):
         # self.statusbar.addPermanentWidget(self.dir_info)
         self.statusbar.addPermanentWidget(self.part_info)
 
-        self.update_part_info(self.current_path)
+        self.part_info.setText(utility.part_info(self.current_path))
 
         # TOOLBAR #
         # initially disable back/forward navigation
@@ -342,15 +343,10 @@ class tfm(QMainWindow, Ui_tfm):
         Updates statusbar info, depending on the selected file.
         """
         # Update item_info in the statusbar
-        name = self.table_view.currentIndex().data()
-        selected_item = QFileInfo(
-            os.path.join(self.current_path, name))
-        if (selected_item.isFile()):
-            # this uses the prefixed library
-            size = '{:!.2j}B'.format(Float(selected_item.size()))
-            self.item_info.setText(name + ': ' + size)
-        else:
-            self.item_info.setText(name)
+        path = os.path.join(self.current_path,
+                            self.table_view.currentIndex().
+                                siblingAtColumn(0).data())
+        self.item_info.setText(utility.item_info(path))
 
     def fs_tree_event(self):
         """
@@ -384,7 +380,7 @@ class tfm(QMainWindow, Ui_tfm):
             paths_to_add = []
             for path in path_list:
                 if (os.path.isdir(path)):
-                    paths_to_add.extend(self.traverse_dir(path))
+                    paths_to_add.extend(utility.traverse_dir(path))
             path_list.extend(paths_to_add)
             base_path = ''
             if (multiple_paths):
@@ -425,7 +421,7 @@ class tfm(QMainWindow, Ui_tfm):
         paths_to_add = []
         for path in path_list:
             if (os.path.isdir(path)):
-                paths_to_add.extend(self.traverse_dir(path))
+                paths_to_add.extend(utility.traverse_dir(path))
         path_list.extend(paths_to_add)
 
         if (len(path_list) == 1):
@@ -554,7 +550,7 @@ class tfm(QMainWindow, Ui_tfm):
         self.adressbar.setText(next_path)
         # update directory and partition information
         # self.update_dir_info(next_path)
-        self.update_part_info(next_path)
+        self.part_info.setText(utility.part_info(next_path))
         # disable up navigation if in fs root
         if (next_path == QDir().rootPath()):
             self.action_up.setEnabled(False)
@@ -572,27 +568,6 @@ class tfm(QMainWindow, Ui_tfm):
             self.action_forward.setEnabled(False)
         self.current_path = next_path
 
-    # updates directory information in the statusbar
-    # TODO: find an efficient way or multithread this
-    def update_dir_info(self, path: str):
-        pass
-
-    # updates partition information
-    def update_part_info(self, path: str):
-        """
-        Retrieves information about the partition which the path is on.
-        :param path: Path on the partition.
-        :type path: str
-        """
-        # get fs statistics using statvfs system call
-        part_stats = os.statvfs(path)
-        fs_size = '{:!.1j}B'.format(Float(part_stats.f_frsize
-                                    * part_stats.f_blocks))
-        fs_free = '{:!.1j}B'.format(Float(part_stats.f_frsize
-                                    * part_stats.f_bfree))
-        self.part_info.setText(fs_free + ' of ' + fs_size + ' free')
-
-    # TODO: proper type hints
     def copy_files(self, files_as_indexes: List) -> List[str]:
         """
         Copies the given indexes as file URLs to the clipboard.
@@ -601,7 +576,7 @@ class tfm(QMainWindow, Ui_tfm):
         :return: files as str list of paths, which were copied to clipboard
         :rtype: List[str]
         """
-        files_as_path = self.indexes_to_files(files_as_indexes)
+        files_as_path = utility.indexes_to_paths(files_as_indexes)
         file_urls = []
 
         for file in files_as_path:
@@ -612,40 +587,3 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.clipboard.setMimeData(mime_data)
         return files_as_path
-
-    # TODO: proper type hints
-    def indexes_to_files(self, files_as_indexes: List) -> List[str]:
-        """
-        Converts the given indexes to a list of paths.
-        :param files_as_indexes: List of indexes of files.
-        :type files_as_indexes: List
-        :return: List of paths to the given files.
-        :rtype: List
-        """
-        files_as_path = []
-        for index in files_as_indexes:
-            if (index.column() == 0):
-                files_as_path.append(QFileSystemModel().filePath(index))
-        return files_as_path
-
-    # TODO: replace with os.walk from python std lib.....
-    def traverse_dir(self, path) -> List[str]:
-        """
-        Traverses the given directory and returns all files and dirs inside as
-        paths.
-        :param path: Path to traverse.
-        :type path: str
-        :return: Paths of files and dirs under the given path.
-        :rtype: List[str]
-        """
-        dir = QDir(path)
-        path_list = []
-        for file_name in dir.entryList(filters=QDir.AllDirs
-                                       | QDir.NoDotAndDotDot
-                                       | QDir.Files
-                                       | QDir.Hidden):
-            current_path = os.path.join(path, file_name)
-            path_list.append(current_path)
-            if (QDir().exists(current_path)):
-                path_list.extend(self.traverse_dir(current_path))
-        return path_list

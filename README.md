@@ -50,7 +50,6 @@ Are going to be here soon.
 ### Infrastructure
 * test suite with github actions
 * proper error handling and logging
-* complete pydoc style documentation
 * voidlinux package
 * archlinux package
 * AppImage
