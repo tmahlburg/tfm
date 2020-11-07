@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import os
 import collections
+from typing import List
 
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
@@ -18,7 +19,20 @@ from bookmarks import bookmarks as bm
 
 
 class tfm(QMainWindow, Ui_tfm):
+    """
+    The main window class, setting up the application and implementing the
+    needed events.
+    """
+
     def __init__(self, default_path: str):
+        """
+        At the moment the very, very long initialization of the main window,
+        setting up everything.
+        :param default_path: Use a user defined path as entrypoint. If it's
+                             empty, the home directory of the current user will
+                             be used.
+        :type default_path: str
+        """
         super(tfm, self).__init__()
         self.setupUi(self)
 
@@ -142,6 +156,9 @@ class tfm(QMainWindow, Ui_tfm):
 
     # ---------------- setup ----------------------------------------------- #
     def set_icons(self):
+        """
+        Adds icons to all applicable actions.
+        """
         self.action_back.setIcon(QIcon.fromTheme('go-previous'))
         self.action_forward.setIcon(QIcon.fromTheme('go-next'))
         self.action_home.setIcon(QIcon.fromTheme('go-home'))
@@ -162,6 +179,9 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_remove_bookmark.setIcon(QIcon.fromTheme('list-remove'))
 
     def connect_actions_to_events(self):
+        """
+        Connects actions to their event functions.
+        """
         self.adressbar.returnPressed.connect(self.action_go_event)
         self.action_go.triggered.connect(self.action_go_event)
 
@@ -192,6 +212,9 @@ class tfm(QMainWindow, Ui_tfm):
         self.table_view.clicked.connect(self.item_selected_event)
 
     def set_shortcuts(self):
+        """
+        Set shortcuts for actions.
+        """
         self.action_copy.setShortcuts(
             QKeySequence.keyBindings(QKeySequence.Copy))
         self.action_paste.setShortcuts(
@@ -203,6 +226,10 @@ class tfm(QMainWindow, Ui_tfm):
 
     # ---------------- events ---------------------------------------------- #
     def action_new_dir_event(self):
+        """
+        Prompts the user for a dir name and creates one with that name in the
+        current directory.
+        """
         dir_name, ok = QInputDialog().getText(self,
                                               'Create new directory',
                                               'Directory name:')
@@ -212,6 +239,10 @@ class tfm(QMainWindow, Ui_tfm):
                 print('ERROR: could not create directory')
 
     def action_new_file_event(self):
+        """
+        Prompts the user for a file name and creates one with that name in the
+        current directory.
+        """
         file_name, ok = QInputDialog().getText(self,
                                                'Create new file',
                                                'File name:')
@@ -221,6 +252,9 @@ class tfm(QMainWindow, Ui_tfm):
                 pass
 
     def action_go_event(self):
+        """
+        Changes the current dir to the one, that is given in the adress bar.
+        """
         next_dir = QDir(self.adressbar.text())
         if (next_dir.isAbsolute() and next_dir.exists()):
             next_path = next_dir.path()
@@ -230,10 +264,16 @@ class tfm(QMainWindow, Ui_tfm):
             print("ERROR: Path doesn't exist")
 
     def action_home_event(self):
+        """
+        Changes the current dir to the users $HOME.
+        """
         next_path = QDir().homePath()
         self.update_current_path(next_path)
 
     def action_up_event(self):
+        """
+        Changes the current dir to one dir up in the hierarchy
+        """
         dir_up = QDir(self.current_path)
         if (dir_up.cdUp()):
             next_path = dir_up.path()
@@ -244,6 +284,10 @@ class tfm(QMainWindow, Ui_tfm):
             print("ERROR: No dir up exisiting")
 
     def action_back_event(self):
+        """
+        Goes back one step in the navigation history. If after this, there are
+        no more steps, it disables it's button.
+        """
         next_path = self.back_stack.pop()
         self.forward_stack.push(self.current_path)
         self.action_forward.setEnabled(True)
@@ -254,6 +298,10 @@ class tfm(QMainWindow, Ui_tfm):
                                  reset_forward_stack=False)
 
     def action_forward_event(self):
+        """
+        Goes forward one step in the navigation history. If after this, there
+        are no more steps, it disables it's button.
+        """
         if (not self.forward_stack.empty()):
             next_path = self.forward_stack.pop()
             self.update_current_path(next_path, reset_forward_stack=False)
@@ -265,6 +313,10 @@ class tfm(QMainWindow, Ui_tfm):
             print('ERROR: Forward Stack unexpectedly empty')
 
     def item_open_event(self):
+        """
+        Opens a file using xdg-open, runs it, if it is executeble or
+        changes the current dir if it's dir.
+        """
         selected_item = QFileInfo(
             os.path.join(self.current_path,
                          self.table_view.currentIndex().data()))
@@ -286,6 +338,9 @@ class tfm(QMainWindow, Ui_tfm):
             print("ERROR: Can't obtain the type of the selected file")
 
     def item_selected_event(self):
+        """
+        Updates statusbar info, depending on the selected file.
+        """
         # Update item_info in the statusbar
         name = self.table_view.currentIndex().data()
         selected_item = QFileInfo(
@@ -298,10 +353,16 @@ class tfm(QMainWindow, Ui_tfm):
             self.item_info.setText(name)
 
     def fs_tree_event(self):
+        """
+        Changes the current dir to the dir selected in the fs_tree view.
+        """
         next_path = self.fs_tree_model.filePath(self.fs_tree.currentIndex())
         self.update_current_path(next_path)
 
     def action_copy_event(self):
+        """
+        Copies the currently selected files to the clipboard.
+        """
         # get current selection
         self.copy_files(self.table_view.selectionModel().selectedIndexes())
 
@@ -309,6 +370,9 @@ class tfm(QMainWindow, Ui_tfm):
     # TODO: support folders
     # TODO: handle existing file
     def action_paste_event(self):
+        """
+        Pastes the files currently in the clipboard to the current dir.
+        """
         if self.clipboard.mimeData().hasUrls():
             path_list = []
             for url in self.clipboard.mimeData().urls():
@@ -343,10 +407,17 @@ class tfm(QMainWindow, Ui_tfm):
 
     # TODO: visual feedback for cut files
     def action_cut_event(self):
+        """
+        Copies the current selection to the clipboard and marks them as cut.
+        """
         self.marked_to_cut = self.copy_files(
             self.table_view.selectionModel().selectedIndexes())
 
     def action_delete_event(self):
+        """
+        Deletes the current selection after asking for confirmation by the
+        user.
+        """
         path_list = self.indexes_to_files(
             self.table_view.selectionModel().selectedIndexes())
         if len(path_list) < 0:
@@ -384,6 +455,10 @@ class tfm(QMainWindow, Ui_tfm):
 
     # TODO: warn, if extension gets changed
     def action_rename_event(self):
+        """
+        Prompts the user to enter a new name and changes the selected file's
+        name.
+        """
         file_name = self.table_view.currentIndex().data()
         new_file_name, ok = QInputDialog().getText(self,
                                                    'Rename ' + file_name,
@@ -393,6 +468,9 @@ class tfm(QMainWindow, Ui_tfm):
                            os.path.join(self.current_path, new_file_name))
 
     def action_show_hidden_event(self):
+        """
+        Shows hidden files and dirs in the main view.
+        """
         if self.action_show_hidden.isChecked():
             self.filesystem.setFilter(QDir.AllEntries
                                       | QDir.NoDotAndDotDot
@@ -404,6 +482,10 @@ class tfm(QMainWindow, Ui_tfm):
                                       | QDir.AllDirs)
 
     def action_add_to_bookmarks_event(self):
+        """
+        Adds the selected dir to the bookmark by the name the user gave it via
+        a dialog.
+        """
         path = os.path.join(self.current_path,
                             self.table_view.currentIndex().data())
         if (os.path.isdir(path)):
@@ -418,6 +500,9 @@ class tfm(QMainWindow, Ui_tfm):
                 self.bookmark_view.addItem(name)
 
     def action_remove_bookmark_event(self):
+        """
+        Removes the selected bookmark after asking the user for confirmation.
+        """
         name = self.bookmark_view.currentIndex().data()
         msg_box = QMessageBox()
         msg_box.setText(
@@ -435,6 +520,10 @@ class tfm(QMainWindow, Ui_tfm):
             self.bookmarks.remove_bookmark(name)
 
     def bookmark_selected_event(self):
+        """
+        Changes the current dir to the one associated with the selected
+        bookmark.
+        """
         next_path = self.bookmarks.get_path_from_name(
             self.bookmark_view.currentIndex().data())
         self.update_current_path(next_path)
@@ -445,6 +534,20 @@ class tfm(QMainWindow, Ui_tfm):
                             next_path: str,
                             skip_stack=False,
                             reset_forward_stack=True):
+        """
+        Updates the current path to the value given in next_path. It also
+        updates the UI accordingly and changes the forward an backward
+        stacks, if needed.
+        :param next_path: The path to the directory that should become the next
+        dir.
+        :type next_path: str
+        :param skip_stack: This determines wether the stack handling should be
+        skipped. Default value is False.
+        :type skip_stack: bool
+        :param reset_forward_stack: This determines wether the forward stack
+        should be reset or not. Default is True
+        :type reset_forward_stack: bool
+        """
         self.filesystem.setRootPath(next_path)
         self.table_view.setRootIndex(
             self.filesystem.index(next_path))
@@ -476,6 +579,11 @@ class tfm(QMainWindow, Ui_tfm):
 
     # updates partition information
     def update_part_info(self, path: str):
+        """
+        Retrieves information about the partition which the path is on.
+        :param path: Path on the partition.
+        :type path: str
+        """
         # get fs statistics using statvfs system call
         part_stats = os.statvfs(path)
         fs_size = '{:!.1j}B'.format(Float(part_stats.f_frsize
@@ -485,9 +593,13 @@ class tfm(QMainWindow, Ui_tfm):
         self.part_info.setText(fs_free + ' of ' + fs_size + ' free')
 
     # TODO: proper type hints
-    def copy_files(self, files_as_indexes):
+    def copy_files(self, files_as_indexes: List) -> List[str]:
         """
-        :returns: files as str list of paths, which were copied to clipboard
+        Copies the given indexes as file URLs to the clipboard.
+        :param files_as_indexes: List of indexes of files.
+        :type files_as_indexes: List
+        :return: files as str list of paths, which were copied to clipboard
+        :rtype: List[str]
         """
         files_as_path = self.indexes_to_files(files_as_indexes)
         file_urls = []
@@ -502,7 +614,14 @@ class tfm(QMainWindow, Ui_tfm):
         return files_as_path
 
     # TODO: proper type hints
-    def indexes_to_files(self, files_as_indexes):
+    def indexes_to_files(self, files_as_indexes: List) -> List[str]:
+        """
+        Converts the given indexes to a list of paths.
+        :param files_as_indexes: List of indexes of files.
+        :type files_as_indexes: List
+        :return: List of paths to the given files.
+        :rtype: List
+        """
         files_as_path = []
         for index in files_as_indexes:
             if (index.column() == 0):
@@ -510,10 +629,14 @@ class tfm(QMainWindow, Ui_tfm):
         return files_as_path
 
     # TODO: replace with os.walk from python std lib.....
-    def traverse_dir(self, path):
+    def traverse_dir(self, path) -> List[str]:
         """
         Traverses the given directory and returns all files and dirs inside as
         paths.
+        :param path: Path to traverse.
+        :type path: str
+        :return: Paths of files and dirs under the given path.
+        :rtype: List[str]
         """
         dir = QDir(path)
         path_list = []

@@ -6,6 +6,7 @@ class stack:
     """
     Provides a classic stack using a deque() data structure.
     """
+
     def __init__(self):
         """
         Initializes the stack.
