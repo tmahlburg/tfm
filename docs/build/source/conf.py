@@ -21,7 +21,7 @@ copyright = '2020, Till Mahlburg'
 author = 'Till Mahlburg'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.1'
+release = '0.0.3'
 
 
 # -- General configuration ---------------------------------------------------
