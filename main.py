@@ -3,7 +3,7 @@ import sys
 
 from PySide2.QtWidgets import QApplication
 
-from tfm import tfm
+from tfm.tfm import tfm
 
 if __name__ == "__main__":
     app = QApplication()

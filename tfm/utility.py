@@ -12,6 +12,7 @@ from prefixed import Float
 def indexes_to_paths(files_as_indexes: List) -> List[str]:
     """
     Converts the given indexes to a list of paths.
+
     :param files_as_indexes: List of indexes of files.
     :type files_as_indexes: List
     :return: List of paths to the given files.
@@ -29,6 +30,7 @@ def traverse_dir(path) -> List[str]:
     """
     Traverses the given directory and returns all files and dirs inside as
     paths.
+
     :param path: Path to traverse.
     :type path: str
     :return: Paths of files and dirs under the given path.
@@ -69,6 +71,7 @@ def part_info(path: str) -> str:
 def item_info(path: str) -> str:
     """
     Retrieves information about the given file.
+
     :param path: Path to the file.
     :type path: str
     :return: Information of the file.
@@ -84,6 +87,7 @@ def item_info(path: str) -> str:
 def question_dialog(msg: str) -> QMessageBox:
     """
     Creates a default question dialog box.
+
     :param msg: The question which the user is asked.
     :type msg: str
     :return: The created dialog.

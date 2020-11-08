@@ -13,6 +13,7 @@ class bookmarks:
         """
         Reads bookmarks from file to internal list of dicts or creates the
         file if it doesn't exist yet.
+
         :param path_to_bookmark_file: Path to the file, in which the bookmarks
                                       are saved
         :type path_to_bookmark_file: str
@@ -27,6 +28,7 @@ class bookmarks:
     def get_bookmarks_from_file(self, path: str) -> List[Dict[str, str]]:
         """
         Gets bookmarks from a file.
+
         :param path: Path to the file, in which the bookmarks are saved.
         :type path: str
         :return: List of dicts containing name and path of the bookmarks.
@@ -46,6 +48,7 @@ class bookmarks:
         name already exists or the | character is in the chosen name. The
         bookmark will be saved to the bookmark file that was chosen on
         instantiation of this class.
+
         :param name: The name of the new bookmark. This will be shown in the
                      UI.
         :type name: str
@@ -81,6 +84,7 @@ class bookmarks:
         """
         Returns the path that is registered with the given bookmark name. If
         the name doesn't exist, it returns False.
+
         :param name: The of the bookmark to which the path is requested.
         :type name: str
         :return: The path registered with the given bookmark name, or False,
@@ -96,6 +100,7 @@ class bookmarks:
         """
         Returns True if the bookmark with the given name exists and False, if
         it doesn't.
+
         :param name: Name of the bookmark to check for.
         :type name: str
         :return: True if bookmark exists, False if it doesn't.
@@ -108,6 +113,8 @@ class bookmarks:
 
     def get_all(self) -> List[Dict[str, str]]:
         """
+        Returns all bookmarks as a list of dicts.
+
         :return: List of dicts of all bookmarks. The dicts follows the format
                  {'name': '', 'path': ''}
         :rtype: List[Dict[str, str]]

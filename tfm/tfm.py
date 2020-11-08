@@ -10,11 +10,11 @@ from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
                             QStandardPaths)
 from PySide2.QtGui import QKeySequence, QIcon
 
-from form import Ui_tfm
+from .form import Ui_tfm
 
-from stack import stack
-from bookmarks import bookmarks as bm
-import utility
+from .stack import stack
+from .bookmarks import bookmarks as bm
+import tfm.utility as utility
 
 
 class tfm(QMainWindow, Ui_tfm):
@@ -27,6 +27,7 @@ class tfm(QMainWindow, Ui_tfm):
         """
         At the moment the very, very long initialization of the main window,
         setting up everything.
+
         :param default_path: Use a user defined path as entrypoint. If it's
                              empty, the home directory of the current user will
                              be used.
@@ -536,14 +537,15 @@ class tfm(QMainWindow, Ui_tfm):
         Updates the current path to the value given in next_path. It also
         updates the UI accordingly and changes the forward an backward
         stacks, if needed.
+
         :param next_path: The path to the directory that should become the next
-        dir.
+                          dir.
         :type next_path: str
         :param skip_stack: This determines wether the stack handling should be
-        skipped. Default value is False.
+                           skipped. Default value is False.
         :type skip_stack: bool
         :param reset_forward_stack: This determines wether the forward stack
-        should be reset or not. Default is True
+                                    should be reset or not. Default is True
         :type reset_forward_stack: bool
         """
         self.filesystem.setRootPath(next_path)
@@ -573,6 +575,7 @@ class tfm(QMainWindow, Ui_tfm):
     def copy_files(self, files_as_indexes: List) -> List[str]:
         """
         Copies the given indexes as file URLs to the clipboard.
+
         :param files_as_indexes: List of indexes of files.
         :type files_as_indexes: List
         :return: files as str list of paths, which were copied to clipboard

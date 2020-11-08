@@ -16,6 +16,7 @@ class stack:
     def empty(self) -> bool:
         """
         Returns True if stack is emtpy and False if it isn't.
+
         :return: Emptyness of the stack.
         :rtype: bool
         """
@@ -24,6 +25,7 @@ class stack:
     def size(self) -> int:
         """
         Returns the size of the stack.
+
         :return: Number of elements in the stack.
         :rtype: int
         """
@@ -32,6 +34,7 @@ class stack:
     def top(self):
         """
         Returns the top element of the stack.
+
         :return: Top element of the stack.
         """
         return self.stack[-1]
@@ -39,6 +42,7 @@ class stack:
     def push(self, stack_element):
         """
         Adds an element to the top of the stack.
+
         :param stack_element: The element which will be added to the stack.
         """
         self.stack.append(stack_element)
@@ -46,6 +50,7 @@ class stack:
     def pop(self):
         """
         Removes and returns the top element of the stack.
+
         :return: Top element of the stack.
         """
         return self.stack.pop()
