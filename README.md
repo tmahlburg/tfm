@@ -51,8 +51,8 @@ Are going to be here soon.
 * test suite with github actions
 * proper error handling and logging
 * voidlinux package
-* archlinux package
 * AppImage
+* possibly archlinux package
 
 ## Non-Features
 These features are going to be intentionally omitted:
