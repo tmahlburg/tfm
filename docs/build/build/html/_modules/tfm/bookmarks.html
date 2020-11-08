@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tfm.bookmarks &#8212; tfm 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for tfm.bookmarks</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Python file uses the following encoding: utf-8</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+
+<div class="viewcode-block" id="bookmarks"><a class="viewcode-back" href="../../tfm.html#tfm.bookmarks.bookmarks">[docs]</a><span class="k">class</span> <span class="nc">bookmarks</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handles the bookmarks as file and as list of dicts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_bookmark_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads bookmarks from file to internal list of dicts or creates the</span>
+<span class="sd">        file if it doesn&#39;t exist yet.</span>
+
+<span class="sd">        :param path_to_bookmark_file: Path to the file, in which the bookmarks</span>
+<span class="sd">                                      are saved</span>
+<span class="sd">        :type path_to_bookmark_file: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_to_bookmark_file</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bookmarks_from_file</span><span class="p">(</span><span class="n">path_to_bookmark_file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">path_to_bookmark_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_bookmark_file</span> <span class="o">=</span> <span class="n">path_to_bookmark_file</span>
+
+<div class="viewcode-block" id="bookmarks.get_bookmarks_from_file"><a class="viewcode-back" href="../../tfm.html#tfm.bookmarks.bookmarks.get_bookmarks_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_bookmarks_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets bookmarks from a file.</span>
+
+<span class="sd">        :param path: Path to the file, in which the bookmarks are saved.</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :return: List of dicts containing name and path of the bookmarks.</span>
+<span class="sd">                 The dicts follow this structure: {&#39;name&#39;: &#39;&#39;, &#39;path&#39;: &#39;&#39;}</span>
+<span class="sd">        :rtype: List[Dict[str, str]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">bookmarks</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bookmark</span> <span class="ow">in</span> <span class="n">bookmarks</span><span class="p">:</span>
+                <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">bookmark</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                             <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">bookmark</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()})</span>
+        <span class="k">return</span> <span class="nb">list</span></div>
+
+<div class="viewcode-block" id="bookmarks.add_bookmark"><a class="viewcode-back" href="../../tfm.html#tfm.bookmarks.bookmarks.add_bookmark">[docs]</a>    <span class="k">def</span> <span class="nf">add_bookmark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a new bookmark. Does nothing, if another bookmark with the same</span>
+<span class="sd">        name already exists or the | character is in the chosen name. The</span>
+<span class="sd">        bookmark will be saved to the bookmark file that was chosen on</span>
+<span class="sd">        instantiation of this class.</span>
+
+<span class="sd">        :param name: The name of the new bookmark. This will be shown in the</span>
+<span class="sd">                     UI.</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param path: Path which the bookmark should lead to.</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: error handling</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_exists</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;|&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">path</span><span class="p">})</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_bookmark_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">bookmarks</span><span class="p">:</span>
+                <span class="n">bookmarks</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span> <span class="o">+</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="bookmarks.remove_bookmark"><a class="viewcode-back" href="../../tfm.html#tfm.bookmarks.bookmarks.remove_bookmark">[docs]</a>    <span class="k">def</span> <span class="nf">remove_bookmark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes a bookmark from the internal bookmark list. It also rewrites</span>
+<span class="sd">        the updated list to the bookmark file chosen on class instatiation.</span>
+<span class="sd">        :param name: The name of the bookmark that should be deleted.</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">bookmark</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bookmark</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bookmark</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list</span> <span class="o">=</span> <span class="n">new_list</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_bookmark_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">bookmarks</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bookmark</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+                <span class="n">bookmarks</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bookmark</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="s1">&#39;|&#39;</span>
+                                <span class="o">+</span> <span class="n">bookmark</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="bookmarks.get_path_from_name"><a class="viewcode-back" href="../../tfm.html#tfm.bookmarks.bookmarks.get_path_from_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_path_from_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the path that is registered with the given bookmark name. If</span>
+<span class="sd">        the name doesn&#39;t exist, it returns False.</span>
+
+<span class="sd">        :param name: The of the bookmark to which the path is requested.</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :return: The path registered with the given bookmark name, or False,</span>
+<span class="sd">                 if the name doesn&#39;t exist</span>
+<span class="sd">        :rtype: str | bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">bookmark</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">bookmark</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">bookmark</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="bookmarks.bookmark_exists"><a class="viewcode-back" href="../../tfm.html#tfm.bookmarks.bookmarks.bookmark_exists">[docs]</a>    <span class="k">def</span> <span class="nf">bookmark_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns True if the bookmark with the given name exists and False, if</span>
+<span class="sd">        it doesn&#39;t.</span>
+
+<span class="sd">        :param name: Name of the bookmark to check for.</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :return: True if bookmark exists, False if it doesn&#39;t.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">bookmark</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">bookmark</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="bookmarks.get_all"><a class="viewcode-back" href="../../tfm.html#tfm.bookmarks.bookmarks.get_all">[docs]</a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all bookmarks as a list of dicts.</span>
+
+<span class="sd">        :return: List of dicts of all bookmarks. The dicts follows the format</span>
+<span class="sd">                 {&#39;name&#39;: &#39;&#39;, &#39;path&#39;: &#39;&#39;}</span>
+<span class="sd">        :rtype: List[Dict[str, str]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">list</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">tfm</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  <li><a href="../tfm.html">tfm</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Till Mahlburg.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

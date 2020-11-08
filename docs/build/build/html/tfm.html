@@ -1,0 +1,586 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tfm package &#8212; tfm 0.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="tfm-package">
+<h1>tfm package<a class="headerlink" href="#tfm-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-tfm.bookmarks">
+<span id="tfm-bookmarks-module"></span><h2>tfm.bookmarks module<a class="headerlink" href="#module-tfm.bookmarks" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="tfm.bookmarks.bookmarks">
+<em class="property">class </em><code class="sig-prename descclassname">tfm.bookmarks.</code><code class="sig-name descname">bookmarks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_to_bookmark_file</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/bookmarks.html#bookmarks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.bookmarks.bookmarks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles the bookmarks as file and as list of dicts.</p>
+<dl class="py method">
+<dt id="tfm.bookmarks.bookmarks.add_bookmark">
+<code class="sig-name descname">add_bookmark</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/bookmarks.html#bookmarks.add_bookmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.bookmarks.bookmarks.add_bookmark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a new bookmark. Does nothing, if another bookmark with the same
+name already exists or the | character is in the chosen name. The
+bookmark will be saved to the bookmark file that was chosen on
+instantiation of this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the new bookmark. This will be shown in the
+UI.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – Path which the bookmark should lead to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.bookmarks.bookmarks.bookmark_exists">
+<code class="sig-name descname">bookmark_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/tfm/bookmarks.html#bookmarks.bookmark_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.bookmarks.bookmarks.bookmark_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the bookmark with the given name exists and False, if
+it doesn’t.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the bookmark to check for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if bookmark exists, False if it doesn’t.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.bookmarks.bookmarks.get_all">
+<code class="sig-name descname">get_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/tfm/bookmarks.html#bookmarks.get_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.bookmarks.bookmarks.get_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all bookmarks as a list of dicts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of dicts of all bookmarks. The dicts follows the format
+{‘name’: ‘’, ‘path’: ‘’}</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Dict[str, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.bookmarks.bookmarks.get_bookmarks_from_file">
+<code class="sig-name descname">get_bookmarks_from_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/tfm/bookmarks.html#bookmarks.get_bookmarks_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.bookmarks.bookmarks.get_bookmarks_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets bookmarks from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to the file, in which the bookmarks are saved.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of dicts containing name and path of the bookmarks.
+The dicts follow this structure: {‘name’: ‘’, ‘path’: ‘’}</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[Dict[str, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.bookmarks.bookmarks.get_path_from_name">
+<code class="sig-name descname">get_path_from_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/bookmarks.html#bookmarks.get_path_from_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.bookmarks.bookmarks.get_path_from_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the path that is registered with the given bookmark name. If
+the name doesn’t exist, it returns False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The of the bookmark to which the path is requested.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The path registered with the given bookmark name, or False,
+if the name doesn’t exist</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str | bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.bookmarks.bookmarks.remove_bookmark">
+<code class="sig-name descname">remove_bookmark</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/bookmarks.html#bookmarks.remove_bookmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.bookmarks.bookmarks.remove_bookmark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a bookmark from the internal bookmark list. It also rewrites
+the updated list to the bookmark file chosen on class instatiation.
+:param name: The name of the bookmark that should be deleted.
+:type name: str</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tfm.form">
+<span id="tfm-form-module"></span><h2>tfm.form module<a class="headerlink" href="#module-tfm.form" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="tfm.form.Ui_tfm">
+<em class="property">class </em><code class="sig-prename descclassname">tfm.form.</code><code class="sig-name descname">Ui_tfm</code><a class="reference internal" href="_modules/tfm/form.html#Ui_tfm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.form.Ui_tfm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="tfm.form.Ui_tfm.retranslateUi">
+<code class="sig-name descname">retranslateUi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tfm</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/form.html#Ui_tfm.retranslateUi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.form.Ui_tfm.retranslateUi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="tfm.form.Ui_tfm.setupUi">
+<code class="sig-name descname">setupUi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tfm</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/form.html#Ui_tfm.setupUi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.form.Ui_tfm.setupUi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tfm.stack">
+<span id="tfm-stack-module"></span><h2>tfm.stack module<a class="headerlink" href="#module-tfm.stack" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="tfm.stack.stack">
+<em class="property">class </em><code class="sig-prename descclassname">tfm.stack.</code><code class="sig-name descname">stack</code><a class="reference internal" href="_modules/tfm/stack.html#stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.stack.stack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides a classic stack using a deque() data structure.</p>
+<dl class="py method">
+<dt id="tfm.stack.stack.drop">
+<code class="sig-name descname">drop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/stack.html#stack.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.stack.stack.drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the entire stack by removing all of its elements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.stack.stack.empty">
+<code class="sig-name descname">empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/tfm/stack.html#stack.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.stack.stack.empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if stack is emtpy and False if it isn’t.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Emptyness of the stack.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.stack.stack.pop">
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/stack.html#stack.pop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.stack.stack.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes and returns the top element of the stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Top element of the stack.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.stack.stack.push">
+<code class="sig-name descname">push</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stack_element</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/stack.html#stack.push"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.stack.stack.push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an element to the top of the stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>stack_element</strong> – The element which will be added to the stack.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.stack.stack.size">
+<code class="sig-name descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/tfm/stack.html#stack.size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.stack.stack.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of the stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Number of elements in the stack.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.stack.stack.top">
+<code class="sig-name descname">top</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/stack.html#stack.top"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.stack.stack.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the top element of the stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Top element of the stack.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tfm.tfm">
+<span id="tfm-tfm-module"></span><h2>tfm.tfm module<a class="headerlink" href="#module-tfm.tfm" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="tfm.tfm.tfm">
+<em class="property">class </em><code class="sig-prename descclassname">tfm.tfm.</code><code class="sig-name descname">tfm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">default_path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PySide2.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="#tfm.form.Ui_tfm" title="tfm.form.Ui_tfm"><code class="xref py py-class docutils literal notranslate"><span class="pre">tfm.form.Ui_tfm</span></code></a></p>
+<p>The main window class, setting up the application and implementing the
+needed events.</p>
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_add_to_bookmarks_event">
+<code class="sig-name descname">action_add_to_bookmarks_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_add_to_bookmarks_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_add_to_bookmarks_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the selected dir to the bookmark by the name the user gave it via
+a dialog.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_back_event">
+<code class="sig-name descname">action_back_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_back_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_back_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goes back one step in the navigation history. If after this, there are
+no more steps, it disables it’s button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_copy_event">
+<code class="sig-name descname">action_copy_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_copy_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_copy_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies the currently selected files to the clipboard.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_cut_event">
+<code class="sig-name descname">action_cut_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_cut_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_cut_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies the current selection to the clipboard and marks them as cut.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_delete_event">
+<code class="sig-name descname">action_delete_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_delete_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_delete_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the current selection after asking for confirmation by the
+user.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_forward_event">
+<code class="sig-name descname">action_forward_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_forward_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_forward_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goes forward one step in the navigation history. If after this, there
+are no more steps, it disables it’s button.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_go_event">
+<code class="sig-name descname">action_go_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_go_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_go_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the current dir to the one, that is given in the adress bar.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_home_event">
+<code class="sig-name descname">action_home_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_home_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_home_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the current dir to the users $HOME.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_new_dir_event">
+<code class="sig-name descname">action_new_dir_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_new_dir_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_new_dir_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompts the user for a dir name and creates one with that name in the
+current directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_new_file_event">
+<code class="sig-name descname">action_new_file_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_new_file_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_new_file_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompts the user for a file name and creates one with that name in the
+current directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_paste_event">
+<code class="sig-name descname">action_paste_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_paste_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_paste_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pastes the files currently in the clipboard to the current dir.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_remove_bookmark_event">
+<code class="sig-name descname">action_remove_bookmark_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_remove_bookmark_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_remove_bookmark_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the selected bookmark after asking the user for confirmation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_rename_event">
+<code class="sig-name descname">action_rename_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_rename_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_rename_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompts the user to enter a new name and changes the selected file’s
+name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_show_hidden_event">
+<code class="sig-name descname">action_show_hidden_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_show_hidden_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_show_hidden_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows hidden files and dirs in the main view.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.action_up_event">
+<code class="sig-name descname">action_up_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.action_up_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.action_up_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the current dir to one dir up in the hierarchy</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.bookmark_selected_event">
+<code class="sig-name descname">bookmark_selected_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.bookmark_selected_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.bookmark_selected_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the current dir to the one associated with the selected
+bookmark.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.connect_actions_to_events">
+<code class="sig-name descname">connect_actions_to_events</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.connect_actions_to_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.connect_actions_to_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects actions to their event functions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.copy_files">
+<code class="sig-name descname">copy_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files_as_indexes</span><span class="p">:</span> <span class="n">List</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.copy_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.copy_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies the given indexes as file URLs to the clipboard.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>files_as_indexes</strong> (<em>List</em>) – List of indexes of files.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>files as str list of paths, which were copied to clipboard</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.fs_tree_event">
+<code class="sig-name descname">fs_tree_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.fs_tree_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.fs_tree_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the current dir to the dir selected in the fs_tree view.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.item_open_event">
+<code class="sig-name descname">item_open_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.item_open_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.item_open_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens a file using xdg-open, runs it, if it is executeble or
+changes the current dir if it’s dir.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.item_selected_event">
+<code class="sig-name descname">item_selected_event</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.item_selected_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.item_selected_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates statusbar info, depending on the selected file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.set_icons">
+<code class="sig-name descname">set_icons</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.set_icons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.set_icons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds icons to all applicable actions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.set_shortcuts">
+<code class="sig-name descname">set_shortcuts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.set_shortcuts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.set_shortcuts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set shortcuts for actions.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="tfm.tfm.tfm.staticMetaObject">
+<code class="sig-name descname">staticMetaObject</code><em class="property"> = &lt;PySide2.QtCore.QMetaObject object&gt;</em><a class="headerlink" href="#tfm.tfm.tfm.staticMetaObject" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="tfm.tfm.tfm.update_current_path">
+<code class="sig-name descname">update_current_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">next_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">skip_stack</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">reset_forward_stack</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tfm/tfm.html#tfm.update_current_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.tfm.tfm.update_current_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the current path to the value given in next_path. It also
+updates the UI accordingly and changes the forward an backward
+stacks, if needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>next_path</strong> (<em>str</em>) – The path to the directory that should become the next
+dir.</p></li>
+<li><p><strong>skip_stack</strong> (<em>bool</em>) – This determines wether the stack handling should be
+skipped. Default value is False.</p></li>
+<li><p><strong>reset_forward_stack</strong> (<em>bool</em>) – This determines wether the forward stack
+should be reset or not. Default is True</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tfm.utility">
+<span id="tfm-utility-module"></span><h2>tfm.utility module<a class="headerlink" href="#module-tfm.utility" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="tfm.utility.indexes_to_paths">
+<code class="sig-prename descclassname">tfm.utility.</code><code class="sig-name descname">indexes_to_paths</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files_as_indexes</span><span class="p">:</span> <span class="n">List</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="_modules/tfm/utility.html#indexes_to_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.utility.indexes_to_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given indexes to a list of paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>files_as_indexes</strong> (<em>List</em>) – List of indexes of files.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of paths to the given files.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tfm.utility.item_info">
+<code class="sig-prename descclassname">tfm.utility.</code><code class="sig-name descname">item_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/tfm/utility.html#item_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.utility.item_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves information about the given file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to the file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Information of the file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tfm.utility.part_info">
+<code class="sig-prename descclassname">tfm.utility.</code><code class="sig-name descname">part_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/tfm/utility.html#part_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.utility.part_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves information about the partition which the path is on.
+:param path: Path on the partition.
+:type path: str
+:return: Decription of the partition.
+:rtype: str</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tfm.utility.question_dialog">
+<code class="sig-prename descclassname">tfm.utility.</code><code class="sig-name descname">question_dialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; PySide2.QtWidgets.QMessageBox<a class="reference internal" href="_modules/tfm/utility.html#question_dialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.utility.question_dialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a default question dialog box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msg</strong> (<em>str</em>) – The question which the user is asked.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created dialog.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>QMessageBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="tfm.utility.traverse_dir">
+<code class="sig-prename descclassname">tfm.utility.</code><code class="sig-name descname">traverse_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="_modules/tfm/utility.html#traverse_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tfm.utility.traverse_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverses the given directory and returns all files and dirs inside as
+paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to traverse.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Paths of files and dirs under the given path.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tfm">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tfm" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">tfm</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Till Mahlburg.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/tfm.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

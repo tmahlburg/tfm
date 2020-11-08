@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tfm.utility &#8212; tfm 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for tfm.utility</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This file contains misc utility functions. Better structuring is planned in</span>
+<span class="c1"># the future.</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">PySide2.QtWidgets</span> <span class="kn">import</span> <span class="n">QFileSystemModel</span><span class="p">,</span> <span class="n">QMessageBox</span>
+<span class="kn">from</span> <span class="nn">PySide2.QtCore</span> <span class="kn">import</span> <span class="n">QDir</span><span class="p">,</span> <span class="n">QFileInfo</span>
+
+<span class="kn">from</span> <span class="nn">prefixed</span> <span class="kn">import</span> <span class="n">Float</span>
+
+
+<div class="viewcode-block" id="indexes_to_paths"><a class="viewcode-back" href="../../tfm.html#tfm.utility.indexes_to_paths">[docs]</a><span class="k">def</span> <span class="nf">indexes_to_paths</span><span class="p">(</span><span class="n">files_as_indexes</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the given indexes to a list of paths.</span>
+
+<span class="sd">    :param files_as_indexes: List of indexes of files.</span>
+<span class="sd">    :type files_as_indexes: List</span>
+<span class="sd">    :return: List of paths to the given files.</span>
+<span class="sd">    :rtype: List</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">files_as_path</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">files_as_indexes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">column</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">files_as_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QFileSystemModel</span><span class="p">()</span><span class="o">.</span><span class="n">filePath</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">files_as_path</span></div>
+
+
+<span class="c1"># TODO: replace with os.walk from python std lib.....</span>
+<div class="viewcode-block" id="traverse_dir"><a class="viewcode-back" href="../../tfm.html#tfm.utility.traverse_dir">[docs]</a><span class="k">def</span> <span class="nf">traverse_dir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Traverses the given directory and returns all files and dirs inside as</span>
+<span class="sd">    paths.</span>
+
+<span class="sd">    :param path: Path to traverse.</span>
+<span class="sd">    :type path: str</span>
+<span class="sd">    :return: Paths of files and dirs under the given path.</span>
+<span class="sd">    :rtype: List[str]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">dir</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">path_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="o">.</span><span class="n">entryList</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">QDir</span><span class="o">.</span><span class="n">AllDirs</span>
+                                   <span class="o">|</span> <span class="n">QDir</span><span class="o">.</span><span class="n">NoDotAndDotDot</span>
+                                   <span class="o">|</span> <span class="n">QDir</span><span class="o">.</span><span class="n">Files</span>
+                                   <span class="o">|</span> <span class="n">QDir</span><span class="o">.</span><span class="n">Hidden</span><span class="p">):</span>
+        <span class="n">current_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="n">path_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">QDir</span><span class="p">()</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">current_path</span><span class="p">)):</span>
+            <span class="n">path_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">traverse_dir</span><span class="p">(</span><span class="n">current_path</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">path_list</span></div>
+
+
+<span class="c1"># TODO: retrieve partition name (/dev/xxxxxxmpn)</span>
+<div class="viewcode-block" id="part_info"><a class="viewcode-back" href="../../tfm.html#tfm.utility.part_info">[docs]</a><span class="k">def</span> <span class="nf">part_info</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves information about the partition which the path is on.</span>
+<span class="sd">    :param path: Path on the partition.</span>
+<span class="sd">    :type path: str</span>
+<span class="sd">    :return: Decription of the partition.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get fs statistics using statvfs system call</span>
+    <span class="n">part_stats</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">statvfs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">fs_size</span> <span class="o">=</span> <span class="s1">&#39;{:!.1j}B&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Float</span><span class="p">(</span><span class="n">part_stats</span><span class="o">.</span><span class="n">f_frsize</span>
+                                <span class="o">*</span> <span class="n">part_stats</span><span class="o">.</span><span class="n">f_blocks</span><span class="p">))</span>
+    <span class="n">fs_free</span> <span class="o">=</span> <span class="s1">&#39;{:!.1j}B&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Float</span><span class="p">(</span><span class="n">part_stats</span><span class="o">.</span><span class="n">f_frsize</span>
+                                <span class="o">*</span> <span class="n">part_stats</span><span class="o">.</span><span class="n">f_bfree</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">fs_free</span> <span class="o">+</span> <span class="s1">&#39; of &#39;</span> <span class="o">+</span> <span class="n">fs_size</span> <span class="o">+</span> <span class="s1">&#39; free&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1"># TODO: handle multiple paths and calculate dir sizes</span>
+<div class="viewcode-block" id="item_info"><a class="viewcode-back" href="../../tfm.html#tfm.utility.item_info">[docs]</a><span class="k">def</span> <span class="nf">item_info</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves information about the given file.</span>
+
+<span class="sd">    :param path: Path to the file.</span>
+<span class="sd">    :type path: str</span>
+<span class="sd">    :return: Information of the file.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">QFileInfo</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">isFile</span><span class="p">()):</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="s1">&#39;{:!.2j}B&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Float</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">size</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="n">size</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="question_dialog"><a class="viewcode-back" href="../../tfm.html#tfm.utility.question_dialog">[docs]</a><span class="k">def</span> <span class="nf">question_dialog</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QMessageBox</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a default question dialog box.</span>
+
+<span class="sd">    :param msg: The question which the user is asked.</span>
+<span class="sd">    :type msg: str</span>
+<span class="sd">    :return: The created dialog.</span>
+<span class="sd">    :rtype: QMessageBox</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msg_box</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+    <span class="n">msg_box</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="n">msg_box</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">)</span>
+    <span class="n">msg_box</span><span class="o">.</span><span class="n">setDefaultButton</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">)</span>
+    <span class="n">msg_box</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Question</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg_box</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">tfm</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  <li><a href="../tfm.html">tfm</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Till Mahlburg.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
