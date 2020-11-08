@@ -23,7 +23,6 @@ tags
 .DS_Store
 .directory
 *.debug
-Makefile*
 *.prl
 *.app
 moc_*.cpp
@@ -71,3 +70,8 @@ Thumbs.db
 *.dll
 *.exe
 
+# User added
+# ----------
+__pycache__/*
+build/*
+*.egg-info/*
