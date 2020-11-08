@@ -345,7 +345,7 @@ class tfm(QMainWindow, Ui_tfm):
         # Update item_info in the statusbar
         path = os.path.join(self.current_path,
                             self.table_view.currentIndex().
-                                siblingAtColumn(0).data())
+                            siblingAtColumn(0).data())
         self.item_info.setText(utility.item_info(path))
 
     def fs_tree_event(self):
@@ -362,32 +362,39 @@ class tfm(QMainWindow, Ui_tfm):
         # get current selection
         self.copy_files(self.table_view.selectionModel().selectedIndexes())
 
-    # TODO: Multithreaded and progress / status information
-    # TODO: support folders
-    # TODO: handle existing file
+    # TODO: Multithreaded and progress / status information, support folders,
+    # handle existing file(s)
     def action_paste_event(self):
         """
         Pastes the files currently in the clipboard to the current dir.
         """
         if self.clipboard.mimeData().hasUrls():
+            # get paths from URLs in clipboard
             path_list = []
             for url in self.clipboard.mimeData().urls():
                 if (url.isLocalFile()):
                     path_list.append(url.toLocalFile())
+
             multiple_paths = (len(path_list) > 1)
             cut = (collections.Counter(path_list)
                    == collections.Counter(self.marked_to_cut))
+
+            # add paths inside of copied dirs
             paths_to_add = []
             for path in path_list:
                 if (os.path.isdir(path)):
                     paths_to_add.extend(utility.traverse_dir(path))
             path_list.extend(paths_to_add)
+
+            # determine common base path of the files
             base_path = ''
             if (multiple_paths):
                 base_path = os.path.commonpath(path_list) + '/'
             else:
-                base_path = os.path.dirname(
-                                os.path.commonpath(path_list)) + '/'
+                base_path = (os.path.dirname(os.path.commonpath(path_list))
+                             + '/')
+
+            # copy files to new location
             for path in path_list:
                 new_path = os.path.join(self.current_path,
                                         path.replace(base_path, ''))
@@ -397,6 +404,7 @@ class tfm(QMainWindow, Ui_tfm):
                 elif (QFile().exists(path)
                         and not QFile().exists(new_path)):
                     QFile().copy(path, new_path)
+            # removed cut files
             if cut:
                 for file_path in path_list:
                     QFile().remove(file_path)
@@ -414,10 +422,11 @@ class tfm(QMainWindow, Ui_tfm):
         Deletes the current selection after asking for confirmation by the
         user.
         """
-        path_list = self.indexes_to_files(
+        path_list = utility.indexes_to_paths(
             self.table_view.selectionModel().selectedIndexes())
         if len(path_list) < 0:
             return
+
         paths_to_add = []
         for path in path_list:
             if (os.path.isdir(path)):
@@ -425,19 +434,16 @@ class tfm(QMainWindow, Ui_tfm):
         path_list.extend(paths_to_add)
 
         if (len(path_list) == 1):
-            confirmation_message = ('Do you want to delete "'
-                                    + os.path.basename(path_list[0])
-                                    + '"?')
+            confirmation_msg = ('Do you want to delete "'
+                                + os.path.basename(path_list[0])
+                                + '"?')
         else:
-            confirmation_message = ('Do you want to delete the '
-                                    + str(len(path_list))
-                                    + ' selected items?')
-        msg_box = QMessageBox()
-        msg_box.setText(confirmation_message)
-        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
-        msg_box.setDefaultButton(QMessageBox.Yes)
-        msg_box.setIcon(QMessageBox.Question)
-        button_clicked = msg_box.exec()
+            confirmation_msg = ('Do you want to delete the '
+                                + str(len(path_list))
+                                + ' selected items?')
+
+        dialog = utility.question_dialog(confirmation_msg)
+        button_clicked = dialog.exec()
 
         if (button_clicked == QMessageBox.Yes):
             dir_list = []
@@ -500,13 +506,11 @@ class tfm(QMainWindow, Ui_tfm):
         Removes the selected bookmark after asking the user for confirmation.
         """
         name = self.bookmark_view.currentIndex().data()
-        msg_box = QMessageBox()
-        msg_box.setText(
-            'Do you really want to delete this bookmark (' + name + ')?')
-        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
-        msg_box.setDefaultButton(QMessageBox.Yes)
-        msg_box.setIcon(QMessageBox.Question)
-        button_clicked = msg_box.exec()
+        dialog = utility.question_dialog('Do you really want to delete this '
+                                         + 'bookmark ('
+                                         + name
+                                         + ')?')
+        button_clicked = dialog.exec()
 
         if (button_clicked == QMessageBox.Yes):
             self.bookmark_view.takeItem(

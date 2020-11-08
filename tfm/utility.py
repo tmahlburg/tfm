@@ -3,7 +3,7 @@
 import os
 from typing import List
 
-from PySide2.QtWidgets import QFileSystemModel
+from PySide2.QtWidgets import QFileSystemModel, QMessageBox
 from PySide2.QtCore import QDir, QFileInfo
 
 from prefixed import Float
@@ -79,3 +79,19 @@ def item_info(path: str) -> str:
         size = '{:!.2j}B'.format(Float(file.size()))
         return (os.path.basename(path) + ': ' + size)
     return (os.path.basename(path))
+
+
+def question_dialog(msg: str) -> QMessageBox:
+    """
+    Creates a default question dialog box.
+    :param msg: The question which the user is asked.
+    :type msg: str
+    :return: The created dialog.
+    :rtype: QMessageBox
+    """
+    msg_box = QMessageBox()
+    msg_box.setText(msg)
+    msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+    msg_box.setDefaultButton(QMessageBox.Yes)
+    msg_box.setIcon(QMessageBox.Question)
+    return msg_box
