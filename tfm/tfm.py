@@ -12,8 +12,6 @@ from PySide2.QtGui import QKeySequence, QIcon
 
 from form import Ui_tfm
 
-from prefixed import Float
-
 from stack import stack
 from bookmarks import bookmarks as bm
 import utility
