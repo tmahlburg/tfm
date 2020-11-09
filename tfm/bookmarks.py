@@ -14,6 +14,7 @@ class bookmarks:
         Reads bookmarks from file to internal list of dicts or creates the
         file if it doesn't exist yet. The file should have the format of one
         bookmark per line and the individual lines should have the format:
+
         bookmark name|/path/to/bookmark
 
         :param path_to_bookmark_file: Path to the file, in which the bookmarks
