@@ -4,7 +4,7 @@ init: Pipfile.lock
 form.py: form.ui
 	pyside2-uic form.ui -o form.py
 
-lint:
+lint: tfm/*.py
 	flake8 tfm/bookmarks.py --count --show-source --statistics
 	flake8 main.py --count --show-source	--statistics
 	flake8 tfm/stack.py --count --show-source --statistics
@@ -14,5 +14,8 @@ lint:
 docs: tfm/*.py
 	cd docs/build \
 	&& make html
+
+test: tfm/*.py tests/*.py
+	pytest
 
 .PHONY:	init form.py lint help Makefile
