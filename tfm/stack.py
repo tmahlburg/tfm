@@ -37,6 +37,7 @@ class stack:
 
         :return: Top element of the stack.
         """
+        # TODO: error handling in case there is no element
         return self.stack[-1]
 
     def push(self, stack_element):
@@ -53,6 +54,7 @@ class stack:
 
         :return: Top element of the stack.
         """
+        # TODO: error handling in case there is no element
         return self.stack.pop()
 
     def drop(self):
