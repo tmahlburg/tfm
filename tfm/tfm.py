@@ -16,6 +16,8 @@ from .stack import stack
 from .bookmarks import bookmarks as bm
 import tfm.utility as utility
 
+from send2trash import send2trash
+
 
 class tfm(QMainWindow, Ui_tfm):
     """
@@ -332,7 +334,6 @@ class tfm(QMainWindow, Ui_tfm):
                 QProcess().startDetached('xdg-open',
                                          [selected_item.absoluteFilePath()],
                                          self.current_path)
-                print('xdg-open ' + selected_item.absoluteFilePath())
         else:
             # TODO: Error Handling
             print("ERROR: Can't obtain the type of the selected file")
@@ -345,7 +346,7 @@ class tfm(QMainWindow, Ui_tfm):
         path = os.path.join(self.current_path,
                             self.table_view.currentIndex().
                             siblingAtColumn(0).data())
-        self.item_info.setText(utility.item_info(path))
+        self.item_info.setText(utility.file_info(path))
 
     def fs_tree_event(self):
         """
@@ -426,33 +427,30 @@ class tfm(QMainWindow, Ui_tfm):
         if len(path_list) < 0:
             return
 
+        """
         paths_to_add = []
         for path in path_list:
             if (os.path.isdir(path)):
                 paths_to_add.extend(utility.traverse_dir(path))
         path_list.extend(paths_to_add)
+        """
 
         if (len(path_list) == 1):
-            confirmation_msg = ('Do you want to delete "'
+            confirmation_msg = ('Do you want to throw "'
                                 + os.path.basename(path_list[0])
-                                + '"?')
+                                + '" in the trash?')
         else:
-            confirmation_msg = ('Do you want to delete the '
+            confirmation_msg = ('Do you want to throw the '
                                 + str(len(path_list))
-                                + ' selected items?')
+                                + ' selected items and all the items contained'
+                                + ' in them in the trash?')
 
         dialog = utility.question_dialog(confirmation_msg)
         button_clicked = dialog.exec()
 
         if (button_clicked == QMessageBox.Yes):
-            dir_list = []
-            for path in path_list:
-                if (os.path.isfile(path)):
-                    QFile().remove(path)
-                elif (os.path.isdir(path)):
-                    dir_list.append(path)
-            for dir in dir_list:
-                QDir().rmpath(dir)
+            for item in path_list:
+                send2trash(item)
 
     # TODO: warn, if extension gets changed
     def action_rename_event(self):

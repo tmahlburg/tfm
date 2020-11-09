@@ -8,9 +8,10 @@ If you still want to try it, a python package is available in the ```dist``` dir
 * basic directory traversal
 * window layout with toolbar, statusbar, main table view, fs tree and bookmarks
 * open files using xdg-open
-* cut, copy, paste, delete (with confirmation), renaming
+* cut, copy, paste, renaming
 * named bookmarks to folders
 * show/hide dotfiles
+* throw files and dirs in the trash
 
 ## How to install
 Don't right now. Making packages is the next item on my list though.
@@ -22,12 +23,13 @@ Are going to be here soon.
 
 ### Next features to implement:
 * show, mount and unmount devices using udevil or pmount
-* xdg-trash
+* restore from trash
+* delete from trash
 * drag and drop between windows
 * handle multi selection statusbar information
 * pasting status window on longer pastes
 * link files
-* basic cli, especially for being run by xdg-open
+* cli, especially for being run by xdg-open -> support for file URLs
 
 ### Far away:
 * optimize network mounts, especially SMB shares
@@ -48,7 +50,6 @@ Are going to be here soon.
 * user configurable views and columns
 
 ### Infrastructure
-* test suite with github actions
 * proper error handling and logging
 * voidlinux package
 * AppImage

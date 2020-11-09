@@ -36,7 +36,7 @@ def traverse_dir(path) -> List[str]:
     :return: Paths of files and dirs under the given path.
     :rtype: List[str]
     """
-    dir = (path)
+    dir = QDir(path)
     path_list = []
     for file_name in dir.entryList(filters=QDir.AllDirs
                                    | QDir.NoDotAndDotDot
@@ -68,7 +68,7 @@ def part_info(path: str) -> str:
 
 
 # TODO: handle multiple paths and calculate dir sizes
-def item_info(path: str) -> str:
+def file_info(path: str) -> str:
     """
     Retrieves information about the given file.
 

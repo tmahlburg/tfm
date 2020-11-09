@@ -12,6 +12,7 @@ setuptools = "*"
 wheel = "*"
 sphinx = "*"
 pytest = "*"
+send2trash = "*"
 
 [requires]
 python_version = "3.9"
