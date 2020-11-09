@@ -419,8 +419,7 @@ class tfm(QMainWindow, Ui_tfm):
 
     def action_delete_event(self):
         """
-        Deletes the current selection after asking for confirmation by the
-        user.
+        Throws the current selection in the trash after asking for confirmation.
         """
         path_list = utility.indexes_to_paths(
             self.table_view.selectionModel().selectedIndexes())
