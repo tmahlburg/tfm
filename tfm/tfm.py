@@ -18,6 +18,7 @@ from send2trash import send2trash
 
 from typing import List
 
+
 class tfm(QMainWindow, Ui_tfm):
     """
     The main window class, setting up the application and implementing the
