@@ -4,7 +4,7 @@ The initial version is going to be implemented in Python, though this might chan
 The Project is in a proof of concept stage right now and it is not advised to use it at the moment.
 If you still want to try it, a python package is available in the ```dist``` directory of this repository
 
-## Features:
+## Features
 * basic directory traversal
 * window layout with toolbar, statusbar, main table view, fs tree and bookmarks
 * open files using xdg-open
@@ -22,7 +22,7 @@ Are going to be here soon.
 
 ## Roadmap
 
-### Next features to implement:
+### Next features to implement
 * show, mount and unmount devices using udevil or pmount
 * restore from trash
 * delete from trash
@@ -31,8 +31,8 @@ Are going to be here soon.
 * link files
 * cli, especially for being run by xdg-open -> support for file URLs
 
-### Far away:
-#### functionality:
+### Far away
+#### functionality
 * optimize network mounts, especially SMB shares
 * mount ISOs etc.
 * auto extract
@@ -40,7 +40,7 @@ Are going to be here soon.
 * statusbar directory informations
 * search in folder
 * differentiate dropAction by destination
-#### ui:
+#### ui
 * save config per dir
 * open with dialog
 * optional preview pane
