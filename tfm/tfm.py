@@ -1,13 +1,11 @@
 # This Python file uses the following encoding: utf-8
 import os
 import collections
-from typing import List
 
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
                                QMessageBox, QMainWindow)
-from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QMimeData, QUrl,
-                            QStandardPaths)
+from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths)
 from PySide2.QtGui import QKeySequence, QIcon
 
 from .form import Ui_tfm
@@ -48,6 +46,11 @@ class tfm(QMainWindow, Ui_tfm):
                             QStandardPaths.writableLocation(
                                 QStandardPaths().ConfigLocation),
                             type(self).__name__)
+
+        self.trash_dir = os.path.join(
+                            QStandardPaths.writableLocation(
+                                QStandardPaths().GenericDataLocation),
+                            "Trash")
 
         # MAIN VIEW #
         # set up QFileSystemModel
@@ -322,7 +325,8 @@ class tfm(QMainWindow, Ui_tfm):
         """
         selected_item = QFileInfo(
             os.path.join(self.current_path,
-                         self.table_view.currentIndex().data()))
+                         self.table_view.currentIndex().
+                         siblingAtColumn(0).data()))
         if (selected_item.isDir()):
             next_path = selected_item.absoluteFilePath()
             self.update_current_path(next_path)
@@ -361,7 +365,9 @@ class tfm(QMainWindow, Ui_tfm):
         Copies the currently selected files to the clipboard.
         """
         # get current selection
-        self.copy_files(self.table_view.selectionModel().selectedIndexes())
+        _, mime_data = utility.copy_files(
+            self.table_view.selectionModel().selectedIndexes())
+        self.clipboard.setMimeData(mime_data)
 
     # TODO: Multithreaded and progress / status information, support folders,
     # handle existing file(s)
@@ -415,8 +421,9 @@ class tfm(QMainWindow, Ui_tfm):
         """
         Copies the current selection to the clipboard and marks them as cut.
         """
-        self.marked_to_cut = self.copy_files(
+        self.marked_to_cut, mime_data = utility.copy_files(
             self.table_view.selectionModel().selectedIndexes())
+        self.clipboard.setMimeData(mime_data)
 
     def action_delete_event(self):
         """
@@ -429,11 +436,12 @@ class tfm(QMainWindow, Ui_tfm):
             return
 
         """
-        paths_to_add = []
-        for path in path_list:
-            if (os.path.isdir(path)):
-                paths_to_add.extend(utility.traverse_dir(path))
-        path_list.extend(paths_to_add)
+        if (self.current_path == self.trash_dir):
+            paths_to_add = []
+            for path in path_list:
+                if (os.path.isdir(path)):
+                    paths_to_add.extend(utility.traverse_dir(path))
+            path_list.extend(paths_to_add)
         """
 
         if (len(path_list) == 1):
@@ -570,24 +578,3 @@ class tfm(QMainWindow, Ui_tfm):
             self.forward_stack.drop()
             self.action_forward.setEnabled(False)
         self.current_path = next_path
-
-    def copy_files(self, files_as_indexes: List) -> List[str]:
-        """
-        Copies the given indexes as file URLs to the clipboard.
-
-        :param files_as_indexes: List of indexes of files.
-        :type files_as_indexes: List
-        :return: files as str list of paths, which were copied to clipboard
-        :rtype: List[str]
-        """
-        files_as_path = utility.indexes_to_paths(files_as_indexes)
-        file_urls = []
-
-        for file in files_as_path:
-            file_urls.append(QUrl.fromLocalFile(file))
-
-        mime_data = QMimeData()
-        mime_data.setUrls(file_urls)
-
-        self.clipboard.setMimeData(mime_data)
-        return files_as_path

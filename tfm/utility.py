@@ -4,7 +4,7 @@ import os
 from typing import List
 
 from PySide2.QtWidgets import QFileSystemModel, QMessageBox
-from PySide2.QtCore import QDir, QFileInfo
+from PySide2.QtCore import QDir, QFileInfo, QMimeData, QUrl
 
 from prefixed import Float
 
@@ -99,3 +99,24 @@ def question_dialog(msg: str) -> QMessageBox:
     msg_box.setDefaultButton(QMessageBox.Yes)
     msg_box.setIcon(QMessageBox.Question)
     return msg_box
+
+
+def copy_files(files_as_indexes: List) -> List[str]:
+    """
+    Copies the given indexes as file URLs to the clipboard.
+
+    :param files_as_indexes: List of indexes of files.
+    :type files_as_indexes: List
+    :return: files as str list of paths, which were copied to clipboard
+    :rtype: List[str]
+    """
+    files_as_path = indexes_to_paths(files_as_indexes)
+    file_urls = []
+
+    for file in files_as_path:
+        file_urls.append(QUrl.fromLocalFile(file))
+
+    mime_data = QMimeData()
+    mime_data.setUrls(file_urls)
+
+    return files_as_path, mime_data
