@@ -12,6 +12,7 @@ If you still want to try it, a python package is available in the ```dist``` dir
 * named bookmarks to folders
 * show/hide dotfiles
 * throw files and dirs in the trash
+* drag and drop (always moves)
 
 ## How to install
 Don't right now. Making packages is the next item on my list though.
@@ -25,29 +26,33 @@ Are going to be here soon.
 * show, mount and unmount devices using udevil or pmount
 * restore from trash
 * delete from trash
-* drag and drop between windows
 * handle multi selection statusbar information
 * pasting status window on longer pastes
 * link files
 * cli, especially for being run by xdg-open -> support for file URLs
 
 ### Far away:
+#### functionality:
 * optimize network mounts, especially SMB shares
+* mount ISOs etc.
+* auto extract
+* open multiple selected files
+* statusbar directory informations
+* search in folder
+* differentiate dropAction by destination
+#### ui:
 * save config per dir
 * open with dialog
 * optional preview pane
 * file previews
 * context sensitive views and columns
-* auto extract
-* mount ISOs etc.
 * file property dialog
-* localization
-* open multiple selected files
-* statusbar directory informations
 * rename in place
-* search in folder
 * make links visually distinguishable
 * user configurable views and columns
+* bookmark order configurable in the U
+#### accessability
+* localization
 
 ### Infrastructure
 * proper error handling and logging
