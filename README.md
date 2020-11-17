@@ -13,6 +13,7 @@ If you still want to try it, a python package is available in the ```dist``` dir
 * show/hide dotfiles
 * throw files and dirs in the trash
 * drag and drop (always moves)
+* cli to open via path or file url
 
 ## How to install
 Don't right now. Making packages is the next item on my list though.
@@ -24,12 +25,9 @@ Are going to be here soon.
 
 ### Next features to implement
 * show, mount and unmount devices using udevil or pmount
-* restore from trash
-* delete from trash
 * handle multi selection statusbar information
 * pasting status window on longer pastes
 * link files
-* cli, especially for being run by xdg-open -> support for file URLs
 
 ### Far away
 #### functionality
@@ -40,6 +38,8 @@ Are going to be here soon.
 * statusbar directory informations
 * search in folder
 * differentiate dropAction by destination
+* restore from trash (should be implemented via a custom model/view)
+* delete from trash (should be implemented via a custom model/view)
 #### ui
 * save config per dir
 * open with dialog
