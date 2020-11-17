@@ -57,6 +57,7 @@ class tfm(QMainWindow, Ui_tfm):
             self.current_path = QDir.homePath()
         self.filesystem = QFileSystemModel()
         self.filesystem.setRootPath(self.current_path)
+        self.filesystem.setReadOnly(False)
 
         # connect QFileSystemModel to View
         self.table_view.setModel(self.filesystem)
