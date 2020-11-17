@@ -16,6 +16,7 @@ import tfm.utility as utility
 
 from send2trash import send2trash
 
+from typing import List
 
 class tfm(QMainWindow, Ui_tfm):
     """
@@ -23,7 +24,7 @@ class tfm(QMainWindow, Ui_tfm):
     needed events.
     """
 
-    def __init__(self, default_path: str):
+    def __init__(self, args: List[str]):
         """
         At the moment the very, very long initialization of the main window,
         setting up everything.
@@ -47,17 +48,17 @@ class tfm(QMainWindow, Ui_tfm):
                                 QStandardPaths().ConfigLocation),
                             type(self).__name__)
 
+        """
         self.trash_dir = os.path.join(
                             QStandardPaths.writableLocation(
                                 QStandardPaths().GenericDataLocation),
                             "Trash")
+        """
+
+        self.current_path = utility.handle_args(args)
 
         # MAIN VIEW #
         # set up QFileSystemModel
-        if os.path.isdir(default_path):
-            self.current_path = default_path
-        else:
-            self.current_path = QDir.homePath()
         self.filesystem = QFileSystemModel()
         self.filesystem.setRootPath(self.current_path)
         self.filesystem.setReadOnly(False)
@@ -365,7 +366,7 @@ class tfm(QMainWindow, Ui_tfm):
         Copies the currently selected files to the clipboard.
         """
         # get current selection
-        _, mime_data = utility.copy_files(
+        _, mime_data = utility.get_MIME(
             self.table_view.selectionModel().selectedIndexes())
         self.clipboard.setMimeData(mime_data)
 
@@ -421,7 +422,7 @@ class tfm(QMainWindow, Ui_tfm):
         """
         Copies the current selection to the clipboard and marks them as cut.
         """
-        self.marked_to_cut, mime_data = utility.copy_files(
+        self.marked_to_cut, mime_data = utility.get_MIME(
             self.table_view.selectionModel().selectedIndexes())
         self.clipboard.setMimeData(mime_data)
 

@@ -1,7 +1,7 @@
 # This file contains misc utility functions. Better structuring is planned in
 # the future.
 import os
-from typing import List
+from typing import List, Tuple
 
 from PySide2.QtWidgets import QFileSystemModel, QMessageBox
 from PySide2.QtCore import QDir, QFileInfo, QMimeData, QUrl
@@ -101,14 +101,14 @@ def question_dialog(msg: str) -> QMessageBox:
     return msg_box
 
 
-def copy_files(files_as_indexes: List) -> List[str]:
+def get_MIME(files_as_indexes: List) -> Tuple[List[str], List[QUrl]]:
     """
-    Copies the given indexes as file URLs to the clipboard.
+    Converts the given files to their MIME data.
 
     :param files_as_indexes: List of indexes of files.
     :type files_as_indexes: List
-    :return: files as str list of paths, which were copied to clipboard
-    :rtype: List[str]
+    :return: files as str list of path and the MIME data of the given files.
+    :rtype: Tuple[List[str], List[QUrl]]
     """
     files_as_path = indexes_to_paths(files_as_indexes)
     file_urls = []
@@ -120,3 +120,20 @@ def copy_files(files_as_indexes: List) -> List[str]:
     mime_data.setUrls(file_urls)
 
     return files_as_path, mime_data
+
+
+def handle_args(args: List[str]) -> str:
+    """
+    Handles the given arguments, determining the starting dir.
+
+    :param args: List of arguments given to the application.
+    :type args: List[str]
+    :return: The directory to start the application with.
+    :rtype: str
+    """
+    if len(args) > 1:
+        if os.path.isdir(args[1]):
+            return args[1]
+        if QUrl(args[1]).isValid() and os.path.isdir(QUrl(args[1]).path()):
+            return QUrl(args[1]).path()
+    return QDir.homePath()
