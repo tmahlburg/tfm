@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import os
 import collections
+from typing import List
 
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
@@ -12,11 +13,11 @@ from .form import Ui_tfm
 
 from .stack import stack
 from .bookmarks import bookmarks as bm
+from .mounts_model import mounts_model
 import tfm.utility as utility
 
 from send2trash import send2trash
-
-from typing import List
+from pyudev import Context, Device, Monitor, MonitorObserver
 
 
 class tfm(QMainWindow, Ui_tfm):
@@ -37,6 +38,7 @@ class tfm(QMainWindow, Ui_tfm):
         """
         super(tfm, self).__init__()
         self.setupUi(self)
+        self.setWindowIcon(QIcon.fromTheme('system-file-manager'))
 
         self.clipboard = QApplication.clipboard()
         self.marked_to_cut = []
@@ -57,6 +59,7 @@ class tfm(QMainWindow, Ui_tfm):
         """
 
         self.current_path = utility.handle_args(args)
+        self.default_path = self.current_path
 
         # MAIN VIEW #
         # set up QFileSystemModel
@@ -103,9 +106,6 @@ class tfm(QMainWindow, Ui_tfm):
         # expand root item
         self.fs_tree.expand(self.fs_tree_model.index(0, 0))
 
-        # connect selection action
-        self.fs_tree.clicked.connect(self.fs_tree_event)
-
         # BOOKMARKS #
         self.bookmarks = bm(os.path.join(self.config_dir, 'bookmarks'))
         for bookmark in self.bookmarks.get_all():
@@ -113,6 +113,16 @@ class tfm(QMainWindow, Ui_tfm):
 
         # context menu
         self.bookmark_view.addAction(self.action_remove_bookmark)
+
+        # MOUNTS #
+        self.udev_context = Context()
+        self.mounts = mounts_model(context=self.udev_context)
+        self.mounts_view.setModel(self.mounts)
+        udev_monitor = Monitor.from_netlink(self.udev_context)
+        udev_monitor.filter_by(subsystem='block', device_type='partition')
+        udev_observer = MonitorObserver(udev_monitor,
+                                        self.devices_changed)
+        udev_observer.start()
 
         # STATUSBAR #
         # TODO: dir info
@@ -215,6 +225,11 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_remove_bookmark.triggered.connect(
             self.action_remove_bookmark_event)
         self.bookmark_view.clicked.connect(self.bookmark_selected_event)
+
+        self.fs_tree.clicked.connect(self.fs_tree_event)
+
+        self.mounts_view.clicked.connect(self.mount_selected_event)
+        self.mounts_view.doubleClicked.connect(self.mount_toggle_event)
 
         self.table_view.doubleClicked.connect(self.item_open_event)
         self.table_view.clicked.connect(self.item_selected_event)
@@ -536,6 +551,33 @@ class tfm(QMainWindow, Ui_tfm):
             self.bookmark_view.currentIndex().data())
         self.update_current_path(next_path)
 
+    def mount_selected_event(self):
+        """
+        Checks the mount point of the selected drive and makes it the current
+        path.
+        """
+        device = self.mounts.get_device_at(
+            self.mounts_view.currentIndex().row())
+        mount_point = self.mounts.get_mount_point(device)
+        if mount_point != '':
+            self.update_current_path(mount_point)
+
+    # TODO: handle performance better
+    # TODO: handle errors
+    def mount_toggle_event(self):
+        """
+        Tries to mount or unmount the selected drive.
+        """
+        device = self.mounts.get_device_at(
+            self.mounts_view.currentIndex().row())
+        former_mount_point = self.mounts.get_mount_point(device)
+        self.mounts.toggle_mount(device)
+        mount_point = self.mounts.get_mount_point(device)
+        if mount_point != '':
+            self.mount_selected_event()
+        elif former_mount_point == self.current_path:
+            self.update_current_path(self.default_path)
+
     # ---------------- functions ------------------------------------------- #
     # TODO: Performance
     def update_current_path(self,
@@ -580,3 +622,18 @@ class tfm(QMainWindow, Ui_tfm):
             self.forward_stack.drop()
             self.action_forward.setEnabled(False)
         self.current_path = next_path
+
+    def devices_changed(self, action: str, device: Device):
+        """
+        Updates the mountable devices. Is run, when udev detects a change in
+        the block device subsystem.
+
+        :param action: Action that happened to the block device.
+        :type action: str
+        :param device: Device that changed it's status.
+        :type device: Device
+        """
+        if action == 'add':
+            self.mounts.add(device)
+        elif action == 'remove':
+            self.mounts.remove(device)

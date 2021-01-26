@@ -14,6 +14,7 @@ If you still want to try it, a python package is available in the ```dist``` dir
 * throw files and dirs in the trash
 * drag and drop (always moves)
 * cli to open via path or file url
+* show, mount and unmount devices using udevil
 
 ## How to install
 Don't right now. Making packages is the next item on my list though.
@@ -24,7 +25,6 @@ Are going to be here soon.
 ## Roadmap
 
 ### Next features to implement
-* show, mount and unmount devices using udevil or pmount
 * handle multi selection statusbar information
 * pasting status window on longer pastes
 * link files
