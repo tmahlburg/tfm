@@ -58,6 +58,7 @@
          <enum>Qt::CopyAction</enum>
         </property>
        </widget>
+       <widget class="QListView" name="mounts_view"/>
       </widget>
       <widget class="QTableView" name="table_view">
        <property name="sizePolicy">

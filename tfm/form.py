@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'form.ui'
 ##
-## Created by: Qt User Interface Compiler version 5.15.1
+## Created by: Qt User Interface Compiler version 5.15.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -51,6 +51,10 @@ class Ui_tfm(object):
         self.action_add_to_bookmarks.setObjectName(u"action_add_to_bookmarks")
         self.action_remove_bookmark = QAction(tfm)
         self.action_remove_bookmark.setObjectName(u"action_remove_bookmark")
+        self.action_toggle_mount = QAction(tfm)
+        self.action_toggle_mount.setObjectName(u"action_toggle_mount")
+        self.action_mount_open = QAction(tfm)
+        self.action_mount_open.setObjectName(u"action_mount_open")
         self.centralwidget = QWidget(tfm)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -80,6 +84,9 @@ class Ui_tfm(object):
         self.bookmark_view.setDragDropMode(QAbstractItemView.InternalMove)
         self.bookmark_view.setDefaultDropAction(Qt.CopyAction)
         self.hsplit.addWidget(self.bookmark_view)
+        self.mounts_view = QListView(self.hsplit)
+        self.mounts_view.setObjectName(u"mounts_view")
+        self.hsplit.addWidget(self.mounts_view)
         self.vsplit.addWidget(self.hsplit)
         self.table_view = QTableView(self.vsplit)
         self.table_view.setObjectName(u"table_view")
@@ -157,6 +164,14 @@ class Ui_tfm(object):
         self.action_remove_bookmark.setText(QCoreApplication.translate("tfm", u"Remove bookmark", None))
 #if QT_CONFIG(tooltip)
         self.action_remove_bookmark.setToolTip(QCoreApplication.translate("tfm", u"Remove bookmark", None))
+#endif // QT_CONFIG(tooltip)
+        self.action_toggle_mount.setText(QCoreApplication.translate("tfm", u"Mount / Unmount", None))
+#if QT_CONFIG(tooltip)
+        self.action_toggle_mount.setToolTip(QCoreApplication.translate("tfm", u"Mount or unmount device, depending on it's current state", None))
+#endif // QT_CONFIG(tooltip)
+        self.action_mount_open.setText(QCoreApplication.translate("tfm", u"Open mount point", None))
+#if QT_CONFIG(tooltip)
+        self.action_mount_open.setToolTip(QCoreApplication.translate("tfm", u"Open mount point", None))
 #endif // QT_CONFIG(tooltip)
         self.toolbar.setWindowTitle(QCoreApplication.translate("tfm", u"toolBar", None))
     # retranslateUi
