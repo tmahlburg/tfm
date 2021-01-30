@@ -36,7 +36,6 @@ class mounts_model(QAbstractListModel):
         :type role: int
         :return: Device name or icon according to mount state.
         """
-        :param index:
         if role == Qt.DisplayRole:
             return self.devices[index.row()].sys_name
         if role == Qt.DecorationRole:
