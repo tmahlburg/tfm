@@ -26,7 +26,6 @@ Are going to be here soon.
 
 ### Before 0.1
 #### functionality
-* handle multi selection statusbar information
 * pasting status window on longer pastes
 #### infrastructure
 * proper error handling and logging

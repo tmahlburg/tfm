@@ -364,11 +364,20 @@ class tfm(QMainWindow, Ui_tfm):
         """
         Updates statusbar info, depending on the selected file.
         """
-        # Update item_info in the statusbar
-        path = os.path.join(self.current_path,
-                            self.table_view.currentIndex().
-                            siblingAtColumn(0).data())
-        self.item_info.setText(utility.file_info(path))
+        selected_items = self.table_view.selectedIndexes()
+        files = []
+        if len(selected_items) > 1:
+            for item in selected_items:
+                files.append(os.path.join(self.current_path,
+                                          item.siblingAtColumn(0).data()))
+        else:
+            # Update item_info in the statusbar
+            path = os.path.join(self.current_path,
+                                self.table_view.currentIndex().
+                                siblingAtColumn(0).data())
+            files.append(path)
+        files = list(set(files))
+        self.item_info.setText(utility.file_info(files))
 
     def fs_tree_event(self):
         """

@@ -66,20 +66,28 @@ def part_info(path: str) -> str:
                                 * part_stats.f_bfree))
     return (fs_free + ' of ' + fs_size + ' free')
 
-
 # TODO: handle multiple paths and calculate dir sizes
-def file_info(path: str) -> str:
+def file_info(paths: List[str]) -> str:
     """
-    Retrieves information about the given file.
+    Retrieves information about the given files.
 
-    :param path: Path to the file.
-    :type path: str
+    :param path: Path to the files.
+    :type path: List[str]
     :return: Information of the file.
     :rtype: str
     """
-    file = QFileInfo(path)
+    size = 0
+    for path in paths:
+        file = QFileInfo(path)
+        if (file.isFile()):
+            size += file.size()
+        elif (len(paths) > 1):
+            return str(len(paths)) + ' items selected'
+    size = '{:!.2j}B'.format(Float(size))
+    if (len(paths) > 1):
+        return str(len(paths)) + ' files selected, using ' + size
+    file = QFileInfo(paths[0])
     if (file.isFile()):
-        size = '{:!.2j}B'.format(Float(file.size()))
         return (os.path.basename(path) + ': ' + size)
     return (os.path.basename(path))
 
