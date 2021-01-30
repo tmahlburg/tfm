@@ -24,41 +24,45 @@ Are going to be here soon.
 
 ## Roadmap
 
-### Next features to implement
+### Before 0.1
+#### functionality
 * handle multi selection statusbar information
 * pasting status window on longer pastes
-
-### Far away
-#### functionality
-* optimize network mounts, especially SMB shares
-* mount ISOs etc.
-* auto extract
-* open multiple selected files
-* statusbar directory informations
-* search in folder
-* differentiate dropAction by destination
-* restore from trash (should be implemented via a custom model/view)
-* delete from trash (should be implemented via a custom model/view)
-* link files
-#### ui
-* save config per dir
-* open with dialog
-* optional preview pane
-* file previews
-* context sensitive views and columns
-* file property dialog
-* rename in place
-* make links visually distinguishable
-* user configurable views and columns
-* bookmark order configurable in the U
-#### accessability
-* localization
-
-### Infrastructure
+#### infrastructure
 * proper error handling and logging
 * voidlinux package
 * AppImage
-* possibly archlinux package
+* add more tests
+
+### Before 0.2
+#### functionality
+* implement network mounts, especially SMB shares
+* mount ISOs
+* auto extract
+* open multiple selected files
+* statusbar directory information
+* differentiate default dropAction by destination
+* link files
+#### ui
+* rename in place
+
+### Beyond 0.2
+#### functinality
+* search in folder
+* restore from trash (should be implemented via a custom model/view)
+* delete from trash (should be implemented via a custom model/view)
+#### ui
+* save config per dir
+* optional preview pane
+* open with dialog
+* file previews
+* context sensitive views and columns
+* make links visually distinguishable
+* file property dialog
+* user configurable views and columns
+* bookmark order configurable in the UI
+#### accessability
+* localization
 
 ## Non-Features
 These features are going to be intentionally omitted:
@@ -67,7 +71,3 @@ These features are going to be intentionally omitted:
 * windows management like tabs, split views or similar
 * plugins or script support
 * a lot of configuration options
-
-These features are not going to be implemented by me, but I wouldn't reject a good pull request for them:
-
-* Windows support
