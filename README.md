@@ -27,7 +27,6 @@ Are going to be here soon.
 ### Next features to implement
 * handle multi selection statusbar information
 * pasting status window on longer pastes
-* link files
 
 ### Far away
 #### functionality
@@ -40,6 +39,7 @@ Are going to be here soon.
 * differentiate dropAction by destination
 * restore from trash (should be implemented via a custom model/view)
 * delete from trash (should be implemented via a custom model/view)
+* link files
 #### ui
 * save config per dir
 * open with dialog
