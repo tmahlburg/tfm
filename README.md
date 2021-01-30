@@ -43,7 +43,9 @@ Are going to be here soon.
 * differentiate default dropAction by destination
 * link files
 #### ui
-* rename in place
+* drag and drop folders as bookmarks in the bookmark view
+#### infrastructure
+* port to Qt6
 
 ### Beyond 0.2
 #### functinality
