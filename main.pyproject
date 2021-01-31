@@ -1,0 +1,3 @@
+{
+    "files": ["tfm/bookmarks.py","Pipfile.lock","tfm/form.py","tfm/tfm.py","tests/utility_test.py","tfm/__init__.py","conftest.py","README.md","tfm/utility.py","tfm/form.ui","LICENSE","tests/stack_test.py","tfm/mounts_model.py","setup.py","tfm/stack.py","main.py","Pipfile","main.pyproject.user","Makefile","tests/bookmarks_test.py","tfm/paste_worker.py"]
+}

@@ -53,6 +53,8 @@ class Ui_tfm(object):
         self.action_add_to_bookmarks.setObjectName(u"action_add_to_bookmarks")
         self.action_remove_bookmark = QAction(tfm)
         self.action_remove_bookmark.setObjectName(u"action_remove_bookmark")
+        self.action_copy_path = QAction(tfm)
+        self.action_copy_path.setObjectName(u"action_copy_path")
         self.centralwidget = QWidget(tfm)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -126,7 +128,7 @@ class Ui_tfm(object):
         tfm.setStatusBar(self.statusbar)
         self.toolbar = QToolBar(tfm)
         self.toolbar.setObjectName(u"toolbar")
-        self.toolbar.setContextMenuPolicy(Qt.NoContextMenu)
+        self.toolbar.setContextMenuPolicy(Qt.PreventContextMenu)
         self.toolbar.setMovable(False)
         tfm.addToolBar(Qt.TopToolBarArea, self.toolbar)
 
@@ -168,6 +170,6 @@ class Ui_tfm(object):
 #if QT_CONFIG(tooltip)
         self.action_remove_bookmark.setToolTip(QCoreApplication.translate("tfm", u"Remove bookmark", None))
 #endif // QT_CONFIG(tooltip)
-        self.toolbar.setWindowTitle(QCoreApplication.translate("tfm", u"toolBar", None))
+        self.action_copy_path.setText(QCoreApplication.translate("tfm", u"Copy path", None))
     # retranslateUi
 

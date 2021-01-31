@@ -261,6 +261,11 @@
     <string>Remove bookmark</string>
    </property>
   </action>
+  <action name="action_copy_path">
+   <property name="text">
+    <string>Copy path</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

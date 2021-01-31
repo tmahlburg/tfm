@@ -25,7 +25,6 @@ def indexes_to_paths(files_as_indexes: List) -> List[str]:
     return files_as_path
 
 
-# TODO: replace with os.walk from python std lib.....
 def traverse_dir(path) -> List[str]:
     """
     Traverses the given directory and returns all files and dirs inside as
@@ -36,16 +35,12 @@ def traverse_dir(path) -> List[str]:
     :return: Paths of files and dirs under the given path.
     :rtype: List[str]
     """
-    dir = QDir(path)
     path_list = []
-    for file_name in dir.entryList(filters=QDir.AllDirs
-                                   | QDir.NoDotAndDotDot
-                                   | QDir.Files
-                                   | QDir.Hidden):
-        current_path = os.path.join(path, file_name)
-        path_list.append(current_path)
-        if (QDir().exists(current_path)):
-            path_list.extend(traverse_dir(current_path))
+    for root, dirs, files in os.walk(path):
+        for item in files:
+            path_list.append(os.path.join(root, item))
+        for item in dirs:
+            path_list.append(os.path.join(root, item))
     return path_list
 
 
@@ -66,7 +61,8 @@ def part_info(path: str) -> str:
                                 * part_stats.f_bfree))
     return (fs_free + ' of ' + fs_size + ' free')
 
-# TODO: handle multiple paths and calculate dir sizes
+
+# TODO: calculate dir sizes
 def file_info(paths: List[str]) -> str:
     """
     Retrieves information about the given files.

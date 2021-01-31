@@ -1,12 +1,12 @@
 # This Python file uses the following encoding: utf-8
 import os
-import collections
 from typing import List
 
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
                                QMessageBox, QMainWindow)
-from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths)
+from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths,
+                            QThread)
 from PySide2.QtGui import QKeySequence, QIcon
 
 from .form import Ui_tfm
@@ -14,6 +14,7 @@ from .form import Ui_tfm
 from .stack import stack
 from .bookmarks import bookmarks as bm
 from .mounts_model import mounts_model
+from .paste_worker import paste_worker as pw
 import tfm.utility as utility
 
 from send2trash import send2trash
@@ -51,15 +52,12 @@ class tfm(QMainWindow, Ui_tfm):
                                 QStandardPaths().ConfigLocation),
                             type(self).__name__)
 
-        """
-        self.trash_dir = os.path.join(
-                            QStandardPaths.writableLocation(
-                                QStandardPaths().GenericDataLocation),
-                            "Trash")
-        """
-
         self.current_path = utility.handle_args(args)
         self.default_path = self.current_path
+
+        # SETUP THREADS #
+        self.thread_list = []
+        self.worker_list = []
 
         # MAIN VIEW #
         # set up QFileSystemModel
@@ -78,19 +76,9 @@ class tfm(QMainWindow, Ui_tfm):
         # name
         self.horizontal_header.resizeSection(0, 200)
         # size
-        self.horizontal_header.resizeSection(1, 85)
+        self.horizontal_header.resizeSection(1, 100)
         # type
         self.horizontal_header.resizeSection(2, 100)
-
-        # setup context menu
-        self.table_view.addAction(self.action_copy)
-        self.table_view.addAction(self.action_paste)
-        self.table_view.addAction(self.action_cut)
-        self.table_view.addAction(self.action_rename)
-        self.table_view.addAction(self.action_delete)
-        # TODO: only show, if selected item is a folder
-        self.table_view.addAction(self.action_add_to_bookmarks)
-        self.table_view.addAction(self.action_show_hidden)
 
         # FS TREE #
         # create seperate FileSystemModel for the fs tree
@@ -110,9 +98,6 @@ class tfm(QMainWindow, Ui_tfm):
         self.bookmarks = bm(os.path.join(self.config_dir, 'bookmarks'))
         for bookmark in self.bookmarks.get_all():
             self.bookmark_view.addItem(bookmark['name'])
-
-        # context menu
-        self.bookmark_view.addAction(self.action_remove_bookmark)
 
         # MOUNTS #
         self.udev_context = Context()
@@ -171,6 +156,7 @@ class tfm(QMainWindow, Ui_tfm):
         self.connect_actions_to_events()
         self.set_shortcuts()
         self.set_icons()
+        self.set_context_menus()
 
     # ---------------- setup ----------------------------------------------- #
     def set_icons(self):
@@ -210,6 +196,7 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_forward.triggered.connect(self.action_forward_event)
 
         self.action_copy.triggered.connect(self.action_copy_event)
+        self.action_copy_path.triggered.connect(self.action_copy_path_event)
         self.action_paste.triggered.connect(self.action_paste_event)
         self.action_cut.triggered.connect(self.action_cut_event)
         self.action_delete.triggered.connect(self.action_delete_event)
@@ -231,6 +218,8 @@ class tfm(QMainWindow, Ui_tfm):
         self.mounts_view.clicked.connect(self.mount_selected_event)
         self.mounts_view.doubleClicked.connect(self.mount_toggle_event)
 
+        # TODO: enable open item on return pressed
+        # self.table_view.returnPressed.connect(self.item_open_event)
         self.table_view.doubleClicked.connect(self.item_open_event)
         self.table_view.clicked.connect(self.item_selected_event)
 
@@ -246,6 +235,22 @@ class tfm(QMainWindow, Ui_tfm):
             QKeySequence.keyBindings(QKeySequence.Cut))
         self.action_delete.setShortcuts(
           QKeySequence.keyBindings(QKeySequence.Delete))
+
+    def set_context_menus(self):
+        """
+        Setup context menus.
+        """
+        self.table_view.addAction(self.action_copy)
+        self.table_view.addAction(self.action_copy_path)
+        self.table_view.addAction(self.action_paste)
+        self.table_view.addAction(self.action_cut)
+        self.table_view.addAction(self.action_rename)
+        self.table_view.addAction(self.action_delete)
+        # TODO: only show, if selected item is a folder
+        self.table_view.addAction(self.action_add_to_bookmarks)
+        self.table_view.addAction(self.action_show_hidden)
+
+        self.bookmark_view.addAction(self.action_remove_bookmark)
 
     # ---------------- events ---------------------------------------------- #
     def action_new_dir_event(self):
@@ -395,52 +400,21 @@ class tfm(QMainWindow, Ui_tfm):
             self.table_view.selectionModel().selectedIndexes())
         self.clipboard.setMimeData(mime_data)
 
-    # TODO: Multithreaded and progress / status information, support folders,
-    # handle existing file(s)
+    # TODO: allow multiple pastes at the same time
     def action_paste_event(self):
         """
         Pastes the files currently in the clipboard to the current dir.
         """
-        if self.clipboard.mimeData().hasUrls():
-            # get paths from URLs in clipboard
-            path_list = []
-            for url in self.clipboard.mimeData().urls():
-                if (url.isLocalFile()):
-                    path_list.append(url.toLocalFile())
-
-            multiple_paths = (len(path_list) > 1)
-            cut = (collections.Counter(path_list)
-                   == collections.Counter(self.marked_to_cut))
-
-            # add paths inside of copied dirs
-            paths_to_add = []
-            for path in path_list:
-                if (os.path.isdir(path)):
-                    paths_to_add.extend(utility.traverse_dir(path))
-            path_list.extend(paths_to_add)
-
-            # determine common base path of the files
-            base_path = ''
-            if (multiple_paths):
-                base_path = os.path.commonpath(path_list) + '/'
-            else:
-                base_path = (os.path.dirname(os.path.commonpath(path_list))
-                             + '/')
-
-            # copy files to new location
-            for path in path_list:
-                new_path = os.path.join(self.current_path,
-                                        path.replace(base_path, ''))
-                if (os.path.isdir(path)
-                        and not QDir().exists(new_path)):
-                    QDir().mkpath(new_path)
-                elif (QFile().exists(path)
-                        and not QFile().exists(new_path)):
-                    QFile().copy(path, new_path)
-            # removed cut files
-            if cut:
-                for file_path in path_list:
-                    QFile().remove(file_path)
+        self.paste_thread = QThread()
+        self.paste_worker = pw(clipboard=self.clipboard,
+                               current_path=self.current_path,
+                               marked_to_cut=self.marked_to_cut)
+        self.paste_worker.moveToThread(self.paste_thread)
+        self.paste_thread.started.connect(self.paste_worker.run)
+        self.paste_worker.finished.connect(self.paste_thread.quit)
+        self.paste_worker.finished.connect(self.paste_worker.deleteLater)
+        self.paste_thread.finished.connect(self.paste_thread.deleteLater)
+        self.paste_thread.start()
 
     # TODO: visual feedback for cut files
     def action_cut_event(self):
@@ -514,6 +488,15 @@ class tfm(QMainWindow, Ui_tfm):
             self.filesystem.setFilter(QDir.AllEntries
                                       | QDir.NoDotAndDotDot
                                       | QDir.AllDirs)
+
+    def action_copy_path_event(self):
+        """
+        Copy path of currently selected item to clipboard.
+        """
+        path = os.path.join(self.current_path,
+                            self.table_view.currentIndex().siblingAtColumn(0)
+                            .data())
+        self.clipboard.setText(path)
 
     def action_add_to_bookmarks_event(self):
         """
