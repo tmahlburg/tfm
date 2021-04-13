@@ -52,6 +52,7 @@ Are going to be here soon.
 * search in folder
 * restore from trash (should be implemented via a custom model/view)
 * delete from trash (should be implemented via a custom model/view)
+* mount MTP devices
 #### ui
 * save config per dir
 * optional preview pane
