@@ -7,6 +7,9 @@ from PySide2.QtGui import QClipboard
 
 
 class paste_worker(QObject):
+    """
+    Worker class, that is used to paste files in a different thread.
+    """
     finished = Signal()
     def __init__(self,
                  *args,
@@ -33,7 +36,6 @@ class paste_worker(QObject):
             cut = (collections.Counter(path_list)
                    == collections.Counter(self.marked_to_cut))
 
-            print("got here")
             # add paths inside of copied dirs
             paths_to_add = []
             for path in path_list:
