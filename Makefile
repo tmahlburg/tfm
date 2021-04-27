@@ -4,6 +4,9 @@ init: Pipfile.lock
 form.py: tfm/form.ui
 	pyside2-uic tfm/form.ui -o tfm/form.py
 
+paste_dialog.py: tfm/paste_dialog.ui
+	pyside2-uic tfm/paste_dialog.ui -o tfm/paste_dialog.py
+
 lint: tfm/*.py
 	flake8 tfm/bookmarks.py --count --show-source --statistics
 	flake8 main.py --count --show-source	--statistics
