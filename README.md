@@ -26,7 +26,7 @@ Are going to be here soon.
 
 ### Before 0.1
 #### functionality
-* pasting status window on longer pastes
+* pasting status window on longer pastes (WIP)
 #### infrastructure
 * proper error handling and logging
 * voidlinux package
@@ -48,7 +48,7 @@ Are going to be here soon.
 * port to Qt6
 
 ### Beyond 0.2
-#### functinality
+#### functionality
 * search in folder
 * restore from trash (should be implemented via a custom model/view)
 * delete from trash (should be implemented via a custom model/view)
