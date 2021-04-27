@@ -1,7 +1,7 @@
 # tfm
-Simple file manager implemented in Qt for Python. This project aims to create a simple, desktop agnostic, unix file-manager.
-The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problemss.
-The Project is in a proof of concept stage right now and it is not advised to use it at the moment.
+Simple file manager implemented in Qt for Python (Qt5). This project aims to create a simple, desktop agnostic, unix file-manager.
+The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problems.
+The project is in a pre alpha stage right now and thus it is not advised to use it at the moment.
 If you still want to try it, a python package is available in the ```dist``` directory of this repository
 
 ## Features
@@ -9,18 +9,18 @@ If you still want to try it, a python package is available in the ```dist``` dir
 * window layout with toolbar, statusbar, main table view, fs tree and bookmarks
 * open files using xdg-open
 * cut, copy, paste, renaming
-* named bookmarks to folders
+* named bookmarks to directories
 * show/hide dotfiles
-* throw files and dirs in the trash
+* throw files and directories in the trash
 * drag and drop (always moves)
-* cli to open via path or file url
+* cli to open with a path or file url supplied
 * show, mount and unmount devices using udevil
 
 ## How to install
-Don't right now. Making packages is the next item on my list though.
+Don't, right now. Making packages is the next item on my list though.
 
 ## Screenshots
-Are going to be here soon.
+Coming soon.
 
 ## Roadmap
 
@@ -67,9 +67,9 @@ Are going to be here soon.
 * localization
 
 ## Non-Features
-These features are going to be intentionally omitted:
+These features are never going to be part of tfm:
 
 * dependencies on specific desktop environments
-* windows management like tabs, split views or similar
+* window management like tabs, split views or similar
 * plugins or script support
 * a lot of configuration options
