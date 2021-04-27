@@ -2,8 +2,10 @@ import os
 import collections
 from typing import List
 
-from PySide2.QtCore import QObject, QDir, QFile, Signal, QMimeData
+from PySide2.QtCore import QObject, QDir, QFile, Signal
 from PySide2.QtGui import QClipboard
+
+import tfm.utility as utility
 
 
 class paste_worker(QObject):
@@ -11,6 +13,8 @@ class paste_worker(QObject):
     Worker class, that is used to paste files in a different thread.
     """
     finished = Signal()
+    overall_progress = Signal(float)
+
     def __init__(self,
                  *args,
                  clipboard: QClipboard,
@@ -51,6 +55,13 @@ class paste_worker(QObject):
                 base_path = (os.path.dirname(os.path.commonpath(path_list))
                              + '/')
 
+            # setup progress tracking
+            total_files = 0
+            for path in path_list:
+                if (QFile().exists(path)):
+                    total_files += 1
+            files_copied = 0
+
             # copy files to new location
             for path in path_list:
                 new_path = os.path.join(self.current_path,
@@ -61,6 +72,9 @@ class paste_worker(QObject):
                 elif (QFile().exists(path)
                         and not QFile().exists(new_path)):
                     QFile().copy(path, new_path)
+                    # communicate progress
+                    files_copied += 1
+                    self.total_progress.emit(files_copied / total_files)
             # removed cut files
             if cut:
                 for file_path in path_list:
