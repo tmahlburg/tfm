@@ -12,6 +12,22 @@ tfm.bookmarks module
    :undoc-members:
    :show-inheritance:
 
+tfm.mounts_model module
+--------------------
+
+.. automodule:: tfm.mounts_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tfm.paste_worker module
+--------------------
+
+.. automodule:: tfm.paste_worker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tfm.form module
 ---------------
 

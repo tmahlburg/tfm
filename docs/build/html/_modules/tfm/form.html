@@ -6,13 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>tfm.form &#8212; tfm 0.0.3 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -37,7 +36,7 @@
 <span class="c1">################################################################################</span>
 <span class="c1">## Form generated from reading UI file &#39;form.ui&#39;</span>
 <span class="c1">##</span>
-<span class="c1">## Created by: Qt User Interface Compiler version 5.15.1</span>
+<span class="c1">## Created by: Qt User Interface Compiler version 5.15.2</span>
 <span class="c1">##</span>
 <span class="c1">## WARNING! All changes made in this file will be lost when recompiling UI file!</span>
 <span class="c1">################################################################################</span>
@@ -52,6 +51,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">tfm</span><span class="o">.</span><span class="n">objectName</span><span class="p">():</span>
             <span class="n">tfm</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;tfm&quot;</span><span class="p">)</span>
         <span class="n">tfm</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+        <span class="n">tfm</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoContextMenu</span><span class="p">)</span>
+        <span class="n">tfm</span><span class="o">.</span><span class="n">setLocale</span><span class="p">(</span><span class="n">QLocale</span><span class="p">(</span><span class="n">QLocale</span><span class="o">.</span><span class="n">English</span><span class="p">,</span> <span class="n">QLocale</span><span class="o">.</span><span class="n">UnitedStates</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_menu</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">tfm</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_menu</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;action_menu&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_new_dir</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">tfm</span><span class="p">)</span>
@@ -85,6 +86,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">action_add_to_bookmarks</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;action_add_to_bookmarks&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_remove_bookmark</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">tfm</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_remove_bookmark</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;action_remove_bookmark&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_copy_path</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">tfm</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_copy_path</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;action_copy_path&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">(</span><span class="n">tfm</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;centralwidget&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">horizontalLayout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centralwidget</span><span class="p">)</span>
@@ -102,18 +105,23 @@
         <span class="n">sizePolicy</span><span class="o">.</span><span class="n">setVerticalStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">sizePolicy</span><span class="o">.</span><span class="n">setHeightForWidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fs_tree</span><span class="o">.</span><span class="n">sizePolicy</span><span class="p">()</span><span class="o">.</span><span class="n">hasHeightForWidth</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fs_tree</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">sizePolicy</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fs_tree</span><span class="o">.</span><span class="n">setFrameShadow</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">Sunken</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fs_tree</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s2">&quot;showDropIndicator&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fs_tree</span><span class="o">.</span><span class="n">setTabKeyNavigation</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fs_tree</span><span class="o">.</span><span class="n">setRootIsDecorated</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hsplit</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fs_tree</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fs_tree</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span> <span class="o">=</span> <span class="n">QListWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hsplit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;bookmark_view&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ActionsContextMenu</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="o">.</span><span class="n">setFrameShadow</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">Sunken</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="o">.</span><span class="n">setDragDropMode</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">DropOnly</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="o">.</span><span class="n">setDefaultDropAction</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ActionMask</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="o">.</span><span class="n">setEditTriggers</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">DoubleClicked</span><span class="o">|</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">EditKeyPressed</span><span class="o">|</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectedClicked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="o">.</span><span class="n">setTabKeyNavigation</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="o">.</span><span class="n">setDragDropMode</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">InternalMove</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="o">.</span><span class="n">setAlternatingRowColors</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hsplit</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bookmark_view</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mounts_view</span> <span class="o">=</span> <span class="n">QListView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hsplit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mounts_view</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;mounts_view&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mounts_view</span><span class="o">.</span><span class="n">setTabKeyNavigation</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mounts_view</span><span class="o">.</span><span class="n">setAlternatingRowColors</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hsplit</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mounts_view</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vsplit</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hsplit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span> <span class="o">=</span> <span class="n">QTableView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vsplit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;table_view&quot;</span><span class="p">)</span>
@@ -126,18 +134,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ActionsContextMenu</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setAcceptDrops</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setToolTipDuration</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setLocale</span><span class="p">(</span><span class="n">QLocale</span><span class="p">(</span><span class="n">QLocale</span><span class="o">.</span><span class="n">German</span><span class="p">,</span> <span class="n">QLocale</span><span class="o">.</span><span class="n">Germany</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setFrameShadow</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">Plain</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setEditTriggers</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">AnyKeyPressed</span><span class="o">|</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">EditKeyPressed</span><span class="o">|</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectedClicked</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setDragEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setDragDropMode</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">DragDrop</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setDefaultDropAction</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">CopyAction</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setDefaultDropAction</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">MoveAction</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setAlternatingRowColors</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setSelectionMode</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">ExtendedSelection</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setSelectionBehavior</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectRows</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setTextElideMode</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ElideMiddle</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setShowGrid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setSortingEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setWordWrap</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vsplit</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">setDefaultSectionSize</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">setHighlightSections</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">setStretchLastSection</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">verticalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
@@ -151,6 +161,7 @@
         <span class="n">tfm</span><span class="o">.</span><span class="n">setStatusBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span> <span class="o">=</span> <span class="n">QToolBar</span><span class="p">(</span><span class="n">tfm</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;toolbar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">PreventContextMenu</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">setMovable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">tfm</span><span class="o">.</span><span class="n">addToolBar</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">TopToolBarArea</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="p">)</span>
 
@@ -192,7 +203,7 @@
 <span class="c1">#if QT_CONFIG(tooltip)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_remove_bookmark</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">QCoreApplication</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="s2">&quot;tfm&quot;</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;Remove bookmark&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 <span class="c1">#endif // QT_CONFIG(tooltip)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">QCoreApplication</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="s2">&quot;tfm&quot;</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;toolBar&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_copy_path</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">QCoreApplication</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="s2">&quot;tfm&quot;</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;Copy path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span></div></div>
     <span class="c1"># retranslateUi</span>
 
 </pre></div>
@@ -249,7 +260,7 @@
       &copy;2020, Till Mahlburg.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

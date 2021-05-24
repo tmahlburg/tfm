@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tfm.mounts_model &#8212; tfm 0.0.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for tfm.mounts_model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">PIPE</span>
+
+<span class="kn">from</span> <span class="nn">pyudev</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">Context</span>
+
+<span class="kn">from</span> <span class="nn">PySide2.QtCore</span> <span class="kn">import</span> <span class="n">QAbstractListModel</span><span class="p">,</span> <span class="n">Qt</span>
+<span class="kn">from</span> <span class="nn">PySide2.QtGui</span> <span class="kn">import</span> <span class="n">QIcon</span>
+
+
+<div class="viewcode-block" id="mounts_model"><a class="viewcode-back" href="../../tfm.html#tfm.mounts_model.mounts_model">[docs]</a><span class="k">class</span> <span class="nc">mounts_model</span><span class="p">(</span><span class="n">QAbstractListModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provides a Qt-compatible data model, handling the listing and mounting of</span>
+<span class="sd">    devices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds available mounts using udev and the given context.</span>
+
+<span class="sd">        :param context: The udev context this class is used in.</span>
+<span class="sd">        :type context: Context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">mounts_model</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_available_mounts</span><span class="p">()</span>
+
+<div class="viewcode-block" id="mounts_model.data"><a class="viewcode-back" href="../../tfm.html#tfm.mounts_model.mounts_model.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the data of the object in a Qt-conforming way. If the given</span>
+<span class="sd">        role is DisplayRole it returns the name of the device as a string, if</span>
+<span class="sd">        it&#39;s DecorationRole it returns an icon according to it&#39;s mount state.</span>
+
+<span class="sd">        :param index: Index of the item in the data structure.</span>
+<span class="sd">        :type index: int</span>
+<span class="sd">        :param role: Item role according to Qt.</span>
+<span class="sd">        :type role: int</span>
+<span class="sd">        :return: Device name or icon according to mount state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()]</span><span class="o">.</span><span class="n">sys_name</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">DecorationRole</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_mount_point</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">()])</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">QIcon</span><span class="o">.</span><span class="n">fromTheme</span><span class="p">(</span><span class="s1">&#39;media-eject&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">QIcon</span><span class="o">.</span><span class="n">fromTheme</span><span class="p">(</span><span class="s1">&#39;drive-harddisk&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="mounts_model.rowCount"><a class="viewcode-back" href="../../tfm.html#tfm.mounts_model.mounts_model.rowCount">[docs]</a>    <span class="k">def</span> <span class="nf">rowCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the number of mountable devices in a Qt-conforming way.</span>
+
+<span class="sd">        :param index: unused, but needed by Qt.</span>
+<span class="sd">        :type index: int</span>
+<span class="sd">        :return: Number of mountable devices.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="mounts_model.get_device_at"><a class="viewcode-back" href="../../tfm.html#tfm.mounts_model.mounts_model.get_device_at">[docs]</a>    <span class="k">def</span> <span class="nf">get_device_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Device</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the device at the given index.</span>
+
+<span class="sd">        :param index: Index of the wanted device.</span>
+<span class="sd">        :type index: int</span>
+<span class="sd">        :return: The device at the index in the model.</span>
+<span class="sd">        :rtype: Device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="mounts_model.add"><a class="viewcode-back" href="../../tfm.html#tfm.mounts_model.mounts_model.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">Device</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a device to the model, if it&#39;s not already a part of it.</span>
+
+<span class="sd">        :param device: The device to add.</span>
+<span class="sd">        :type device: Device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="mounts_model.remove"><a class="viewcode-back" href="../../tfm.html#tfm.mounts_model.mounts_model.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">Device</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes a device out of the model, if it exists.</span>
+
+<span class="sd">        :param device: The device to remove.</span>
+<span class="sd">        :type device: Device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="mounts_model.get_mount_point"><a class="viewcode-back" href="../../tfm.html#tfm.mounts_model.mounts_model.get_mount_point">[docs]</a>    <span class="k">def</span> <span class="nf">get_mount_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">Device</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Looks for a mount point of the given device, using the findmnt</span>
+<span class="sd">        command. Returns an empty string, if there is none.</span>
+
+<span class="sd">        :param device: The device, of which the mount point is needed.</span>
+<span class="sd">        :type device: Device</span>
+<span class="sd">        :return: The mount point or an empty string, if it doesn&#39;t exists</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">run</span><span class="p">([</span><span class="s1">&#39;findmnt&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-n&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-o&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;target&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;/dev/&#39;</span> <span class="o">+</span> <span class="n">device</span><span class="o">.</span><span class="n">sys_name</span><span class="p">],</span>
+                   <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span>
+                   <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span>
+                   <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="mounts_model.toggle_mount"><a class="viewcode-back" href="../../tfm.html#tfm.mounts_model.mounts_model.toggle_mount">[docs]</a>    <span class="k">def</span> <span class="nf">toggle_mount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">Device</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mounts an unmounted device or unmounts a mounted device using the</span>
+<span class="sd">        udevil command.</span>
+
+<span class="sd">        :param device: The device to mount or unmount.</span>
+<span class="sd">        :type device: Device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mount_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mount_point</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mount_point</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">run</span><span class="p">([</span><span class="s1">&#39;udevil&#39;</span><span class="p">,</span> <span class="s1">&#39;--quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;umount&#39;</span><span class="p">,</span> <span class="n">mount_point</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">run</span><span class="p">([</span><span class="s1">&#39;udevil&#39;</span><span class="p">,</span> <span class="s1">&#39;--quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;mount&#39;</span><span class="p">,</span> <span class="s1">&#39;/dev/&#39;</span> <span class="o">+</span> <span class="n">device</span><span class="o">.</span><span class="n">sys_name</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="mounts_model.get_available_mounts"><a class="viewcode-back" href="../../tfm.html#tfm.mounts_model.mounts_model.get_available_mounts">[docs]</a>    <span class="k">def</span> <span class="nf">get_available_mounts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Device</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of mountable partitions.</span>
+
+<span class="sd">        :return: List of mountable partitions</span>
+<span class="sd">        :rtype: List[Device]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mountable_devices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dev</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">list_devices</span><span class="p">(</span><span class="n">subsystem</span><span class="o">=</span><span class="s1">&#39;block&#39;</span><span class="p">,</span>
+                                             <span class="n">DEVTYPE</span><span class="o">=</span><span class="s1">&#39;partition&#39;</span><span class="p">):</span>
+            <span class="n">mountable_devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mountable_devices</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">tfm</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Till Mahlburg.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

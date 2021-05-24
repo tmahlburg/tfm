@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tfm.paste_worker &#8212; tfm 0.0.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for tfm.paste_worker</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">PySide2.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">QDir</span><span class="p">,</span> <span class="n">QFile</span><span class="p">,</span> <span class="n">Signal</span>
+<span class="kn">from</span> <span class="nn">PySide2.QtGui</span> <span class="kn">import</span> <span class="n">QClipboard</span>
+
+<span class="kn">import</span> <span class="nn">tfm.utility</span> <span class="k">as</span> <span class="nn">utility</span>
+
+
+<div class="viewcode-block" id="paste_worker"><a class="viewcode-back" href="../../tfm.html#tfm.paste_worker.paste_worker">[docs]</a><span class="k">class</span> <span class="nc">paste_worker</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Worker class, that is used to paste files in a different thread.</span>
+
+<span class="sd">    Signals:</span>
+<span class="sd">    **finished**: is emitted, when the worker is done</span>
+<span class="sd">    **started**: is emitted, when the worker starts and the clipboard is not</span>
+<span class="sd">    empty</span>
+<span class="sd">    **ready**: is emitted, when all file paths to paste are collected,</span>
+<span class="sd">    contains the number of files to paste as int</span>
+<span class="sd">    **progress**: is emitted, whenever a file is done being pasted,</span>
+<span class="sd">    contains the number of files pasted so far</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">finished</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+    <span class="n">started</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+    <span class="n">ready</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">progress</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="n">clipboard</span><span class="p">:</span> <span class="n">QClipboard</span><span class="p">,</span>
+                 <span class="n">target_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">marked_to_cut</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calls QObject constructor and initializes the clipboard, the current</span>
+<span class="sd">        path and the list of files, that are marked to cut. It also initializes</span>
+<span class="sd">        the is_canceld property to False.</span>
+
+<span class="sd">        :param clipboard: The clipboard containing the file URLs that will be</span>
+<span class="sd">                          pasted.</span>
+<span class="sd">        :type clipboard: QClipboard</span>
+<span class="sd">        :param target_path: Path, where the files should be pasted to.</span>
+<span class="sd">        :type target_path: str</span>
+<span class="sd">        :param marked_to_cut: A list of file paths, which shold be deleted</span>
+<span class="sd">                              after pasting.</span>
+<span class="sd">        :type marked_to_cut: List[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">paste_worker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clipboard</span> <span class="o">=</span> <span class="n">clipboard</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_path</span> <span class="o">=</span> <span class="n">target_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marked_to_cut</span> <span class="o">=</span> <span class="n">marked_to_cut</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_canceled</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="paste_worker.get_paths_from_clipboard"><a class="viewcode-back" href="../../tfm.html#tfm.paste_worker.paste_worker.get_paths_from_clipboard">[docs]</a>    <span class="k">def</span> <span class="nf">get_paths_from_clipboard</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extracts file paths from file URLs in the clipboard.</span>
+
+<span class="sd">        :return: List of file paths</span>
+<span class="sd">        :rtype: List[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clipboard</span><span class="o">.</span><span class="n">mimeData</span><span class="p">()</span><span class="o">.</span><span class="n">urls</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">isLocalFile</span><span class="p">()):</span>
+                <span class="n">path_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">toLocalFile</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">path_list</span></div>
+
+<div class="viewcode-block" id="paste_worker.recurse_dirs"><a class="viewcode-back" href="../../tfm.html#tfm.paste_worker.paste_worker.recurse_dirs">[docs]</a>    <span class="k">def</span> <span class="nf">recurse_dirs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recurses all directories in the given list of paths and adds the</span>
+<span class="sd">        files and directories found there to the given list.</span>
+
+<span class="sd">        :param path_list: List of file paths</span>
+<span class="sd">        :type path_list: List[str]</span>
+<span class="sd">        :return: The original list of file paths extended by the contents</span>
+<span class="sd">                 of any directory in the original list</span>
+<span class="sd">        :rtype: List[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">paths_to_add</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">)):</span>
+                <span class="n">paths_to_add</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">utility</span><span class="o">.</span><span class="n">traverse_dir</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">path_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">paths_to_add</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path_list</span></div>
+
+<div class="viewcode-block" id="paste_worker.count_files"><a class="viewcode-back" href="../../tfm.html#tfm.paste_worker.paste_worker.count_files">[docs]</a>    <span class="k">def</span> <span class="nf">count_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Counts all files (and not directories) in the give list of paths.</span>
+
+<span class="sd">        :param path_list: List of file paths</span>
+<span class="sd">        :type path_list: List[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                <span class="n">file_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">file_count</span></div>
+
+<div class="viewcode-block" id="paste_worker.get_base_path"><a class="viewcode-back" href="../../tfm.html#tfm.paste_worker.paste_worker.get_base_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines the largest common path of the files in the given list of</span>
+<span class="sd">        paths.</span>
+
+<span class="sd">        :param path_list: List of file paths</span>
+<span class="sd">        :type path_list: List[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">path_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonpath</span><span class="p">(</span><span class="n">path_list</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonpath</span><span class="p">(</span><span class="n">path_list</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span></div>
+
+    <span class="c1"># TODO: handle existing file(s), handle errors related to permissions</span>
+<div class="viewcode-block" id="paste_worker.run"><a class="viewcode-back" href="../../tfm.html#tfm.paste_worker.paste_worker.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Main logic. Pastes the files from the clipboard to the target path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">clipboard</span><span class="o">.</span><span class="n">mimeData</span><span class="p">()</span><span class="o">.</span><span class="n">hasUrls</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+            <span class="n">path_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_paths_from_clipboard</span><span class="p">()</span>
+
+            <span class="n">cut</span> <span class="o">=</span> <span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">path_list</span><span class="p">)</span>
+                   <span class="o">==</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marked_to_cut</span><span class="p">))</span>
+
+            <span class="n">path_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">recurse_dirs</span><span class="p">(</span><span class="n">path_list</span><span class="p">)</span>
+
+            <span class="n">files_copied</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ready</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_files</span><span class="p">(</span><span class="n">path_list</span><span class="p">))</span>
+
+            <span class="n">base_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_base_path</span><span class="p">(</span><span class="n">path_list</span><span class="p">)</span>
+
+            <span class="c1"># copy files to new location</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_canceled</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="n">new_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_path</span><span class="p">,</span>
+                                        <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                        <span class="ow">and</span> <span class="ow">not</span> <span class="n">QDir</span><span class="p">()</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">new_path</span><span class="p">)):</span>
+                    <span class="n">QDir</span><span class="p">()</span><span class="o">.</span><span class="n">mkpath</span><span class="p">(</span><span class="n">new_path</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">QFile</span><span class="p">()</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                        <span class="ow">and</span> <span class="ow">not</span> <span class="n">QFile</span><span class="p">()</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">new_path</span><span class="p">)):</span>
+                    <span class="c1"># TODO: handle errors related to permissions</span>
+                    <span class="n">QFile</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+                    <span class="c1"># communicate progress</span>
+                    <span class="n">files_copied</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">files_copied</span><span class="p">)</span>
+            <span class="c1"># removed cut files</span>
+            <span class="k">if</span> <span class="n">cut</span><span class="p">:</span>
+                <span class="c1"># TODO: handle errors related to permissions</span>
+                <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">path_list</span><span class="p">:</span>
+                    <span class="n">QFile</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">tfm</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Till Mahlburg.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

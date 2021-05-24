@@ -13,15 +13,13 @@ class paste_worker(QObject):
     Worker class, that is used to paste files in a different thread.
 
     Signals:
-        finished: is emitted, when the worker is done
-        started:
-            is emitted, when the worker starts and the clipboard is not empty
-        ready:
-            is emitted, when all file paths to paste are collected
-            contains the number of files to paste as int
-        progress:
-            is emitted, whenever a file is done being pasted
-            contains the number of files pasted so far
+    **finished**: is emitted, when the worker is done
+    **started**: is emitted, when the worker starts and the clipboard is not
+    empty
+    **ready**: is emitted, when all file paths to paste are collected,
+    contains the number of files to paste as int
+    **progress**: is emitted, whenever a file is done being pasted,
+    contains the number of files pasted so far
     """
     finished = Signal()
     started = Signal()
