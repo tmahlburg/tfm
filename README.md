@@ -17,7 +17,10 @@ If you still want to try it, a python package is available in the ```dist``` dir
 * show, mount and unmount devices using udevil
 
 ## How to install
-Don't, right now. Making packages is the next item on my list though.
+There are experimental python packages in dist/. Install at your own risk using:
+```
+pip install ./dist/tfm-0.0.3.dev0.tar.gz
+```
 
 ## Screenshots
 Coming soon.
