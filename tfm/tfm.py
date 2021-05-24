@@ -50,9 +50,9 @@ class tfm(QMainWindow, Ui_tfm):
         self.forward_stack = stack()
 
         self.config_dir = os.path.join(
-                            QStandardPaths.writableLocation(
-                                QStandardPaths().ConfigLocation),
-                            type(self).__name__)
+            QStandardPaths.writableLocation(
+                QStandardPaths().ConfigLocation),
+            type(self).__name__)
 
         self.current_path = utility.handle_args(args)
         self.default_path = self.current_path
@@ -232,7 +232,7 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_cut.setShortcuts(
             QKeySequence.keyBindings(QKeySequence.Cut))
         self.action_delete.setShortcuts(
-          QKeySequence.keyBindings(QKeySequence.Delete))
+            QKeySequence.keyBindings(QKeySequence.Delete))
 
     def set_context_menus(self):
         """
@@ -418,7 +418,7 @@ class tfm(QMainWindow, Ui_tfm):
         self.paste_worker.is_canceled = False
 
         # canceled
-        self.progress_dialog.canceled.connect(self.cancel)
+        self.progress_dialog.canceled.connect(self.progress_dialog_cancel)
         # started
         self.paste_thread.started.connect(self.paste_worker.run)
         # ready
@@ -431,21 +431,6 @@ class tfm(QMainWindow, Ui_tfm):
         self.paste_worker.finished.connect(self.progress_dialog.reset)
         self.paste_thread.finished.connect(self.paste_thread.deleteLater)
         self.paste_thread.start()
-
-    def progress_dialog_init(self, maximum):
-        self.progress_dialog.setMaximum(maximum)
-        self.files_to_paste_count = maximum
-
-    def progress_dialog_update(self, value: int):
-        self.progress_dialog.setValue(value)
-        self.progress_dialog.setLabelText('Pasting file '
-                                          + str(value)
-                                          + ' of '
-                                          + str(self.files_to_paste_count)
-                                          + '...')
-
-    def cancel(self):
-        self.paste_worker.is_canceled = True
 
     # TODO: visual feedback for cut files
     def action_cut_event(self):
@@ -660,3 +645,33 @@ class tfm(QMainWindow, Ui_tfm):
             self.mounts.add(device)
         elif action == 'remove':
             self.mounts.remove(device)
+
+    def progress_dialog_init(self, maximum: int):
+        """
+        Initializes the progress dialog and sets its maximum value.
+
+        :param maximum: The total amount of files to be pasted.
+        :type maximum: int
+        """
+        self.progress_dialog.setMaximum(maximum)
+        self.files_to_paste_count = maximum
+
+    def progress_dialog_update(self, value: int):
+        """
+        Updates the progress dialog.
+
+        :param value: Amount of files already pasted.
+        :type value: int
+        """
+        self.progress_dialog.setValue(value)
+        self.progress_dialog.setLabelText('Pasting file '
+                                          + str(value)
+                                          + ' of '
+                                          + str(self.files_to_paste_count)
+                                          + '...')
+
+    def progress_dialog_cancel(self):
+        """
+        Tells the paste worker to cancel its work
+        """
+        self.paste_worker.is_canceled = True
