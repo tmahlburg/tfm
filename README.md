@@ -32,6 +32,7 @@ Coming soon.
 * voidlinux package
 * AppImage
 * add more tests
+* robust error handling
 
 ### Before 0.2
 #### functionality
@@ -41,7 +42,7 @@ Coming soon.
 * open multiple selected files
 * statusbar directory information
 * differentiate default dropAction by destination
-* link files
+* handle file links
 #### ui
 * drag and drop folders as bookmarks in the bookmark view
 #### infrastructure
@@ -54,7 +55,6 @@ Coming soon.
 * delete from trash (should be implemented via a custom model/view)
 * mount MTP devices
 #### ui
-* save config per dir
 * optional preview pane
 * open with dialog
 * file previews
