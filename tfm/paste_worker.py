@@ -60,7 +60,8 @@ class paste_worker(QObject):
             return os.path.commonpath(path_list) + '/'
         return (os.path.dirname(os.path.commonpath(path_list)) + '/')
 
-    # TODO: handle existing file(s), handle errors related to permissions, allow cancelation
+    # TODO: handle existing file(s), handle errors related to permissions, allow
+    # cancelation
     def run(self):
         if self.clipboard.mimeData().hasUrls():
             self.started.emit()
@@ -82,18 +83,15 @@ class paste_worker(QObject):
 
             # copy files to new location
             for path in path_list:
-                print(path)
                 new_path = os.path.join(self.current_path,
                                         path.replace(base_path, ''))
-                print(new_path)
                 if (os.path.isdir(path)
                         and not QDir().exists(new_path)):
                     QDir().mkpath(new_path)
                 elif (QFile().exists(path)
                         and not QFile().exists(new_path)):
                     # TODO: handle errors related to permissions
-                    err = QFile().copy(path, new_path)
-                    print(err)
+                    QFile().copy(path, new_path)
                     # communicate progress
                     files_copied += 1
                     self.progress.emit(files_copied)

@@ -42,6 +42,9 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.clipboard = QApplication.clipboard()
         self.marked_to_cut = []
+        self.progress_dialog = QProgressDialog()
+        self.progress_dialog.cancel()
+        self.files_to_paste_count = 0
 
         self.back_stack = stack()
         self.forward_stack = stack()
@@ -401,27 +404,40 @@ class tfm(QMainWindow, Ui_tfm):
         Pastes the files currently in the clipboard to the current dir.
         """
         # setup QProgressDialog
-        progress_dialog = QProgressDialog(parent=self, minimum=0, maximum=1,)
-        progress_dialog.setMinimumDuration(1000)
+        self.progress_dialog.reset()
+        self.progress_dialog.setMinimumDuration(1000)
+        self.progress_dialog.setLabelText('Pasting...')
+        self.progress_dialog.setValue(0)
         # setup paste_worker
         self.paste_thread = QThread()
         self.paste_worker = pw(clipboard=self.clipboard,
                                current_path=self.current_path,
                                marked_to_cut=self.marked_to_cut)
         self.paste_worker.moveToThread(self.paste_thread)
+
         # started
         self.paste_thread.started.connect(self.paste_worker.run)
         # ready
-        self.paste_worker.ready.connect(progress_dialog.setMaximum)
-        self.paste_worker.ready.connect(print)
+        self.paste_worker.ready.connect(self.progress_dialog_init)
         # progress
-        self.paste_worker.progress.connect(progress_dialog.value)
-        self.paste_worker.ready.connect(print)
+        self.paste_worker.progress.connect(self.progress_dialog_update)
         # finished
         self.paste_worker.finished.connect(self.paste_thread.quit)
         self.paste_worker.finished.connect(self.paste_worker.deleteLater)
         self.paste_thread.finished.connect(self.paste_thread.deleteLater)
         self.paste_thread.start()
+
+    def progress_dialog_init(self, maximum):
+        self.progress_dialog.setMaximum(maximum)
+        self.files_to_paste_count = maximum
+
+    def progress_dialog_update(self, value: int):
+        self.progress_dialog.setValue(value)
+        self.progress_dialog.setLabelText('Pasting file '
+                                          + str(value)
+                                          + ' of '
+                                          + str(self.files_to_paste_count)
+                                          + '...')
 
     # TODO: visual feedback for cut files
     def action_cut_event(self):
