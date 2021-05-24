@@ -3,12 +3,13 @@ from typing import List
 
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
-                               QMessageBox, QMainWindow)
+                               QMessageBox, QMainWindow, QDialog)
 from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths,
                             QThread)
 from PySide2.QtGui import QKeySequence, QIcon
 
 from .form import Ui_tfm
+from .paste_dialog import paste_dialog
 
 from .stack import stack
 from .bookmarks import bookmarks as bm
@@ -156,6 +157,8 @@ class tfm(QMainWindow, Ui_tfm):
         self.set_shortcuts()
         self.set_icons()
         self.set_context_menus()
+
+        self.paste_dialog = paste_dialog()
 
     # ---------------- setup ----------------------------------------------- #
     def set_icons(self):
@@ -409,8 +412,23 @@ class tfm(QMainWindow, Ui_tfm):
                                current_path=self.current_path,
                                marked_to_cut=self.marked_to_cut)
         self.paste_worker.moveToThread(self.paste_thread)
+
+        # started
         self.paste_thread.started.connect(self.paste_worker.run)
+        # show dialog
+        self.paste_worker.started.connect(self.paste_dialog.exec)
+
+        # ready
+        self.paste_worker.ready.connect(self.paste_dialog.init)
+
+        # progress
+        self.paste_worker.progress.connect(self.paste_dialog.update)
+
+        # finished
         self.paste_worker.finished.connect(self.paste_thread.quit)
+        # end dialog
+        self.paste_worker.finished.connect(self.paste_dialog.done(
+                                                QDialog.Accepted))
         self.paste_worker.finished.connect(self.paste_worker.deleteLater)
         self.paste_thread.finished.connect(self.paste_thread.deleteLater)
         self.paste_thread.start()

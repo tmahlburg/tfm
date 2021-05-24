@@ -49,7 +49,7 @@ Coming soon.
 
 ### Beyond 0.2
 #### functionality
-* search in folder
+* fuzzy search in folder
 * restore from trash (should be implemented via a custom model/view)
 * delete from trash (should be implemented via a custom model/view)
 * mount MTP devices
