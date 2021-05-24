@@ -14,7 +14,7 @@ lint: tfm/*.py main.py
 	flake8 tfm/mounts_model.py --count --show-source --statistics
 
 docs: tfm/*.py
-	cd docs/build \
+	cd docs/ \
 	&& make html
 
 test: tfm/*.py tests/*.py
