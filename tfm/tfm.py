@@ -1,11 +1,12 @@
 import os
+import collections
 from typing import List
 
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
-                               QMessageBox, QMainWindow, QDialog)
+                               QMessageBox, QMainWindow, QProgressDialog)
 from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths,
-                            QThread)
+                            QThread, Qt)
 from PySide2.QtGui import QKeySequence, QIcon
 
 from .form import Ui_tfm
@@ -407,31 +408,66 @@ class tfm(QMainWindow, Ui_tfm):
         """
         Pastes the files currently in the clipboard to the current dir.
         """
-        self.paste_thread = QThread()
-        self.paste_worker = pw(clipboard=self.clipboard,
-                               current_path=self.current_path,
-                               marked_to_cut=self.marked_to_cut)
-        self.paste_worker.moveToThread(self.paste_thread)
+        # TODO: handle existing file(s), handle errors related to permissions
+        if self.clipboard.mimeData().hasUrls():
+            path_list = []
+            for url in self.clipboard.mimeData().urls():
+                if (url.isLocalFile()):
+                    path_list.append(url.toLocalFile())
 
-        # started
-        self.paste_thread.started.connect(self.paste_worker.run)
-        # show dialog
-        self.paste_worker.started.connect(self.paste_dialog.exec)
+            multiple_paths = (len(path_list) > 1)
 
-        # ready
-        self.paste_worker.ready.connect(self.paste_dialog.init)
+            cut = (collections.Counter(path_list)
+                   == collections.Counter(self.marked_to_cut))
 
-        # progress
-        self.paste_worker.progress.connect(self.paste_dialog.update)
+            paths_to_add = []
+            for path in path_list:
+                if (os.path.isdir(path)):
+                    paths_to_add.extend(utility.traverse_dir(path))
+            path_list.extend(paths_to_add)
 
-        # finished
-        self.paste_worker.finished.connect(self.paste_thread.quit)
-        # end dialog
-        self.paste_worker.finished.connect(self.paste_dialog.done(
-                                                QDialog.Accepted))
-        self.paste_worker.finished.connect(self.paste_worker.deleteLater)
-        self.paste_thread.finished.connect(self.paste_thread.deleteLater)
-        self.paste_thread.start()
+            files_copied = 0
+            file_count = 0
+            for path in path_list:
+                if (os.path.isfile(path)):
+                    file_count += 1
+
+            progress_dialog = QProgressDialog(labelText='Pasting...',
+                                              minimum=0,
+                                              maximum=file_count,
+                                              parent=self)
+            progress_dialog.setMinimumDuration(1000)
+
+            base_path = ''
+            if (multiple_paths):
+                base_path = os.path.commonpath(path_list) + '/'
+            else:
+                base_path = (os.path.dirname(os.path.commonpath(path_list))
+                             + '/')
+
+            # copy files to new location
+            for path in path_list:
+                if progress_dialog.wasCanceled():
+                    break
+
+                new_path = os.path.join(self.current_path,
+                                        path.replace(base_path, ''))
+                if (os.path.isdir(path)
+                        and not QDir().exists(new_path)):
+                    QDir().mkpath(new_path)
+                elif (QFile().exists(path)
+                        and not QFile().exists(new_path)):
+                    # TODO: handle errors related to permissions
+                    err = QFile().copy(path, new_path)
+                    print(err)
+                    # communicate progress
+                    files_copied += 1
+                    progress_dialog.setValue(files_copied)
+            # removed cut files
+            if cut:
+                # TODO: handle errors related to permissions
+                for file_path in path_list:
+                    QFile().remove(file_path)
 
     # TODO: visual feedback for cut files
     def action_cut_event(self):
