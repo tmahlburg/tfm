@@ -42,8 +42,8 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.clipboard = QApplication.clipboard()
         self.marked_to_cut = []
-        self.progress_dialog = QProgressDialog()
-        self.progress_dialog.cancel()
+        self.progress_dialog = None
+        self.paste_worker = None
         self.files_to_paste_count = 0
 
         self.back_stack = stack()
@@ -404,6 +404,7 @@ class tfm(QMainWindow, Ui_tfm):
         Pastes the files currently in the clipboard to the current dir.
         """
         # setup QProgressDialog
+        self.progress_dialog = QProgressDialog(parent=self)
         self.progress_dialog.reset()
         self.progress_dialog.setMinimumDuration(1000)
         self.progress_dialog.setLabelText('Pasting...')
@@ -414,7 +415,10 @@ class tfm(QMainWindow, Ui_tfm):
                                current_path=self.current_path,
                                marked_to_cut=self.marked_to_cut)
         self.paste_worker.moveToThread(self.paste_thread)
+        self.paste_worker.is_canceled = False
 
+        # canceled
+        self.progress_dialog.canceled.connect(self.cancel)
         # started
         self.paste_thread.started.connect(self.paste_worker.run)
         # ready
@@ -424,6 +428,7 @@ class tfm(QMainWindow, Ui_tfm):
         # finished
         self.paste_worker.finished.connect(self.paste_thread.quit)
         self.paste_worker.finished.connect(self.paste_worker.deleteLater)
+        self.paste_worker.finished.connect(self.progress_dialog.reset)
         self.paste_thread.finished.connect(self.paste_thread.deleteLater)
         self.paste_thread.start()
 
@@ -438,6 +443,9 @@ class tfm(QMainWindow, Ui_tfm):
                                           + ' of '
                                           + str(self.files_to_paste_count)
                                           + '...')
+
+    def cancel(self):
+        self.paste_worker.is_canceled = True
 
     # TODO: visual feedback for cut files
     def action_cut_event(self):

@@ -33,6 +33,12 @@ class paste_worker(QObject):
         self.current_path = current_path
         self.marked_to_cut = marked_to_cut
 
+        self.is_canceled = False
+
+    def cancel(self):
+        print('cancel')
+        self.is_canceled = True
+
     def get_paths_from_clipboard(self):
         path_list = []
         for url in self.clipboard.mimeData().urls():
@@ -83,6 +89,9 @@ class paste_worker(QObject):
 
             # copy files to new location
             for path in path_list:
+                if self.is_canceled:
+                    break
+
                 new_path = os.path.join(self.current_path,
                                         path.replace(base_path, ''))
                 if (os.path.isdir(path)
