@@ -1,6 +1,5 @@
 import os
 import collections
-import shutil
 from typing import List
 
 from PySide2.QtCore import QObject, QDir, QFile, Signal
@@ -52,16 +51,16 @@ class paste_worker(QObject):
     def count_files(self, path_list):
         file_count = 0
         for path in path_list:
-            if (QFile().exists(path)):
+            if os.path.isfile(path):
                 file_count += 1
         return file_count
 
-    def get_basepath(self, path_list, multiple_paths):
+    def get_base_path(self, path_list, multiple_paths):
         if (multiple_paths):
             return os.path.commonpath(path_list) + '/'
         return (os.path.dirname(os.path.commonpath(path_list)) + '/')
 
-    # TODO: handle existing file(s), handle errors related to permissions
+    # TODO: handle existing file(s), handle errors related to permissions, allow cancelation
     def run(self):
         if self.clipboard.mimeData().hasUrls():
             self.started.emit()
@@ -76,10 +75,10 @@ class paste_worker(QObject):
 
             # TODO:
             files_copied = 0
-            self.ready.emit(count_files(path_list))
-            self.progress.emit(files_copied)
+            self.ready.emit(self.count_files(path_list))
 
-            basepath = get_basepath(self, file_path, multiple_paths)
+            base_path = self.get_base_path(path_list, multiple_paths)
+            print(base_path)
 
             # copy files to new location
             for path in path_list:
