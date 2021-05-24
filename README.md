@@ -8,7 +8,7 @@ If you still want to try it, a python package is available in the ```dist``` dir
 * basic directory traversal
 * window layout with toolbar, statusbar, main table view, fs tree and bookmarks
 * open files using xdg-open
-* cut, copy, paste, renaming
+* cut, copy, paste (with progress information), renaming
 * named bookmarks to directories
 * show/hide dotfiles
 * throw files and directories in the trash
@@ -25,8 +25,6 @@ Coming soon.
 ## Roadmap
 
 ### Before 0.1
-#### functionality
-* pasting status window on longer pastes (WIP)
 #### infrastructure
 * proper error handling and logging
 * voidlinux package
