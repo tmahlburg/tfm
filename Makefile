@@ -10,8 +10,8 @@ lint: tfm/*.py main.py
 	flake8 tfm/stack.py --count --show-source --statistics
 	flake8 tfm/tfm.py --count --show-source --statistics
 	flake8 tfm/utility.py --count --show-source --statistics
-        flake8 tfm/paste_worker.py --count --show-source --statistics
-        flake8 tfm/mounts_model.py --count --show-source --statistics
+	flake8 tfm/paste_worker.py --count --show-source --statistics
+	flake8 tfm/mounts_model.py --count --show-source --statistics
 
 docs: tfm/*.py
 	cd docs/build \
