@@ -1,3 +1,3 @@
 {
-    "files": ["Makefile","tests/stack_test.py","tfm/__init__.py","tfm/form.py","setup.py","tfm/form.ui","main.pyproject.user","main.py","Pipfile","README.md","tests/utility_test.py","tfm/stack.py","LICENSE","tfm/paste_worker.py","tfm/bookmarks.py","conftest.py","tests/bookmarks_test.py","tfm/mounts_model.py","Pipfile.lock","tfm/utility.py","tfm/tfm.py","tfm/paste_dialog.ui"]
+    "files": ["tfm/mounts_model.py","main.py","LICENSE","tests/bookmarks_test.py","Makefile","setup.py","tests/stack_test.py","tfm/__init__.py","tfm/utility.py","tests/utility_test.py","tfm/form.ui","Pipfile.lock","tfm/form.py","tfm/stack.py","tfm/tfm.py","main.pyproject.user","tfm/paste_worker.py","tfm/bookmarks.py","README.md","conftest.py","Pipfile"]
 }
