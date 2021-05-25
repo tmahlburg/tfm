@@ -32,12 +32,13 @@ class stack:
 
     def top(self):
         """
-        Returns the top element of the stack.
+        Returns the top element of the stack or None, if stack is empty.
 
-        :return: Top element of the stack.
+        :return: Top element of the stack or None, if stack is empty.
         """
-        # TODO: error handling in case there is no element
-        return self.stack[-1]
+        if len(self.stack) > 0:
+            return self.stack[-1]
+        return None
 
     def push(self, stack_element):
         """
@@ -49,12 +50,14 @@ class stack:
 
     def pop(self):
         """
-        Removes and returns the top element of the stack.
+        Removes and returns the top element of the stack. If stack is empty,
+        return None.
 
-        :return: Top element of the stack.
+        :return: Top element of the stack or None, if stack is empty.
         """
-        # TODO: error handling in case there is no element
-        return self.stack.pop()
+        if len(self.stack) > 0:
+            return self.stack.pop()
+        return None
 
     def drop(self):
         """
