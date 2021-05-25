@@ -33,7 +33,6 @@ Coming soon.
 * voidlinux package
 * AppImage
 * add more tests
-* robust error handling
 
 ### Before 0.2
 #### functionality
