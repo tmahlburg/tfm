@@ -1,4 +1,5 @@
 import os
+import logging
 from typing import List
 
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
@@ -305,9 +306,10 @@ class tfm(QMainWindow, Ui_tfm):
             next_path = dir_up.path()
             self.update_current_path(next_path)
         else:
-            # TODO: Error Handling
-            # -> this should never occur, since the action should be disabled
-            print("ERROR: No dir up exisiting")
+            logging.warning('There is no directory above the one you are in.'
+                            + ' This message should not occur, because the'
+                            + ' button triggering this should be deactivated'
+                            + ' Please report this issue.')
 
     def action_back_event(self):
         """
@@ -335,8 +337,10 @@ class tfm(QMainWindow, Ui_tfm):
             if (self.forward_stack.empty()):
                 self.action_forward.setEnabled(False)
         else:
-            # TODO: Error Handling
-            print('ERROR: Forward Stack unexpectedly empty')
+            logging.warning('Forward stack unexpectedly empty. This should not'
+                            + ' happen, because the button triggering this'
+                            + ' message should be deactivated. Please report'
+                            + ' this issue.')
 
     def item_open_event(self):
         """
@@ -360,8 +364,9 @@ class tfm(QMainWindow, Ui_tfm):
                                          [selected_item.absoluteFilePath()],
                                          self.current_path)
         else:
-            # TODO: Error Handling
-            print("ERROR: Can't obtain the type of the selected file")
+            utility.message_dialog('The type of the selected file can not be '
+                                   + 'detected.',
+                                   QMessageBox.Warning)
 
     def item_selected_event(self):
         """
@@ -450,15 +455,6 @@ class tfm(QMainWindow, Ui_tfm):
             self.table_view.selectionModel().selectedIndexes())
         if len(path_list) < 0:
             return
-
-        """
-        if (self.current_path == self.trash_dir):
-            paths_to_add = []
-            for path in path_list:
-                if (os.path.isdir(path)):
-                    paths_to_add.extend(utility.traverse_dir(path))
-            path_list.extend(paths_to_add)
-        """
 
         if (len(path_list) == 1):
             confirmation_msg = ('Do you want to throw "'
