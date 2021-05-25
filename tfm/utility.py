@@ -105,6 +105,25 @@ def question_dialog(msg: str) -> QMessageBox:
     return msg_box
 
 
+def message_dialog(msg: str, type: QMessageBox.Icon) -> QMessageBox:
+    """
+    Creates a default message dialog box.
+
+    :param msg: The message which should be communicated to the user.
+    :type msg: str
+    :param type: The type of the message.
+    :type type: QMessageBox.Icon
+    :return: The created dialog.
+    :rtype: QMessageBox
+    """
+    msg_box = QMessageBox()
+    msg_box.setText(msg)
+    msg_box.setStandardButtons(QMessageBox.OK)
+    msg_box.setDefaultButton(QMessageBox.OK)
+    msg_box.setIcon(type)
+    return msg_box
+
+
 def get_MIME(files_as_indexes: List) -> Tuple[List[str], List[QUrl]]:
     """
     Converts the given files to their MIME data.
