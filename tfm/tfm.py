@@ -259,10 +259,9 @@ class tfm(QMainWindow, Ui_tfm):
         dir_name, ok = QInputDialog().getText(self,
                                               'Create new directory',
                                               'Directory name:')
-        # TODO: Error handling
         if (dir_name and ok):
             if not QDir().mkpath(os.path.join(self.current_path, dir_name)):
-                print('ERROR: could not create directory')
+                utility.message_dialog('Directory could not be created.', QMessageBox.Critical)
 
     def action_new_file_event(self):
         """
