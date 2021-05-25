@@ -261,7 +261,8 @@ class tfm(QMainWindow, Ui_tfm):
                                               'Directory name:')
         if (dir_name and ok):
             if not QDir().mkpath(os.path.join(self.current_path, dir_name)):
-                utility.message_dialog('Directory could not be created.', QMessageBox.Critical)
+                utility.message_dialog('Directory could not be created.',
+                                       QMessageBox.Critical)
 
     def action_new_file_event(self):
         """
@@ -285,8 +286,8 @@ class tfm(QMainWindow, Ui_tfm):
             next_path = next_dir.path()
             self.update_current_path(next_path)
         else:
-            # TODO: Error handling
-            print("ERROR: Path doesn't exist")
+            utility.message_dialog('The path entered does not exist.',
+                                   QMessageBox.Warning)
 
     def action_home_event(self):
         """
