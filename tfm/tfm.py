@@ -417,7 +417,7 @@ class tfm(QMainWindow, Ui_tfm):
         # setup paste_worker
         self.paste_thread = QThread()
         self.paste_worker = pw(clipboard=self.clipboard,
-                               current_path=self.current_path,
+                               target_path=self.current_path,
                                marked_to_cut=self.marked_to_cut)
         self.paste_worker.moveToThread(self.paste_thread)
         self.paste_worker.is_canceled = False
