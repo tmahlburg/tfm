@@ -260,10 +260,19 @@ class tfm(QMainWindow, Ui_tfm):
         dir_name, ok = QInputDialog().getText(self,
                                               'Create new directory',
                                               'Directory name:')
-        if (dir_name and ok):
-            if not QDir().mkpath(os.path.join(self.current_path, dir_name)):
-                utility.message_dialog('Directory could not be created.',
-                                       QMessageBox.Critical)
+        if (ok):
+            if (dir_name):
+                if not QDir().mkpath(os.path.join(self.current_path,
+                                                  dir_name)):
+                    dialog = utility.message_dialog('Directory could not be'
+                                                    + ' created.',
+                                                    QMessageBox.Critical)
+                    dialog.exec()
+            else:
+                dialog = utility.message_dialog('Please enter a name for the '
+                                                + 'new directory.',
+                                                QMessageBox.Warning)
+                dialog.exec()
 
     def action_new_file_event(self):
         """
@@ -273,10 +282,20 @@ class tfm(QMainWindow, Ui_tfm):
         file_name, ok = QInputDialog().getText(self,
                                                'Create new file',
                                                'File name:')
-        # TODO: Error handling
-        if (file_name and ok):
-            with open(os.path.join(self.current_path, file_name), 'a'):
-                pass
+        if (ok):
+            if (file_name):
+                try:
+                    with open(os.path.join(self.current_path, file_name), 'a'):
+                        pass
+                except OSError:
+                    dialog = utility.message_dialog('File cannot be created.',
+                                                    QMessageBox.Warning)
+                    dialog.exec()
+            else:
+                dialog = utility.message_dialog('Please enter a name for the'
+                                                + ' new file.',
+                                                QMessageBox.Warning)
+                dialog.exec()
 
     def action_go_event(self):
         """
@@ -287,8 +306,9 @@ class tfm(QMainWindow, Ui_tfm):
             next_path = next_dir.path()
             self.update_current_path(next_path)
         else:
-            utility.message_dialog('The path entered does not exist.',
-                                   QMessageBox.Warning)
+            dialog = utility.message_dialog('The path entered does not exist.',
+                                            QMessageBox.Warning)
+            dialog.exec()
 
     def action_home_event(self):
         """
@@ -364,9 +384,10 @@ class tfm(QMainWindow, Ui_tfm):
                                          [selected_item.absoluteFilePath()],
                                          self.current_path)
         else:
-            utility.message_dialog('The type of the selected file can not be '
-                                   + 'detected.',
-                                   QMessageBox.Warning)
+            dialog = utility.message_dialog('The type of the selected file can'
+                                            + ' not be detected.',
+                                            QMessageBox.Warning)
+            dialog.exec()
 
     def item_selected_event(self):
         """
@@ -483,9 +504,15 @@ class tfm(QMainWindow, Ui_tfm):
         new_file_name, ok = QInputDialog().getText(self,
                                                    'Rename ' + file_name,
                                                    'New name:')
-        if (new_file_name and ok):
-            QFile().rename(os.path.join(self.current_path, file_name),
-                           os.path.join(self.current_path, new_file_name))
+        if (ok):
+            if (new_file_name):
+                QFile().rename(os.path.join(self.current_path, file_name),
+                               os.path.join(self.current_path, new_file_name))
+            else:
+                dialog = utility.message_dialog('Please enter the new name '
+                                                + 'for the file.',
+                                                QMessageBox.Warning)
+                dialog.exec()
 
     def action_show_hidden_event(self):
         """
