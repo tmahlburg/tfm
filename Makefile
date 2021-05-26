@@ -4,7 +4,7 @@ init: Pipfile.lock
 form.py: tfm/form.ui
 	pyside2-uic tfm/form.ui -o tfm/form.py
 
-lint: tfm/*.py main.py
+lint: tfm/*.py
 	flake8 tfm/bookmarks.py --count --show-source --statistics
 	flake8 tfm/__main__.py --count --show-source	--statistics
 	flake8 tfm/stack.py --count --show-source --statistics
