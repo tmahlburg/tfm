@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='tfm',
-    version='0.0.3dev',
+    version='0.0.4dev',
     packages=['tfm', ],
     license='GPLv3',
     author='Till Mahlburg',
@@ -19,11 +19,11 @@ setuptools.setup(
         'Environment :: X11 Applications :: Qt',
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: GNU General Public License v3'
-        + '(GPLv3)',
+        + ' (GPLv3)',
         'Natural Language :: English',
-        'Operating System :: POSIX',
+        'Operating System :: POSIX :: Linux',
         'Intended Audience :: End Users/Desktop',
         'Topic :: Desktop Environment :: File Managers',
     ],
-    # python_requires='>=3.6',
+    python_requires='>=3.6',
 )
