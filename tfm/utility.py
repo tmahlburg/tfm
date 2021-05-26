@@ -56,9 +56,9 @@ def part_info(path: str) -> str:
     # get fs statistics using statvfs system call
     part_stats = os.statvfs(path)
     fs_size = '{:!.1j}B'.format(Float(part_stats.f_frsize
-                                * part_stats.f_blocks))
+                                      * part_stats.f_blocks))
     fs_free = '{:!.1j}B'.format(Float(part_stats.f_frsize
-                                * part_stats.f_bfree))
+                                      * part_stats.f_bfree))
     return (fs_free + ' of ' + fs_size + ' free')
 
 
@@ -118,8 +118,8 @@ def message_dialog(msg: str, type: QMessageBox.Icon) -> QMessageBox:
     """
     msg_box = QMessageBox()
     msg_box.setText(msg)
-    msg_box.setStandardButtons(QMessageBox.OK)
-    msg_box.setDefaultButton(QMessageBox.OK)
+    msg_box.setStandardButtons(QMessageBox.Ok)
+    msg_box.setDefaultButton(QMessageBox.Ok)
     msg_box.setIcon(type)
     return msg_box
 
