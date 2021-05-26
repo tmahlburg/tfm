@@ -6,7 +6,7 @@ form.py: tfm/form.ui
 
 lint: tfm/*.py main.py
 	flake8 tfm/bookmarks.py --count --show-source --statistics
-	flake8 main.py --count --show-source	--statistics
+	flake8 tfm/__main__.py --count --show-source	--statistics
 	flake8 tfm/stack.py --count --show-source --statistics
 	flake8 tfm/tfm.py --count --show-source --statistics
 	flake8 tfm/utility.py --count --show-source --statistics
