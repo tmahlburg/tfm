@@ -19,7 +19,7 @@ If you still want to try it, a python package is available in the ```dist``` dir
 ## How to install
 There are experimental python packages in dist/. Install at your own risk using:
 ```
-pip install ./dist/tfm-0.0.3.dev0.tar.gz
+pip install tfm
 ```
 
 ## Screenshots
