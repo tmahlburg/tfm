@@ -17,7 +17,7 @@ If you still want to try it, a python package is available in the ```dist``` dir
 * show, mount and unmount devices using udevil
 
 ## How to install
-There are experimental python packages in dist/. Install at your own risk using:
+There are experimental python packages to download on pypi. Install at your own risk using:
 ```
 pip install tfm
 ```
