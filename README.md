@@ -29,9 +29,7 @@ Coming soon.
 
 ### Before 0.1
 #### infrastructure
-* proper error handling and logging
 * voidlinux package
-* AppImage
 * add more tests
 
 ### Before 0.2
