@@ -41,6 +41,8 @@ Coming soon.
 * statusbar directory information
 * differentiate default dropAction by destination
 * handle file links
+* allow multiple pastes at the same time
+* give choices on handling existing files on paste
 #### ui
 * drag and drop folders as bookmarks in the bookmark view
 #### infrastructure
