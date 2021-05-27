@@ -64,7 +64,10 @@ class mounts_model(QAbstractListModel):
         :return: The device at the index in the model.
         :rtype: Device
         """
-        return self.devices[index]
+        if (index >= 0 and index < len(self.devices)):
+            return self.devices[index]
+        else:
+            raise IndexError
 
     def add(self, device: Device):
         """
@@ -116,9 +119,9 @@ class mounts_model(QAbstractListModel):
         """
         mount_point = self.get_mount_point(device)
         if (mount_point != ''):
-            run(['udevil', '--quiet', 'umount', mount_point])
+            run(['udevil', '--quiet', 'umount', mount_point], check=True)
         else:
-            run(['udevil', '--quiet', 'mount', '/dev/' + device.sys_name])
+            run(['udevil', '--quiet', 'mount', '/dev/' + device.sys_name], check=True)
 
     def get_available_mounts(self) -> List[Device]:
         """

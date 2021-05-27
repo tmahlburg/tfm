@@ -1,6 +1,7 @@
 import os
 import logging
 from typing import List
+from subprocess import CalledProcessError
 
 from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
@@ -550,10 +551,20 @@ class tfm(QMainWindow, Ui_tfm):
                                               'Bookmark name:',
                                               text=self.table_view.
                                               currentIndex().data())
-            # TODO: Error handling
-            if (name and ok):
-                self.bookmarks.add_bookmark(name, path)
-                self.bookmark_view.addItem(name)
+            if (ok):
+                if (name):
+                    self.bookmarks.add_bookmark(name, path)
+                    self.bookmark_view.addItem(name)
+                else:
+                    dialog = utility.message_dialog('Please enter name for'
+                                                    + ' the bookmark.',
+                                                    QMessageBox.Warning)
+                    dialog.exec()
+        else:
+            dialog = utility.message_dialog('Please select a directory, not'
+                                            + ' a file, to create a bookmark.',
+                                            QMessageBox.Warning)
+            dialog.exec()
 
     def action_remove_bookmark_event(self):
         """
@@ -587,22 +598,42 @@ class tfm(QMainWindow, Ui_tfm):
         Checks the mount point of the selected drive and makes it the current
         path.
         """
-        device = self.mounts.get_device_at(
-            self.mounts_view.currentIndex().row())
+        try:
+            device = self.mounts.get_device_at(
+                self.mounts_view.currentIndex().row())
+        except IndexError:
+            logging.critical('Device index out of range. This should never '
+                             + 'happen, please report this error.')
+            exit(1)
         mount_point = self.mounts.get_mount_point(device)
         if mount_point != '':
             self.update_current_path(mount_point)
 
     # TODO: handle performance better
-    # TODO: handle errors
     def mount_toggle_event(self):
         """
         Tries to mount or unmount the selected drive.
         """
-        device = self.mounts.get_device_at(
-            self.mounts_view.currentIndex().row())
+        try:
+            device = self.mounts.get_device_at(
+                self.mounts_view.currentIndex().row())
+        except IndexError:
+            logging.critical('Device index out of range. This should never '
+                             + 'happen, please report this error.')
+            exit(1)
         former_mount_point = self.mounts.get_mount_point(device)
-        self.mounts.toggle_mount(device)
+        try:
+            self.mounts.toggle_mount(device)
+        except CalledProcessError:
+            dialog = utility.message_dialog('udevil was unable to mount or'
+                                            + ' unmount this devices. Please'
+                                            + ' check, if it is installed'
+                                            + ' correctly and report this'
+                                            + ' error, if the problem'
+                                            + ' presists.',
+                                            QMessageBox.Critical)
+            dialog.exec()
+            return
         mount_point = self.mounts.get_mount_point(device)
         if mount_point != '':
             self.mount_selected_event()
