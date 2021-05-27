@@ -109,7 +109,7 @@ class paste_worker(QObject):
             return os.path.commonpath(path_list) + '/'
         return (os.path.dirname(os.path.commonpath(path_list)) + '/')
 
-    # TODO: handle existing file(s), handle errors related to permissions
+    # Handle existing files better -> skip, overwrite, rename
     def run(self):
         """
         Main logic. Pastes the files from the clipboard to the target path.
@@ -141,14 +141,14 @@ class paste_worker(QObject):
                     QDir().mkpath(new_path)
                 elif (QFile().exists(path)
                         and not QFile().exists(new_path)):
-                    # TODO: handle errors related to permissions
-                    QFile().copy(path, new_path)
-                    # communicate progress
-                    files_copied += 1
-                    self.progress.emit(files_copied)
+                    if (QFile().copy(path, new_path)):
+                        files_copied += 1
+                        self.progress.emit(files_copied)
+                    else:
+                        raise OSError
             # removed cut files
             if cut:
-                # TODO: handle errors related to permissions
                 for file_path in path_list:
-                    QFile().remove(file_path)
+                    if (not QFile().remove(file_path)):
+                        raise OSError
         self.finished.emit()
