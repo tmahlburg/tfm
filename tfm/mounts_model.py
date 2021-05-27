@@ -121,7 +121,8 @@ class mounts_model(QAbstractListModel):
         if (mount_point != ''):
             run(['udevil', '--quiet', 'umount', mount_point], check=True)
         else:
-            run(['udevil', '--quiet', 'mount', '/dev/' + device.sys_name], check=True)
+            run(['udevil', '--quiet', 'mount', '/dev/' + device.sys_name],
+                check=True)
 
     def get_available_mounts(self) -> List[Device]:
         """
