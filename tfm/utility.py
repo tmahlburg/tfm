@@ -124,7 +124,8 @@ def message_dialog(msg: str, type: QMessageBox.Icon) -> QMessageBox:
     return msg_box
 
 
-def get_MIME(files_as_indexes: List[QModelIndex]) -> Tuple[List[str], List[QUrl]]:
+def get_MIME(files_as_indexes: List[QModelIndex]) -> Tuple[List[str],
+                                                           List[QUrl]]:
     """
     Converts the given files to their MIME data.
 
