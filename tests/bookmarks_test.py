@@ -2,6 +2,8 @@ from tfm.bookmarks import bookmarks
 
 import os
 
+import pytest
+
 
 def setup_object(file_name: str) -> bookmarks:
     return bookmarks(file_name)
@@ -52,11 +54,16 @@ empty path|
     assert(expected_content == read_content)
 
     expected_bookmark_list = [{'name': 'home', 'path': '/home/user'},
-                              {'name': 'test', 'path':
-                                  '/test/test/test/test/test/test/test/test/test/test/'},
+                              {'name': 'test',
+                               'path': '/test/test/test/test/test/test/test/'
+                                       'test/test/test/'},
                               {'name': '', 'path': '/empty/name'},
                               {'name': 'empty path', 'path': ''}]
     assert(expected_bookmark_list == bm.get_all())
+    with pytest.raises(NameError):
+        bm.add_bookmark(name='home', path='/home/')
+    with pytest.raises(NameError):
+        bm.add_bookmark(name='||', path='hallo')
 
     cleanup(bookmark_file_name)
 
