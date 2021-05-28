@@ -4,19 +4,19 @@ import os
 from typing import List, Tuple
 
 from PySide2.QtWidgets import QFileSystemModel, QMessageBox
-from PySide2.QtCore import QDir, QFileInfo, QMimeData, QUrl
+from PySide2.QtCore import QDir, QFileInfo, QMimeData, QUrl, QModelIndex
 
 from prefixed import Float
 
 
-def indexes_to_paths(files_as_indexes: List) -> List[str]:
+def indexes_to_paths(files_as_indexes: List[QModelIndex]) -> List[str]:
     """
     Converts the given indexes to a list of paths.
 
     :param files_as_indexes: List of indexes of files.
-    :type files_as_indexes: List
+    :type files_as_indexes: List[QModelIndex]
     :return: List of paths to the given files.
-    :rtype: List
+    :rtype: List[str]
     """
     files_as_path = []
     for index in files_as_indexes:
@@ -25,7 +25,7 @@ def indexes_to_paths(files_as_indexes: List) -> List[str]:
     return files_as_path
 
 
-def traverse_dir(path) -> List[str]:
+def traverse_dir(path: str) -> List[str]:
     """
     Traverses the given directory and returns all files and dirs inside as
     paths.
@@ -124,12 +124,12 @@ def message_dialog(msg: str, type: QMessageBox.Icon) -> QMessageBox:
     return msg_box
 
 
-def get_MIME(files_as_indexes: List) -> Tuple[List[str], List[QUrl]]:
+def get_MIME(files_as_indexes: List[QModelIndex]) -> Tuple[List[str], List[QUrl]]:
     """
     Converts the given files to their MIME data.
 
     :param files_as_indexes: List of indexes of files.
-    :type files_as_indexes: List
+    :type files_as_indexes: List[QModelIndex]
     :return: files as str list of path and the MIME data of the given files.
     :rtype: Tuple[List[str], List[QUrl]]
     """
