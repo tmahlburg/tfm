@@ -26,7 +26,8 @@ def test_size():
 def test_top():
     test_stack = stack()
 
-    # assert(test_stack.top())
+    assert(test_stack.top() is None)
+
     test_stack.push(1)
     assert(test_stack.top() == 1)
 
@@ -49,12 +50,16 @@ def test_push():
 def test_pop():
     test_stack = stack()
 
-    #test_stack.pop()
+    assert(test_stack.pop() is None)
+    assert(test_stack.size() == 0)
 
     test_stack.push(1)
     test_stack.push(5)
     assert(test_stack.pop() == 5)
     assert(test_stack.size() == 1)
+    assert(test_stack.pop() == 1)
+    assert(test_stack.size() == 0)
+    assert(test_stack.pop() is None)
 
 
 def test_drop():
