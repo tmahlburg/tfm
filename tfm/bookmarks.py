@@ -31,6 +31,8 @@ class bookmarks:
         """
         Gets bookmarks from a file.
 
+        :raises OSError: If the file, the bookmarks are saved in, can't be
+                         read.
         :param path: Path to the file, in which the bookmarks are saved.
         :type path: str
         :return: List of dicts containing name and path of the bookmarks.
@@ -51,22 +53,26 @@ class bookmarks:
         bookmark will be saved to the bookmark file that was chosen on
         instantiation of this class.
 
+        :raises NameError: If the given name already exists or contains the
+                           '|' special character.
         :param name: The name of the new bookmark. This will be shown in the
                      UI.
         :type name: str
         :param path: Path which the bookmark should lead to.
         :type path: str
         """
-        # TODO: error handling
         if not self.bookmark_exists(name) and '|' not in name:
             self.list.append({'name': name, 'path': path})
             with open(self.path_to_bookmark_file, 'a') as bookmarks:
                 bookmarks.write(name + '|' + path + '\n')
+        else:
+            raise NameError
 
     def remove_bookmark(self, name: str):
         """
         Removes a bookmark from the internal bookmark list. It also rewrites
         the updated list to the bookmark file chosen on class instatiation.
+
         :param name: The name of the bookmark that should be deleted.
         :type name: str
         """
