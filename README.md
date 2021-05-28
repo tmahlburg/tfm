@@ -1,8 +1,8 @@
 # tfm
 Simple file manager implemented in Qt for Python (Qt5). This project aims to create a simple, desktop agnostic, unix file-manager.
 The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problems.
-The project is in a pre alpha stage right now and thus it is not advised to use it at the moment.
-If you still want to try it, a python package is available in the ```dist``` directory of this repository
+The project is in an alpha stage right now and thus it is not advised to use it at the moment.
+If you still want to try it, see below.
 
 ## Features
 * basic directory traversal
@@ -17,7 +17,7 @@ If you still want to try it, a python package is available in the ```dist``` dir
 * show, mount and unmount devices using udevil
 
 ## How to install
-There are experimental python packages to download on pypi. Install at your own risk using:
+There are python packages for the alpha version to download on pypi. Install at your own risk using:
 ```
 pip install tfm
 ```
@@ -26,11 +26,6 @@ pip install tfm
 Coming soon.
 
 ## Roadmap
-
-### Before 0.1
-#### infrastructure
-* voidlinux package
-* add more tests
 
 ### Before 0.2
 #### functionality
