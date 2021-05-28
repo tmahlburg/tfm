@@ -168,17 +168,13 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_home.setIcon(QIcon.fromTheme('go-home'))
         self.action_up.setIcon(QIcon.fromTheme('go-up'))
         self.action_go.setIcon(QIcon.fromTheme('go-jump'))
-
         self.action_new_dir.setIcon(QIcon.fromTheme('folder-new'))
         self.action_new_file.setIcon(QIcon.fromTheme('document-new'))
-
         self.action_menu.setIcon(QIcon.fromTheme('start-here'))
-
         self.action_copy.setIcon(QIcon.fromTheme('edit-copy'))
         self.action_cut.setIcon(QIcon.fromTheme('edit-cut'))
         self.action_paste.setIcon(QIcon.fromTheme('edit-paste'))
         self.action_delete.setIcon(QIcon.fromTheme('edit-delete'))
-
         self.action_add_to_bookmarks.setIcon(QIcon.fromTheme('list-add'))
         self.action_remove_bookmark.setIcon(QIcon.fromTheme('list-remove'))
 
@@ -187,37 +183,30 @@ class tfm(QMainWindow, Ui_tfm):
         Connects actions to their event functions.
         """
         self.adressbar.returnPressed.connect(self.action_go_event)
-        self.action_go.triggered.connect(self.action_go_event)
 
+        self.action_go.triggered.connect(self.action_go_event)
         self.action_home.triggered.connect(self.action_home_event)
         self.action_up.triggered.connect(self.action_up_event)
-
         self.action_back.triggered.connect(self.action_back_event)
         self.action_forward.triggered.connect(self.action_forward_event)
-
         self.action_copy.triggered.connect(self.action_copy_event)
         self.action_copy_path.triggered.connect(self.action_copy_path_event)
         self.action_paste.triggered.connect(self.action_paste_event)
         self.action_cut.triggered.connect(self.action_cut_event)
         self.action_delete.triggered.connect(self.action_delete_event)
         self.action_rename.triggered.connect(self.action_rename_event)
-
         self.action_show_hidden.toggled.connect(self.action_show_hidden_event)
-
         self.action_new_dir.triggered.connect(self.action_new_dir_event)
         self.action_new_file.triggered.connect(self.action_new_file_event)
-
         self.action_add_to_bookmarks.triggered.connect(
             self.action_add_to_bookmarks_event)
         self.action_remove_bookmark.triggered.connect(
             self.action_remove_bookmark_event)
+
         self.bookmark_view.clicked.connect(self.bookmark_selected_event)
-
         self.fs_tree.clicked.connect(self.fs_tree_event)
-
         self.mounts_view.clicked.connect(self.mount_selected_event)
         self.mounts_view.doubleClicked.connect(self.mount_toggle_event)
-
         # TODO: enable open item on return pressed
         # self.table_view.returnPressed.connect(self.item_open_event)
         self.table_view.doubleClicked.connect(self.item_open_event)
@@ -641,7 +630,6 @@ class tfm(QMainWindow, Ui_tfm):
             self.update_current_path(self.default_path)
 
     # ---------------- functions ------------------------------------------- #
-    # TODO: Performance
     def update_current_path(self,
                             next_path: str,
                             skip_stack=False,
