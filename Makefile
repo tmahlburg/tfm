@@ -2,7 +2,7 @@ init: Pipfile.lock
 	pipenv install
 
 form.py: tfm/form.ui
-	pyside2-uic tfm/form.ui -o tfm/form.py
+	pyside6-uic tfm/form.ui -o tfm/form.py
 
 lint: tfm/*.py
 	flake8 tfm/bookmarks.py --count --show-source --statistics

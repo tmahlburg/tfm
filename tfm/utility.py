@@ -3,8 +3,8 @@
 import os
 from typing import List, Tuple
 
-from PySide2.QtWidgets import QFileSystemModel, QMessageBox
-from PySide2.QtCore import QDir, QFileInfo, QMimeData, QUrl, QModelIndex
+from PySide6.QtWidgets import QFileSystemModel, QMessageBox
+from PySide6.QtCore import QDir, QFileInfo, QMimeData, QUrl, QModelIndex
 
 from prefixed import Float
 

@@ -3,8 +3,8 @@ from subprocess import run, PIPE
 
 from pyudev import Device, Context
 
-from PySide2.QtCore import QAbstractListModel, Qt
-from PySide2.QtGui import QIcon
+from PySide6.QtCore import QAbstractListModel, Qt
+from PySide6.QtGui import QIcon
 
 
 class mounts_model(QAbstractListModel):

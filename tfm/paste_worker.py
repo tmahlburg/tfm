@@ -2,8 +2,8 @@ import os
 import collections
 from typing import List
 
-from PySide2.QtCore import QObject, QDir, QFile, Signal
-from PySide2.QtGui import QClipboard
+from PySide6.QtCore import QObject, QDir, QFile, Signal
+from PySide6.QtGui import QClipboard
 
 import tfm.utility as utility
 

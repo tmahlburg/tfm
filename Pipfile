@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-pyside2 = "*"
+pyside6 = "*"
 prefixed = "*"
 setuptools = "*"
 wheel = "*"
@@ -16,4 +16,4 @@ send2trash = "*"
 pyudev = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"

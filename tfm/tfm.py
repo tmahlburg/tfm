@@ -3,12 +3,12 @@ import logging
 from typing import List
 from subprocess import CalledProcessError
 
-from PySide2.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
+from PySide6.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
                                QMessageBox, QMainWindow, QProgressDialog)
-from PySide2.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths,
+from PySide6.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths,
                             QThread)
-from PySide2.QtGui import QKeySequence, QIcon
+from PySide6.QtGui import QKeySequence, QIcon
 
 from .form import Ui_tfm
 

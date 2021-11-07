@@ -2,7 +2,7 @@
 
 import sys
 
-from PySide2.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 
 from tfm import tfm
 
