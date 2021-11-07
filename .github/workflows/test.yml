@@ -27,4 +27,5 @@ jobs:
         make init
     - name: Test using pytest
       run: |
+        pip install pytest
         pipenv run make test
