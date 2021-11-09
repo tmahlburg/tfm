@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='tfm',
-    version='0.1.1-ALPHA',
+    version='0.1.1-ALPHA-1',
     packages=['tfm', ],
     license='GPLv3',
     author='Till Mahlburg',
@@ -14,6 +14,12 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/tmahlburg/tfm',
+    install_requires=[
+        'pyside6',
+        'prefixed',
+        'send2trash',
+        'pyudev',
+    ],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: X11 Applications :: Qt',
