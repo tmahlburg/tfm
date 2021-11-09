@@ -20,4 +20,10 @@ docs: tfm/*.py
 test: tfm/*.py tests/*.py
 	pytest
 
-.PHONY:	init form.py lint help Makefile
+build: tfm/*.py setup.py pyproject.toml
+	python3 -m build
+
+upload: dist/*.tar.gz dist/*.whl
+	python3 -m twine upload dist/*
+
+.PHONY:	init form.py lint help docs test build upload Makefile

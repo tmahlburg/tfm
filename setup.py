@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='tfm',
-    version='0.1.0-ALPHA',
+    version='0.1.1-ALPHA',
     packages=['tfm', ],
     license='GPLv3',
     author='Till Mahlburg',
@@ -25,5 +25,5 @@ setuptools.setup(
         'Intended Audience :: End Users/Desktop',
         'Topic :: Desktop Environment :: File Managers',
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.7',
 )
