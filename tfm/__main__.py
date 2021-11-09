@@ -12,4 +12,4 @@ if __name__ == "__main__":
     # TODO: document CLI
     window = tfm.tfm(sys.argv)
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

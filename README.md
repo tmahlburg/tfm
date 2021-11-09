@@ -1,5 +1,5 @@
 # tfm
-Simple file manager implemented in Qt for Python (Qt5). This project aims to create a simple, desktop agnostic, unix file-manager.
+Simple file manager implemented in Qt for Python (Qt6). This project aims to create a simple, desktop agnostic, unix file-manager.
 The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problems.
 The project is in an alpha stage right now and thus it is not advised to use it at the moment.
 If you still want to try it, see below.
@@ -38,10 +38,9 @@ Coming soon.
 * handle file links
 * allow multiple pastes at the same time
 * give choices on handling existing files on paste
+* open files with return key
 #### ui
 * drag and drop folders as bookmarks in the bookmark view
-#### infrastructure
-* port to Qt6
 
 ### Beyond 0.2
 #### functionality
