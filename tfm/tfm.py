@@ -203,13 +203,10 @@ class tfm(QMainWindow, Ui_tfm):
         self.action_remove_bookmark.triggered.connect(
             self.action_remove_bookmark_event)
 
-        self.bookmark_view.clicked.connect(self.bookmark_selected_event)
-        self.fs_tree.clicked.connect(self.fs_tree_event)
-        self.mounts_view.clicked.connect(self.mount_selected_event)
-        self.mounts_view.doubleClicked.connect(self.mount_toggle_event)
-        # TODO: enable open item on return pressed
-        # self.table_view.returnPressed.connect(self.item_open_event)
-        self.table_view.doubleClicked.connect(self.item_open_event)
+        self.bookmark_view.pressed.connect(self.bookmark_selected_event)
+        self.fs_tree.pressed.connect(self.fs_tree_event)
+        self.mounts_view.pressed.connect(self.mount_selected_event)
+        self.mounts_view.activated.connect(self.mount_toggle_event)
         self.table_view.pressed.connect(self.item_selected_event)
         self.table_view.activated.connect(self.item_open_event)
 
