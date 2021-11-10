@@ -92,7 +92,7 @@ class mounts_model(QAbstractListModel):
     def get_mount_point(self, device: Device) -> str:
         """
         Looks for a mount point of the given device, using the findmnt
-        command. Returns an empty string, if there is none.
+        command from util-linux. Returns an empty string, if there is none.
 
         :param device: The device, of which the mount point is needed.
         :type device: Device
@@ -111,6 +111,7 @@ class mounts_model(QAbstractListModel):
 
     def toggle_mount(self, device: Device):
         """
+        TODO: find a maintained alternative
         Mounts an unmounted device or unmounts a mounted device using the
         udevil command.
 
