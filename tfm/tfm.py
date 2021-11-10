@@ -1,6 +1,9 @@
 import os
 import logging
 from typing import List
+from shutil import unpack_archive
+from tarfile import is_tarfile
+from zipfile import is_zipfile
 from subprocess import CalledProcessError
 
 from PySide6.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
@@ -202,6 +205,8 @@ class tfm(QMainWindow, Ui_tfm):
             self.action_add_to_bookmarks_event)
         self.action_remove_bookmark.triggered.connect(
             self.action_remove_bookmark_event)
+        self.action_extract_here.triggered.connect(
+            self.action_extract_here_event)
 
         self.bookmark_view.pressed.connect(self.bookmark_selected_event)
         self.fs_tree.pressed.connect(self.fs_tree_event)
@@ -238,6 +243,21 @@ class tfm(QMainWindow, Ui_tfm):
         self.bookmark_view.addAction(self.action_remove_bookmark)
 
     # ---------------- events ---------------------------------------------- #
+    # TODO: Let it work concurrently, so it won't block the UI.
+    def action_extract_here_event(self):
+        """
+        Extracts the given file if possible.
+        """
+        selected_item = QFileInfo(
+            os.path.join(self.current_path,
+                         self.table_view.currentIndex().
+                         siblingAtColumn(0).data()))
+        if (selected_item.isFile()):
+            target_dir = os.path.join(self.current_path, selected_item.baseName())
+            while (os.path.isdir(target_dir)):
+                target_dir += '_'
+            unpack_archive(selected_item.filePath(), target_dir)
+
     def action_new_dir_event(self):
         """
         Prompts the user for a dir name and creates one with that name in the
@@ -389,8 +409,13 @@ class tfm(QMainWindow, Ui_tfm):
             # update context menu according to file type
             if (os.path.isdir(files[0])):
                 self.table_view.addAction(self.action_add_to_bookmarks)
+                self.table_view.removeAction(self.action_extract_here)
             else:
                 self.table_view.removeAction(self.action_add_to_bookmarks)
+                if (is_tarfile(files[0]) or is_zipfile(files[0])):
+                    self.table_view.addAction(self.action_extract_here)
+                else:
+                    self.table_view.removeAction(self.action_extract_here)
 
         files = list(set(files))
         self.item_info.setText(utility.file_info(files))

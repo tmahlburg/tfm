@@ -63,6 +63,8 @@ class Ui_tfm(object):
         self.action_remove_bookmark.setObjectName(u"action_remove_bookmark")
         self.action_copy_path = QAction(tfm)
         self.action_copy_path.setObjectName(u"action_copy_path")
+        self.action_extract_here = QAction(tfm)
+        self.action_extract_here.setObjectName(u"action_extract_here")
         self.centralwidget = QWidget(tfm)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -179,5 +181,9 @@ class Ui_tfm(object):
         self.action_remove_bookmark.setToolTip(QCoreApplication.translate("tfm", u"Remove bookmark", None))
 #endif // QT_CONFIG(tooltip)
         self.action_copy_path.setText(QCoreApplication.translate("tfm", u"Copy path", None))
+        self.action_extract_here.setText(QCoreApplication.translate("tfm", u"Extract here", None))
+#if QT_CONFIG(tooltip)
+        self.action_extract_here.setToolTip(QCoreApplication.translate("tfm", u"Extract here", None))
+#endif // QT_CONFIG(tooltip)
     # retranslateUi
 

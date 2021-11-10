@@ -266,6 +266,14 @@
     <string>Copy path</string>
    </property>
   </action>
+  <action name="action_extract_here">
+   <property name="text">
+    <string>Extract here</string>
+   </property>
+   <property name="toolTip">
+    <string>Extract here</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

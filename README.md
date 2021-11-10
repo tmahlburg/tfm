@@ -29,18 +29,21 @@ Coming soon.
 
 ### Before 0.2
 #### functionality
-* implement network mounts, especially SMB shares
-* mount ISOs
-* auto extract
+* auto extract | PARTIAL, needs multi-threading
 * open multiple selected files
 * statusbar directory information
 * differentiate default dropAction by destination
 * handle file links
 * allow multiple pastes at the same time
 * give choices on handling existing files on paste
-* open files with return key
+* open files with return key | DONE
+* find maintained alternative to udevil -> probably pmount or udisks2
+* implement network mounts, especially SMB shares
+* mount ISOs
 #### ui
 * drag and drop folders as bookmarks in the bookmark view
+#### infrastructure
+* port to Qt6 | DONE
 
 ### Beyond 0.2
 #### functionality
