@@ -253,7 +253,8 @@ class tfm(QMainWindow, Ui_tfm):
                          self.table_view.currentIndex().
                          siblingAtColumn(0).data()))
         if (selected_item.isFile()):
-            target_dir = os.path.join(self.current_path, selected_item.baseName())
+            target_dir = os.path.join(self.current_path,
+                                      selected_item.baseName())
             while (os.path.isdir(target_dir)):
                 target_dir += '_'
             unpack_archive(selected_item.filePath(), target_dir)
@@ -419,7 +420,6 @@ class tfm(QMainWindow, Ui_tfm):
 
         files = list(set(files))
         self.item_info.setText(utility.file_info(files))
-
 
     def fs_tree_event(self):
         """
