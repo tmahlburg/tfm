@@ -210,7 +210,8 @@ class tfm(QMainWindow, Ui_tfm):
         # TODO: enable open item on return pressed
         # self.table_view.returnPressed.connect(self.item_open_event)
         self.table_view.doubleClicked.connect(self.item_open_event)
-        self.table_view.clicked.connect(self.item_selected_event)
+        self.table_view.pressed.connect(self.item_selected_event)
+        self.table_view.activated.connect(self.item_open_event)
 
     def set_shortcuts(self):
         """
@@ -235,8 +236,6 @@ class tfm(QMainWindow, Ui_tfm):
         self.table_view.addAction(self.action_cut)
         self.table_view.addAction(self.action_rename)
         self.table_view.addAction(self.action_delete)
-        # TODO: only show, if selected item is a folder
-        self.table_view.addAction(self.action_add_to_bookmarks)
         self.table_view.addAction(self.action_show_hidden)
 
         self.bookmark_view.addAction(self.action_remove_bookmark)
@@ -385,18 +384,20 @@ class tfm(QMainWindow, Ui_tfm):
         """
         selected_items = self.table_view.selectedIndexes()
         files = []
-        if len(selected_items) > 1:
-            for item in selected_items:
-                files.append(os.path.join(self.current_path,
-                                          item.siblingAtColumn(0).data()))
-        else:
-            # Update item_info in the statusbar
-            path = os.path.join(self.current_path,
-                                self.table_view.currentIndex().
-                                siblingAtColumn(0).data())
-            files.append(path)
+        for item in selected_items:
+            files.append(os.path.join(self.current_path,
+                                      item.siblingAtColumn(0).data()))
+        files = list(set(files))
+        if len(files) == 1:
+            # update context menu according to file type
+            if (os.path.isdir(files[0])):
+                self.table_view.addAction(self.action_add_to_bookmarks)
+            else:
+                self.table_view.removeAction(self.action_add_to_bookmarks)
+
         files = list(set(files))
         self.item_info.setText(utility.file_info(files))
+
 
     def fs_tree_event(self):
         """
