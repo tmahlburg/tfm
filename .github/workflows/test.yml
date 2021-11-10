@@ -24,6 +24,7 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install pipenv
+        sudo apt install libopengl0 -y
         make init
     - name: Test using pytest
       run: |
