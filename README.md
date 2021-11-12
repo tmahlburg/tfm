@@ -27,9 +27,10 @@ Coming soon.
 
 ## Roadmap
 
-### Before 0.2
+### Before 1.0
 #### functionality
-* auto extract | PARTIAL, needs multi-threading
+* auto extract | PARTIAL, needs better progress indication
+* select last opened folder after returning from that folder to the last position
 * open multiple selected files
 * statusbar directory information
 * differentiate default dropAction by destination
@@ -45,7 +46,7 @@ Coming soon.
 #### infrastructure
 * port to Qt6 | DONE
 
-### Beyond 0.2
+### Beyond 1.0 (most of these are maybes)
 #### functionality
 * fuzzy search in folder
 * restore from trash (should be implemented via a custom model/view)

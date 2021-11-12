@@ -1,7 +1,6 @@
 import os
 import logging
 from typing import List
-from shutil import unpack_archive
 from tarfile import is_tarfile
 from zipfile import is_zipfile
 from subprocess import CalledProcessError
@@ -19,6 +18,7 @@ from .stack import stack
 from .bookmarks import bookmarks as bm
 from .mounts_model import mounts_model
 from .paste_worker import paste_worker as pw
+from .extract_worker import extract_worker as ew
 import tfm.utility as utility
 
 from send2trash import send2trash
@@ -248,16 +248,30 @@ class tfm(QMainWindow, Ui_tfm):
         """
         Extracts the given file if possible.
         """
-        selected_item = QFileInfo(
-            os.path.join(self.current_path,
-                         self.table_view.currentIndex().
-                         siblingAtColumn(0).data()))
-        if (selected_item.isFile()):
-            target_dir = os.path.join(self.current_path,
-                                      selected_item.baseName())
-            while (os.path.isdir(target_dir)):
-                target_dir += '_'
-            unpack_archive(selected_item.filePath(), target_dir)
+        selected_item = os.path.join(self.current_path,
+                                     self.table_view.currentIndex().
+                                     siblingAtColumn(0).data())
+        # setup QProgressDialog
+        self.progress_dialog = QProgressDialog(parent=self)
+        self.progress_dialog.reset()
+        self.progress_dialog.setMinimumDuration(1000)
+        self.progress_dialog.setLabelText('Extracting archive ' + selected_item
+                                          + '...')
+        self.progress_dialog.setValue(0)
+        # setup paste_worker
+        self.extract_thread = QThread()
+        self.extract_worker = ew(archive_path=selected_item)
+        self.extract_worker.moveToThread(self.extract_thread)
+
+        # started
+        self.extract_thread.started.connect(self.extract_worker.run)
+        # finished
+        self.extract_worker.finished.connect(self.extract_thread.quit)
+        self.extract_worker.finished.connect(self.extract_worker.deleteLater)
+        self.extract_worker.finished.connect(self.progress_dialog.reset)
+        self.extract_thread.finished.connect(self.extract_thread.deleteLater)
+
+        self.extract_thread.start()
 
     def action_new_dir_event(self):
         """
