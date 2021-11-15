@@ -35,7 +35,6 @@ Coming soon.
 ### Before 1.0
 #### functionality
 * select last opened folder after returning from that folder to the last position
-* open multiple selected files
 * differentiate default dropAction by destination
 * handle file links
 * allow multiple pastes and extracts at the same time

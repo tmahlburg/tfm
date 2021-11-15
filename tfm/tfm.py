@@ -352,30 +352,45 @@ class tfm(QMainWindow, Ui_tfm):
 
     def item_open_event(self):
         """
-        Opens a file using xdg-open, runs it, if it is executeble or
-        changes the current dir if it's dir.
+        Opens the selected files using xdg-open, runs it, if it is executable
+        or changes the current dir if it's dir.
         """
-        selected_item = QFileInfo(
-            os.path.join(self.current_path,
-                         self.table_view.currentIndex().
-                         siblingAtColumn(0).data()))
-        if (selected_item.isDir()):
-            next_path = selected_item.absoluteFilePath()
-            self.update_current_path(next_path)
-        elif (selected_item.isFile()):
-            if (selected_item.isExecutable()):
-                QProcess().startDetached(selected_item.absoluteFilePath(),
-                                         [],
-                                         self.current_path)
-            else:
-                QProcess().startDetached('xdg-open',
-                                         [selected_item.absoluteFilePath()],
-                                         self.current_path)
-        else:
-            dialog = utility.message_dialog('The type of the selected file can'
-                                            + ' not be detected.',
-                                            QMessageBox.Warning)
-            dialog.exec()
+        selected_items = []
+        for index in self.table_view.selectedIndexes():
+            if index.column() == 0:
+                selected_items.append(QFileInfo(os.path.join(self.current_path,
+                                      index.siblingAtColumn(0).data())))
+
+        # warn before accidentally open a bunch of files
+        open = True
+        if len(selected_items) > 3:
+            dialog = utility.question_dialog('Do you really want to open '
+                                             + str(len(selected_items))
+                                             + ' files?')
+            button = dialog.exec()
+            if button == QMessageBox.Cancel:
+                open = False
+
+        if open:
+            for item in selected_items:
+                if (item.isDir()):
+                    next_path = item.absoluteFilePath()
+                    self.update_current_path(next_path)
+                elif (item.isFile()):
+                    if (item.isExecutable()):
+                        QProcess().startDetached(item.absoluteFilePath(),
+                                                 [],
+                                                 self.current_path)
+                    else:
+                        QProcess().startDetached('xdg-open',
+                                                 [item.absoluteFilePath()],
+                                                 self.current_path)
+                else:
+                    dialog = utility.message_dialog('The type of the selected'
+                                                    + ' file can not be'
+                                                    + ' detected.',
+                                                    QMessageBox.Warning)
+                    dialog.exec()
 
     def item_selected_event(self):
         """
