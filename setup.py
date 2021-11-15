@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='tfm',
-    version='0.1.1-ALPHA-1',
+    version='0.2.0-ALPHA',
     packages=['tfm', ],
     license='GPLv3',
     author='Till Mahlburg',
