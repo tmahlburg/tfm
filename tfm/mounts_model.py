@@ -111,19 +111,21 @@ class mounts_model(QAbstractListModel):
 
     def toggle_mount(self, device: Device):
         """
-        TODO: find a maintained alternative
         Mounts an unmounted device or unmounts a mounted device using the
-        udevil command.
+        udisksctl command of udisks2.
 
         :param device: The device to mount or unmount.
         :type device: Device
         """
+        print(device.device_node)
         mount_point = self.get_mount_point(device)
         if (mount_point != ''):
-            run(['udevil', '--quiet', 'umount', mount_point], check=True)
+
+            run(['udisksctl', 'unmount', '-b',
+                 device.device_node], check=True)
         else:
-            run(['udevil', '--quiet', 'mount', '/dev/' + device.sys_name],
-                check=True)
+            run(['udisksctl', 'mount', '-b',
+                device.device_node], check=True)
 
     def get_available_mounts(self) -> List[Device]:
         """

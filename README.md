@@ -14,7 +14,7 @@ If you still want to try it, see below.
 * throw files and directories in the trash
 * drag and drop (always moves)
 * cli to open with a path or file url supplied
-* show, mount and unmount devices using udevil
+* show, mount and unmount devices using udisks2
 * auto extract zip and tar files
 
 ## How to install
@@ -39,9 +39,7 @@ Coming soon.
 * handle file links
 * allow multiple pastes and extracts at the same time
 * give choices on handling existing files on paste
-* find maintained alternative to udevil -> probably pmount or udisks2
 * implement network mounts, especially SMB shares
-* mount ISOs
 #### ui
 * drag and drop folders as bookmarks in the bookmark view
 

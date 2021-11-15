@@ -669,7 +669,7 @@ class tfm(QMainWindow, Ui_tfm):
         try:
             self.mounts.toggle_mount(device)
         except CalledProcessError:
-            dialog = utility.message_dialog('udevil was unable to mount or'
+            dialog = utility.message_dialog('udisks2 was unable to mount or'
                                             + ' unmount this devices. Please'
                                             + ' check, if it is installed'
                                             + ' correctly and report this'
