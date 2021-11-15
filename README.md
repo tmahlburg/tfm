@@ -15,11 +15,16 @@ If you still want to try it, see below.
 * drag and drop (always moves)
 * cli to open with a path or file url supplied
 * show, mount and unmount devices using udevil
+* auto extract zip and tar files
 
 ## How to install
 There are python packages for the alpha version to download on pypi. Install at your own risk using:
 ```
 pip install tfm
+```
+Then run using:
+```
+python3 -m tfm
 ```
 
 ## Screenshots
@@ -29,22 +34,17 @@ Coming soon.
 
 ### Before 1.0
 #### functionality
-* auto extract | PARTIAL, needs better progress indication
 * select last opened folder after returning from that folder to the last position
 * open multiple selected files
-* statusbar directory information
 * differentiate default dropAction by destination
 * handle file links
-* allow multiple pastes at the same time
+* allow multiple pastes and extracts at the same time
 * give choices on handling existing files on paste
-* open files with return key | DONE
 * find maintained alternative to udevil -> probably pmount or udisks2
 * implement network mounts, especially SMB shares
 * mount ISOs
 #### ui
 * drag and drop folders as bookmarks in the bookmark view
-#### infrastructure
-* port to Qt6 | DONE
 
 ### Beyond 1.0 (most of these are maybes)
 #### functionality
