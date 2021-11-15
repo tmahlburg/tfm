@@ -2,7 +2,7 @@ import os
 import collections
 from typing import List
 
-from PySide6.QtCore import QObject, QDir, QFile, Signal
+from PySide6.QtCore import QObject, QDir, QFile, Signal, Slot
 from PySide6.QtGui import QClipboard
 
 import tfm.utility as utility
@@ -52,6 +52,10 @@ class paste_worker(QObject):
         self.marked_to_cut = marked_to_cut
 
         self.is_canceled = False
+
+    @Slot()
+    def cancel(self):
+        self.is_canceled = True
 
     def get_paths_from_clipboard(self) -> List[str]:
         """

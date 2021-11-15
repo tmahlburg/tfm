@@ -472,10 +472,9 @@ class tfm(QMainWindow, Ui_tfm):
                                target_path=self.current_path,
                                marked_to_cut=self.marked_to_cut)
         self.paste_worker.moveToThread(self.paste_thread)
-        self.paste_worker.is_canceled = False
 
-        # canceled
-        self.progress_dialog.canceled.connect(self.progress_dialog_cancel)
+        self.progress_dialog.canceled.connect(self.paste_worker.cancel,
+                                              type=Qt.DirectConnection)
         # started
         self.paste_thread.started.connect(self.paste_worker.run)
         # ready
@@ -751,9 +750,3 @@ class tfm(QMainWindow, Ui_tfm):
                                           + ' of '
                                           + str(self.progress_maximum)
                                           + '...')
-
-    def progress_dialog_cancel(self):
-        """
-        Tells the paste worker to cancel its work
-        """
-        self.paste_worker.is_canceled = True
