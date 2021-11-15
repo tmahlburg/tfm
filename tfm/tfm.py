@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
                                QMessageBox, QMainWindow, QProgressDialog)
 from PySide6.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths,
-                            QThread)
+                            QThread, Qt)
 from PySide6.QtGui import QKeySequence, QIcon
 
 from .form import Ui_tfm
@@ -47,9 +47,6 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.clipboard = QApplication.clipboard()
         self.marked_to_cut = []
-        self.progress_dialog = None
-        self.paste_worker = None
-        self.files_to_paste_count = 0
 
         self.back_stack = stack()
         self.forward_stack = stack()
@@ -243,36 +240,6 @@ class tfm(QMainWindow, Ui_tfm):
         self.bookmark_view.addAction(self.action_remove_bookmark)
 
     # ---------------- events ---------------------------------------------- #
-    # TODO: Let it work concurrently, so it won't block the UI.
-    def action_extract_here_event(self):
-        """
-        Extracts the given file if possible.
-        """
-        selected_item = os.path.join(self.current_path,
-                                     self.table_view.currentIndex().
-                                     siblingAtColumn(0).data())
-        # setup QProgressDialog
-        self.progress_dialog = QProgressDialog(parent=self)
-        self.progress_dialog.reset()
-        self.progress_dialog.setMinimumDuration(1000)
-        self.progress_dialog.setLabelText('Extracting archive ' + selected_item
-                                          + '...')
-        self.progress_dialog.setValue(0)
-        # setup paste_worker
-        self.extract_thread = QThread()
-        self.extract_worker = ew(archive_path=selected_item)
-        self.extract_worker.moveToThread(self.extract_thread)
-
-        # started
-        self.extract_thread.started.connect(self.extract_worker.run)
-        # finished
-        self.extract_worker.finished.connect(self.extract_thread.quit)
-        self.extract_worker.finished.connect(self.extract_worker.deleteLater)
-        self.extract_worker.finished.connect(self.progress_dialog.reset)
-        self.extract_thread.finished.connect(self.extract_thread.deleteLater)
-
-        self.extract_thread.start()
-
     def action_new_dir_event(self):
         """
         Prompts the user for a dir name and creates one with that name in the
@@ -441,6 +408,43 @@ class tfm(QMainWindow, Ui_tfm):
         """
         next_path = self.fs_tree_model.filePath(self.fs_tree.currentIndex())
         self.update_current_path(next_path)
+
+    # TODO: allow multiple extractions at the same time
+    def action_extract_here_event(self):
+        """
+        Extracts the given file if possible.
+        """
+        selected_item = os.path.join(self.current_path,
+                                     self.table_view.currentIndex().
+                                     siblingAtColumn(0).data())
+        # setup QProgressDialog
+        self.progress_dialog = QProgressDialog(parent=self)
+        self.progress_dialog.reset()
+        self.progress_dialog.setMinimumDuration(1000)
+        self.progress_dialog.setLabelText('Extracting archive ' + selected_item
+                                          + '...')
+        self.progress_dialog.setValue(0)
+        # setup extract_worker
+        self.extract_thread = QThread()
+        self.extract_worker = ew(archive_path=selected_item)
+        self.extract_worker.moveToThread(self.extract_thread)
+
+        # canceled
+        self.progress_dialog.canceled.connect(self.extract_worker.cancel,
+                                              type=Qt.DirectConnection)
+        # started
+        self.extract_thread.started.connect(self.extract_worker.run)
+        # ready
+        self.extract_worker.ready.connect(self.progress_dialog_init)
+        # progress
+        self.extract_worker.progress.connect(self.progress_dialog_update)
+        # finished
+        self.extract_worker.finished.connect(self.extract_thread.quit)
+        self.extract_worker.finished.connect(self.extract_worker.deleteLater)
+        self.extract_worker.finished.connect(self.progress_dialog.reset)
+        self.extract_thread.finished.connect(self.extract_thread.deleteLater)
+
+        self.extract_thread.start()
 
     def action_copy_event(self):
         """
@@ -733,7 +737,7 @@ class tfm(QMainWindow, Ui_tfm):
         :type maximum: int
         """
         self.progress_dialog.setMaximum(maximum)
-        self.files_to_paste_count = maximum
+        self.progress_maximum = maximum
 
     def progress_dialog_update(self, value: int):
         """
@@ -743,10 +747,9 @@ class tfm(QMainWindow, Ui_tfm):
         :type value: int
         """
         self.progress_dialog.setValue(value)
-        self.progress_dialog.setLabelText('Pasting file '
-                                          + str(value)
+        self.progress_dialog.setLabelText(str(value)
                                           + ' of '
-                                          + str(self.files_to_paste_count)
+                                          + str(self.progress_maximum)
                                           + '...')
 
     def progress_dialog_cancel(self):
