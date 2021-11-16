@@ -1,14 +1,14 @@
 # tfm
-Simple file manager implemented in Qt for Python (Qt6). This project aims to create a simple, desktop agnostic, unix file-manager.
+Simple file manager implemented in Qt for Python (Qt6). This project aims to create a simple, desktop agnostic, linux file-manager.
 The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problems.
 The project is in an alpha stage right now and thus it is not advised to use it at the moment.
 If you still want to try it, see below.
 
 ## Features
 * basic directory traversal
-* window layout with toolbar, statusbar, main table view, fs tree and bookmarks
+* window layout with toolbar, statusbar, main table view, fs tree, bookmarks and mounts
 * open files using xdg-open
-* cut, copy, paste (with progress information), renaming
+* cut, copy, paste (with progress information), rename
 * named bookmarks to directories
 * show/hide dotfiles
 * throw files and directories in the trash
@@ -36,9 +36,9 @@ Coming soon.
 #### functionality
 * select last opened folder after returning from that folder to the last position
 * differentiate default dropAction by destination
-* handle file links
 * allow multiple pastes and extracts at the same time
 * give choices on handling existing files on paste
+* mount ISOs
 * implement network mounts, especially SMB shares
 #### ui
 * drag and drop folders as bookmarks in the bookmark view
@@ -49,6 +49,7 @@ Coming soon.
 * restore from trash (should be implemented via a custom model/view)
 * delete from trash (should be implemented via a custom model/view)
 * mount MTP devices
+* open terminal in current directory
 #### ui
 * optional preview pane
 * open with dialog
