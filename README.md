@@ -34,8 +34,7 @@ Coming soon.
 
 ### Before 1.0
 #### functionality
-* select last opened folder after returning from that folder to the last position
-* differentiate default dropAction by destination
+ differentiate default dropAction by destination
 * allow multiple pastes and extracts at the same time
 * give choices on handling existing files on paste
 * mount ISOs

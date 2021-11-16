@@ -708,8 +708,6 @@ class tfm(QMainWindow, Ui_tfm):
         self.table_view.setRootIndex(
             self.filesystem.index(next_path))
         self.adressbar.setText(next_path)
-        # update directory and partition information
-        # self.update_dir_info(next_path)
         self.part_info.setText(utility.part_info(next_path))
         # disable up navigation if in fs root
         if (next_path == QDir().rootPath()):
@@ -723,6 +721,9 @@ class tfm(QMainWindow, Ui_tfm):
                 self.back_stack.push(self.current_path)
                 # reenable back navigation
                 self.action_back.setEnabled(True)
+        else:
+            self.table_view.setCurrentIndex(
+                self.filesystem.index(self.current_path))
         if (reset_forward_stack):
             self.forward_stack.drop()
             self.action_forward.setEnabled(False)
