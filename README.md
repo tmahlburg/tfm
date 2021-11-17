@@ -14,7 +14,7 @@ If you still want to try it, see below.
 * throw files and directories in the trash
 * drag and drop (always moves)
 * cli to open with a path or file url supplied
-* show, mount and unmount devices using udisks2
+* show, mount and unmount devices and iso files using udisks2
 * auto extract zip and tar files
 
 ## How to install
