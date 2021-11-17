@@ -65,6 +65,8 @@ class Ui_tfm(object):
         self.action_copy_path.setObjectName(u"action_copy_path")
         self.action_extract_here = QAction(tfm)
         self.action_extract_here.setObjectName(u"action_extract_here")
+        self.action_mount_iso = QAction(tfm)
+        self.action_mount_iso.setObjectName(u"action_mount_iso")
         self.centralwidget = QWidget(tfm)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -184,6 +186,10 @@ class Ui_tfm(object):
         self.action_extract_here.setText(QCoreApplication.translate("tfm", u"Extract here", None))
 #if QT_CONFIG(tooltip)
         self.action_extract_here.setToolTip(QCoreApplication.translate("tfm", u"Extract here", None))
+#endif // QT_CONFIG(tooltip)
+        self.action_mount_iso.setText(QCoreApplication.translate("tfm", u"Mount ISO", None))
+#if QT_CONFIG(tooltip)
+        self.action_mount_iso.setToolTip(QCoreApplication.translate("tfm", u"Mount ISO", None))
 #endif // QT_CONFIG(tooltip)
     # retranslateUi
 

@@ -1,7 +1,9 @@
+import os
+from time import sleep
 from typing import List
 from subprocess import run, PIPE
 
-from pyudev import Device, Context
+from pyudev import Device, Devices, Context
 
 from PySide6.QtCore import QAbstractListModel, Qt
 from PySide6.QtGui import QIcon
@@ -117,7 +119,6 @@ class mounts_model(QAbstractListModel):
         :param device: The device to mount or unmount.
         :type device: Device
         """
-        print(device.device_node)
         mount_point = self.get_mount_point(device)
         if (mount_point != ''):
 
@@ -139,3 +140,17 @@ class mounts_model(QAbstractListModel):
                                              DEVTYPE='partition'):
             mountable_devices.append(dev)
         return mountable_devices
+
+    def mount_and_add_iso(self, iso_path: str):
+        """
+        """
+        if (os.path.isfile(iso_path) and
+                os.path.splitext(iso_path)[1] == '.iso'):
+            result = run(['udisksctl', 'loop-setup', '-f', iso_path],
+                         check=True, text=True, stdout=PIPE,
+                         stderr=PIPE, universal_newlines=True).stdout.strip()
+            result = str.split(result, ' ')[-1][:-1]
+            device = Devices.from_device_file(self.context, result)
+            self.add(device)
+            self.toggle_mount(device)
+            self.layoutChanged.emit()

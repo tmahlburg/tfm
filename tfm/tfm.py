@@ -204,6 +204,7 @@ class tfm(QMainWindow, Ui_tfm):
             self.action_remove_bookmark_event)
         self.action_extract_here.triggered.connect(
             self.action_extract_here_event)
+        self.action_mount_iso.triggered.connect(self.action_mount_iso_event)
 
         self.bookmark_view.pressed.connect(self.bookmark_selected_event)
         self.fs_tree.pressed.connect(self.fs_tree_event)
@@ -407,12 +408,16 @@ class tfm(QMainWindow, Ui_tfm):
             if (os.path.isdir(files[0])):
                 self.table_view.addAction(self.action_add_to_bookmarks)
                 self.table_view.removeAction(self.action_extract_here)
+                self.table_view.removeAction(self.action_mount_iso)
             else:
                 self.table_view.removeAction(self.action_add_to_bookmarks)
                 if (is_tarfile(files[0]) or is_zipfile(files[0])):
                     self.table_view.addAction(self.action_extract_here)
+                if (os.path.splitext(files[0])[1] == '.iso'):
+                    self.table_view.addAction(self.action_mount_iso)
                 else:
                     self.table_view.removeAction(self.action_extract_here)
+                    self.table_view.removeAction(self.action_mount_iso)
 
         files = list(set(files))
         self.item_info.setText(utility.file_info(files))
@@ -653,6 +658,15 @@ class tfm(QMainWindow, Ui_tfm):
         if mount_point != '':
             self.update_current_path(mount_point)
 
+    def action_mount_iso_event(self):
+        """
+        """
+        iso_path = os.path.join(self.current_path,
+                                self.table_view.currentIndex()
+                                .siblingAtColumn(0).data())
+        self.mounts.mount_and_add_iso(iso_path)
+        self.mounts.layoutChanged.emit()
+
     # TODO: handle performance better
     def mount_toggle_event(self):
         """
@@ -707,6 +721,8 @@ class tfm(QMainWindow, Ui_tfm):
         self.filesystem.setRootPath(next_path)
         self.table_view.setRootIndex(
             self.filesystem.index(next_path))
+        self.table_view.setCurrentIndex(
+            self.filesystem.index(self.current_path))
         self.adressbar.setText(next_path)
         self.part_info.setText(utility.part_info(next_path))
         # disable up navigation if in fs root
@@ -721,9 +737,6 @@ class tfm(QMainWindow, Ui_tfm):
                 self.back_stack.push(self.current_path)
                 # reenable back navigation
                 self.action_back.setEnabled(True)
-        else:
-            self.table_view.setCurrentIndex(
-                self.filesystem.index(self.current_path))
         if (reset_forward_stack):
             self.forward_stack.drop()
             self.action_forward.setEnabled(False)

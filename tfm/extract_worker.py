@@ -2,7 +2,7 @@ import os
 import tarfile
 import zipfile
 
-from PySide6.QtCore import QObject, QFileInfo, QThread, Signal, Slot
+from PySide6.QtCore import QObject, QFileInfo, Signal, Slot
 
 
 class extract_worker(QObject):

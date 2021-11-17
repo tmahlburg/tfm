@@ -274,6 +274,14 @@
     <string>Extract here</string>
    </property>
   </action>
+  <action name="action_mount_iso">
+   <property name="text">
+    <string>Mount ISO</string>
+   </property>
+   <property name="toolTip">
+    <string>Mount ISO</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

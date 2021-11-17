@@ -34,11 +34,11 @@ Coming soon.
 
 ### Before 1.0
 #### functionality
- differentiate default dropAction by destination
+* differentiate default dropAction by destination
 * allow multiple pastes and extracts at the same time
 * give choices on handling existing files on paste
-* mount ISOs
 * implement network mounts, especially SMB shares
+* monitor plugged in devices
 #### ui
 * drag and drop folders as bookmarks in the bookmark view
 
