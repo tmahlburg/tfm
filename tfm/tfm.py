@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
                                QMessageBox, QMainWindow, QProgressDialog)
 from PySide6.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths,
-                            QThread, Qt, QThreadPool)
+                            Qt, QThreadPool)
 from PySide6.QtGui import QKeySequence, QIcon
 
 from .form import Ui_tfm
