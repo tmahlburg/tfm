@@ -60,7 +60,6 @@ class tfm(QMainWindow, Ui_tfm):
         self.default_path = self.current_path
 
         self.threadpool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
         # MAIN VIEW #
         # set up QFileSystemModel
@@ -432,7 +431,6 @@ class tfm(QMainWindow, Ui_tfm):
         next_path = self.fs_tree_model.filePath(self.fs_tree.currentIndex())
         self.update_current_path(next_path)
 
-    # TODO: allow multiple extractions at the same time
     def action_extract_here_event(self):
         """
         Extracts the given file if possible.
@@ -453,13 +451,13 @@ class tfm(QMainWindow, Ui_tfm):
         # canceled
         progress_dialog.canceled.connect(extract_worker.cancel,
                                          type=Qt.DirectConnection)
-        # started
         # ready
         extract_worker.signals.ready.connect(progress_dialog.setMaximum)
         # progress
         extract_worker.signals.progress.connect(progress_dialog.setValue)
         # progress message
-        extract_worker.signals.progress_message.connect(progress_dialog.setLabelText)
+        extract_worker.signals.progress_message.connect(
+            progress_dialog.setLabelText)
         # finished
         extract_worker.signals.finished.connect(progress_dialog.reset)
 
@@ -474,38 +472,35 @@ class tfm(QMainWindow, Ui_tfm):
             self.table_view.selectionModel().selectedIndexes())
         self.clipboard.setMimeData(mime_data)
 
-    # TODO: allow multiple pastes at the same time
     def action_paste_event(self):
         """
         Pastes the files currently in the clipboard to the current dir.
         """
         # setup QProgressDialog
-        self.progress_dialog = QProgressDialog(parent=self)
-        self.progress_dialog.reset()
-        self.progress_dialog.setMinimumDuration(1000)
-        self.progress_dialog.setLabelText('Pasting...')
-        self.progress_dialog.setValue(0)
+        progress_dialog = QProgressDialog(parent=self)
+        progress_dialog.reset()
+        progress_dialog.setMinimumDuration(1000)
+        progress_dialog.setLabelText('Pasting...')
+        progress_dialog.setValue(0)
         # setup paste_worker
-        self.paste_thread = QThread()
-        self.paste_worker = pw(clipboard=self.clipboard,
-                               target_path=self.current_path,
-                               marked_to_cut=self.marked_to_cut)
-        self.paste_worker.moveToThread(self.paste_thread)
+        paste_worker = pw(clipboard=self.clipboard,
+                          target_path=self.current_path,
+                          marked_to_cut=self.marked_to_cut)
+        # canceled
+        progress_dialog.canceled.connect(paste_worker.cancel,
+                                         type=Qt.DirectConnection)
 
-        self.progress_dialog.canceled.connect(self.paste_worker.cancel,
-                                              type=Qt.DirectConnection)
-        # started
-        self.paste_thread.started.connect(self.paste_worker.run)
         # ready
-        self.paste_worker.ready.connect(self.progress_dialog_init)
+        paste_worker.signals.ready.connect(progress_dialog.setMaximum)
         # progress
-        self.paste_worker.progress.connect(self.progress_dialog_update)
+        paste_worker.signals.progress.connect(progress_dialog.setValue)
+        # progress message
+        paste_worker.signals.progress_message.connect(
+            progress_dialog.setLabelText)
         # finished
-        self.paste_worker.finished.connect(self.paste_thread.quit)
-        self.paste_worker.finished.connect(self.paste_worker.deleteLater)
-        self.paste_worker.finished.connect(self.progress_dialog.reset)
-        self.paste_thread.finished.connect(self.paste_thread.deleteLater)
-        self.paste_thread.start()
+        paste_worker.signals.finished.connect(progress_dialog.reset)
+
+        self.threadpool.start(paste_worker)
 
     # TODO: visual feedback for cut files
     def action_cut_event(self):
@@ -754,26 +749,3 @@ class tfm(QMainWindow, Ui_tfm):
             self.mounts.add(device)
         elif action == 'remove':
             self.mounts.remove(device)
-
-    def progress_dialog_init(self, maximum: int):
-        """
-        Initializes the progress dialog and sets its maximum value.
-
-        :param maximum: The total amount of files to be pasted.
-        :type maximum: int
-        """
-        self.progress_dialog.setMaximum(maximum)
-        self.progress_maximum = maximum
-
-    def progress_dialog_update(self, value: int):
-        """
-        Updates the progress dialog.
-
-        :param value: Amount of files already pasted.
-        :type value: int
-        """
-        self.progress_dialog.setValue(value)
-        self.progress_dialog.setLabelText(str(value)
-                                          + ' of '
-                                          + str(self.progress_maximum)
-                                          + '...')

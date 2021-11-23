@@ -35,7 +35,6 @@ Coming soon.
 ### Before 1.0
 #### functionality
 * differentiate default dropAction by destination
-* allow multiple pastes and extracts at the same time
 * give choices on handling existing files on paste
 * implement network mounts, especially SMB shares
 * monitor plugged in devices
