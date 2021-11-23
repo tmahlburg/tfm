@@ -41,6 +41,8 @@ Coming soon.
 * monitor plugged in devices
 #### ui
 * drag and drop folders as bookmarks in the bookmark view
+#### infrastructure
+* address all in code #TODOs
 
 ### Beyond 1.0 (most of these are maybes)
 #### functionality

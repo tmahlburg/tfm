@@ -3,6 +3,7 @@ import os
 from typing import List, Dict
 
 
+# TODO: convert to model/view
 class bookmarks:
     """
     Handles the bookmarks as file and as list of dicts.

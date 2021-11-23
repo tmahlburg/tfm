@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
                                QLabel, QMenu, QToolButton, QInputDialog,
                                QMessageBox, QMainWindow, QProgressDialog)
 from PySide6.QtCore import (QFile, QDir, QFileInfo, QProcess, QStandardPaths,
-                            QThread, Qt)
+                            QThread, Qt, QThreadPool)
 from PySide6.QtGui import QKeySequence, QIcon
 
 from .form import Ui_tfm
@@ -58,6 +58,9 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.current_path = utility.handle_args(args)
         self.default_path = self.current_path
+
+        self.threadpool = QThreadPool()
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
         # MAIN VIEW #
         # set up QFileSystemModel
@@ -413,8 +416,8 @@ class tfm(QMainWindow, Ui_tfm):
                 self.table_view.removeAction(self.action_add_to_bookmarks)
                 if (is_tarfile(files[0]) or is_zipfile(files[0])):
                     self.table_view.addAction(self.action_extract_here)
-                if (os.path.splitext(files[0])[1] == '.iso'):
-                    self.table_view.addAction(self.action_mount_iso)
+                    if (os.path.splitext(files[0])[1] == '.iso'):
+                        self.table_view.addAction(self.action_mount_iso)
                 else:
                     self.table_view.removeAction(self.action_extract_here)
                     self.table_view.removeAction(self.action_mount_iso)
@@ -438,33 +441,29 @@ class tfm(QMainWindow, Ui_tfm):
                                      self.table_view.currentIndex().
                                      siblingAtColumn(0).data())
         # setup QProgressDialog
-        self.progress_dialog = QProgressDialog(parent=self)
-        self.progress_dialog.reset()
-        self.progress_dialog.setMinimumDuration(1000)
-        self.progress_dialog.setLabelText('Extracting archive ' + selected_item
-                                          + '...')
-        self.progress_dialog.setValue(0)
+        progress_dialog = QProgressDialog(parent=self)
+        progress_dialog.reset()
+        progress_dialog.setMinimumDuration(1000)
+        progress_dialog.setLabelText('Extracting archive ' + selected_item
+                                     + '...')
+        progress_dialog.setValue(0)
         # setup extract_worker
-        self.extract_thread = QThread()
-        self.extract_worker = ew(archive_path=selected_item)
-        self.extract_worker.moveToThread(self.extract_thread)
+        extract_worker = ew(archive_path=selected_item)
 
         # canceled
-        self.progress_dialog.canceled.connect(self.extract_worker.cancel,
-                                              type=Qt.DirectConnection)
+        progress_dialog.canceled.connect(extract_worker.cancel,
+                                         type=Qt.DirectConnection)
         # started
-        self.extract_thread.started.connect(self.extract_worker.run)
         # ready
-        self.extract_worker.ready.connect(self.progress_dialog_init)
+        extract_worker.signals.ready.connect(progress_dialog.setMaximum)
         # progress
-        self.extract_worker.progress.connect(self.progress_dialog_update)
+        extract_worker.signals.progress.connect(progress_dialog.setValue)
+        # progress message
+        extract_worker.signals.progress_message.connect(progress_dialog.setLabelText)
         # finished
-        self.extract_worker.finished.connect(self.extract_thread.quit)
-        self.extract_worker.finished.connect(self.extract_worker.deleteLater)
-        self.extract_worker.finished.connect(self.progress_dialog.reset)
-        self.extract_thread.finished.connect(self.extract_thread.deleteLater)
+        extract_worker.signals.finished.connect(progress_dialog.reset)
 
-        self.extract_thread.start()
+        self.threadpool.start(extract_worker)
 
     def action_copy_event(self):
         """
@@ -665,7 +664,6 @@ class tfm(QMainWindow, Ui_tfm):
                                 self.table_view.currentIndex()
                                 .siblingAtColumn(0).data())
         self.mounts.mount_and_add_iso(iso_path)
-        self.mounts.layoutChanged.emit()
 
     # TODO: handle performance better
     def mount_toggle_event(self):
