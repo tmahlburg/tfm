@@ -746,3 +746,4 @@ class tfm(QMainWindow, Ui_tfm):
             self.mounts.add(device)
         elif action == 'remove':
             self.mounts.remove(device)
+        self.mounts.layoutChanged.emit()
