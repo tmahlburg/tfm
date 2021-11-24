@@ -2,14 +2,17 @@ import os
 
 from typing import List, Dict
 
+from PySide6.QtCore import QAbstractListModel, Qt, QModelIndex
+from PySide6.QtGui import QIcon
 
-# TODO: convert to model/view
-class bookmarks:
+
+class bookmarks_model(QAbstractListModel):
     """
     Handles the bookmarks as file and as list of dicts.
     """
 
-    def __init__(self, path_to_bookmark_file: str):
+
+    def __init__(self, *args, path_to_bookmark_file: str, **kwargs):
         """
         Reads bookmarks from file to internal list of dicts or creates the
         file if it doesn't exist yet. The file should have the format of one
@@ -21,12 +24,42 @@ class bookmarks:
                                       are saved
         :type path_to_bookmark_file: str
         """
+        super(bookmarks_model, self).__init__(*args, **kwargs)
         self.list = []
         if os.path.exists(path_to_bookmark_file):
             self.list = self.get_bookmarks_from_file(path_to_bookmark_file)
         else:
             open(path_to_bookmark_file, 'a').close()
         self.path_to_bookmark_file = path_to_bookmark_file
+
+    def data(self, index: QModelIndex, role: int):
+        """
+        Returns the data of the object in a Qt-conforming way. If the given
+        role is DisplayRole it returns the name of the device as a string, if
+        it's DecorationRole it returns an icon according to it's mount state.
+
+        :param index: Index of the item in the data structure.
+        :type index: QModelIndex
+        :param role: Item role according to Qt.
+        :type role: int
+        :return: Device name or icon according to mount state.
+        """
+        if role == Qt.DisplayRole:
+            return (self.list[index.row()])['name']
+        if role == Qt.DecorationRole:
+            return QIcon.fromTheme('user-bookmarks')
+
+    def rowCount(self, index: int) -> int:
+        """
+        Returns the number of mountable devices in a Qt-conforming way.
+
+        :param index: unused, but needed by Qt.
+        :type index: int
+        :return: Number of mountable devices.
+        :rtype: int
+        """
+        return len(self.list)
+
 
     def get_bookmarks_from_file(self, path: str) -> List[Dict[str, str]]:
         """
@@ -65,7 +98,7 @@ class bookmarks:
         if not self.bookmark_exists(name) and '|' not in name:
             self.list.append({'name': name, 'path': path})
             with open(self.path_to_bookmark_file, 'a') as bookmarks:
-                bookmarks.write(name + '|' + path + '\n')
+                bookmarks.write(name + '|' + path + '\n')#
         else:
             raise NameError
 

@@ -1,6 +1,5 @@
 # tfm
-Simple file manager implemented in Qt for Python (Qt6). This project aims to create a simple, desktop agnostic, linux file-manager.
-The initial version is going to be implemented in Python, though this might change in a later version, if there are performance problems.
+Simple file manager implemented in Qt for Python (Qt6). This project aims to create a simple, desktop agnostic linux file-manager.
 The project is in an alpha stage right now and thus it is not advised to use it at the moment.
 If you still want to try it, see below.
 
@@ -26,6 +25,7 @@ Then run using:
 ```
 python3 -m tfm
 ```
+Also install the external requirements `udisks2` and `util-linux`.
 
 ## Screenshots
 Coming soon.
@@ -36,7 +36,7 @@ Coming soon.
 #### functionality
 * differentiate default dropAction by destination
 * give choices on handling existing files on paste
-* implement network mounts, especially SMB shares
+* implement network mounts, especially SMB shares (probably using smbnetfs)
 * monitor plugged in devices
 #### ui
 * drag and drop folders as bookmarks in the bookmark view

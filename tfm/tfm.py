@@ -15,7 +15,7 @@ from PySide6.QtGui import QKeySequence, QIcon
 from .form import Ui_tfm
 
 from .stack import stack
-from .bookmarks import bookmarks as bm
+from .bookmarks_model import bookmarks_model as bm
 from .mounts_model import mounts_model
 from .paste_worker import paste_worker as pw
 from .extract_worker import extract_worker as ew
@@ -97,9 +97,9 @@ class tfm(QMainWindow, Ui_tfm):
         self.fs_tree.expand(self.fs_tree_model.index(0, 0))
 
         # BOOKMARKS #
-        self.bookmarks = bm(os.path.join(self.config_dir, 'bookmarks'))
-        for bookmark in self.bookmarks.get_all():
-            self.bookmark_view.addItem(bookmark['name'])
+        self.bookmarks = bm(path_to_bookmark_file=os.path.join(self.config_dir,
+                                                               'bookmarks'))
+        self.bookmark_view.setModel(self.bookmarks)
 
         # MOUNTS #
         self.udev_context = Context()
@@ -597,7 +597,7 @@ class tfm(QMainWindow, Ui_tfm):
             if (ok):
                 if (name):
                     self.bookmarks.add_bookmark(name, path)
-                    self.bookmark_view.addItem(name)
+                    self.bookmark_view.reset()
                 else:
                     dialog = utility.message_dialog('Please enter name for'
                                                     + ' the bookmark.',
@@ -621,11 +621,8 @@ class tfm(QMainWindow, Ui_tfm):
         button_clicked = dialog.exec()
 
         if (button_clicked == QMessageBox.Yes):
-            self.bookmark_view.takeItem(
-                self.bookmark_view.row(
-                    self.bookmark_view.itemFromIndex(
-                        self.bookmark_view.currentIndex())))
             self.bookmarks.remove_bookmark(name)
+            self.bookmark_view.reset()
 
     def bookmark_selected_event(self):
         """

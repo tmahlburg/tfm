@@ -47,7 +47,7 @@
          <bool>false</bool>
         </attribute>
        </widget>
-       <widget class="QListWidget" name="bookmark_view">
+       <widget class="QListView" name="bookmark_view">
         <property name="contextMenuPolicy">
          <enum>Qt::ActionsContextMenu</enum>
         </property>

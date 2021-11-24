@@ -17,9 +17,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHBoxLayout, QHeaderView,
-    QListView, QListWidget, QListWidgetItem, QMainWindow,
-    QSizePolicy, QSplitter, QStatusBar, QTableView,
-    QToolBar, QTreeView, QWidget)
+    QListView, QMainWindow, QSizePolicy, QSplitter,
+    QStatusBar, QTableView, QToolBar, QTreeView,
+    QWidget)
 
 class Ui_tfm(object):
     def setupUi(self, tfm):
@@ -88,7 +88,7 @@ class Ui_tfm(object):
         self.fs_tree.setRootIsDecorated(False)
         self.hsplit.addWidget(self.fs_tree)
         self.fs_tree.header().setVisible(False)
-        self.bookmark_view = QListWidget(self.hsplit)
+        self.bookmark_view = QListView(self.hsplit)
         self.bookmark_view.setObjectName(u"bookmark_view")
         self.bookmark_view.setContextMenuPolicy(Qt.ActionsContextMenu)
         self.bookmark_view.setEditTriggers(QAbstractItemView.DoubleClicked|QAbstractItemView.EditKeyPressed|QAbstractItemView.SelectedClicked)

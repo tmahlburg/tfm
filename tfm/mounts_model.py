@@ -4,7 +4,7 @@ from subprocess import run, PIPE
 
 from pyudev import Device, Devices, Context
 
-from PySide6.QtCore import QAbstractListModel, Qt
+from PySide6.QtCore import QAbstractListModel, Qt, QModelIndex
 from PySide6.QtGui import QIcon
 
 
@@ -25,14 +25,14 @@ class mounts_model(QAbstractListModel):
         self.context = context
         self.devices = self.get_available_mounts()
 
-    def data(self, index: int, role: int):
+    def data(self, index: QModelIndex, role: int):
         """
         Returns the data of the object in a Qt-conforming way. If the given
         role is DisplayRole it returns the name of the device as a string, if
         it's DecorationRole it returns an icon according to it's mount state.
 
         :param index: Index of the item in the data structure.
-        :type index: int
+        :type index: QModelIndex
         :param role: Item role according to Qt.
         :type role: int
         :return: Device name or icon according to mount state.
