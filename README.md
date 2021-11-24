@@ -38,7 +38,8 @@ Coming soon.
 * give choices on handling existing files on paste
 * implement network mounts, especially SMB shares (probably using smbnetfs)
 #### ui
-* drag and drop folders as bookmarks in the bookmark view.#### infrastructure
+* drag and drop folders as bookmarks in the bookmark view.
+#### infrastructure
 * address all in code #TODOs
 
 ### Beyond 1.0 (most of these are maybes)
