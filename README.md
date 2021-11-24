@@ -32,32 +32,36 @@ Coming soon.
 
 ## Roadmap
 
-### Before 1.0
+### high priority
 #### functionality
-* differentiate default dropAction by destination
 * give choices on handling existing files on paste
 * implement network mounts, especially SMB shares (probably using smbnetfs)
-#### ui
-* drag and drop folders as bookmarks in the bookmark view.
-#### infrastructure
-* address all in code #TODOs
 
-### Beyond 1.0 (most of these are maybes)
+### normal priority
 #### functionality
+* differentiate default dropAction by destination
 * fuzzy search in folder
 * restore from trash (should be implemented via a custom model/view)
 * delete from trash (should be implemented via a custom model/view)
-* mount MTP devices
 * open terminal in current directory
 #### ui
-* optional preview pane
 * open with dialog
-* file previews
-* context sensitive views and columns
 * make links visually distinguishable
 * file property dialog
-* user configurable views and columns
 * bookmark order configurable in the UI
+* drag and drop folders as bookmarks in the bookmark view
+* bookmark current dir
+* bookmark directory name as tool tip
+#### infrastructure
+* address all in code #TODOs
+
+### low priority
+#### functionality
+* mount MTP devices
+#### ui
+* optional preview pane
+* context sensitive views and columns
+* user configurable views and columns
 #### accessability
 * localization
 
