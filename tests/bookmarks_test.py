@@ -6,7 +6,7 @@ import pytest
 
 
 def setup_object(file_name: str) -> bookmarks:
-    return bookmarks(bookmark_file_path=file_name)
+    return bookmarks(path_to_bookmark_file=file_name)
 
 
 def cleanup(file_name: str):
