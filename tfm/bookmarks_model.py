@@ -11,7 +11,6 @@ class bookmarks_model(QAbstractListModel):
     Handles the bookmarks as file and as list of dicts.
     """
 
-
     def __init__(self, *args, path_to_bookmark_file: str, **kwargs):
         """
         Reads bookmarks from file to internal list of dicts or creates the
@@ -60,7 +59,6 @@ class bookmarks_model(QAbstractListModel):
         """
         return len(self.list)
 
-
     def get_bookmarks_from_file(self, path: str) -> List[Dict[str, str]]:
         """
         Gets bookmarks from a file.
@@ -98,7 +96,7 @@ class bookmarks_model(QAbstractListModel):
         if not self.bookmark_exists(name) and '|' not in name:
             self.list.append({'name': name, 'path': path})
             with open(self.path_to_bookmark_file, 'a') as bookmarks:
-                bookmarks.write(name + '|' + path + '\n')#
+                bookmarks.write(name + '|' + path + '\n')
         else:
             raise NameError
 
