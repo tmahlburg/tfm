@@ -1,4 +1,4 @@
-from tfm.bookmarks import bookmarks
+from tfm.bookmarks_model import bookmarks_model as bookmarks
 
 import os
 
@@ -6,7 +6,7 @@ import pytest
 
 
 def setup_object(file_name: str) -> bookmarks:
-    return bookmarks(file_name)
+    return bookmarks(bookmark_file_path=file_name)
 
 
 def cleanup(file_name: str):
