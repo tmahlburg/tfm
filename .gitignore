@@ -75,3 +75,4 @@ Thumbs.db
 __pycache__/*
 build/*
 *.egg-info/*
+dist/*
