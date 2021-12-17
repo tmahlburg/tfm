@@ -40,6 +40,18 @@
         <property name="tabKeyNavigation">
          <bool>true</bool>
         </property>
+        <property name="showDropIndicator" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="dragEnabled">
+         <bool>false</bool>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::DropOnly</enum>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::MoveAction</enum>
+        </property>
         <property name="rootIsDecorated">
          <bool>false</bool>
         </property>
@@ -57,8 +69,14 @@
         <property name="tabKeyNavigation">
          <bool>true</bool>
         </property>
+        <property name="dragDropOverwriteMode">
+         <bool>true</bool>
+        </property>
         <property name="dragDropMode">
-         <enum>QAbstractItemView::InternalMove</enum>
+         <enum>QAbstractItemView::DropOnly</enum>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::CopyAction</enum>
         </property>
         <property name="alternatingRowColors">
          <bool>true</bool>
