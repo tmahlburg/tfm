@@ -157,7 +157,7 @@ def handle_args(args: List[str]) -> str:
     """
     if len(args) > 1:
         if os.path.isdir(args[1]):
-            return args[1]
+            return os.path.abspath(args[1])
         if QUrl(args[1]).isValid() and os.path.isdir(QUrl(args[1]).path()):
-            return QUrl(args[1]).path()
+            return os.path.abspath(QUrl(args[1]).path())
     return QDir.homePath()
