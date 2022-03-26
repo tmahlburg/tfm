@@ -40,10 +40,12 @@ Coming soon.
 ### normal priority
 #### functionality
 * differentiate default dropAction by destination
+* differentiate delete action by source
 * fuzzy search in folder
 * restore from trash (should be implemented via a custom model/view)
 * delete from trash (should be implemented via a custom model/view)
 * open terminal in current directory
+* load file / dir / partition info in a background thread
 #### ui
 * open with dialog
 * make links visually distinguishable
@@ -58,6 +60,7 @@ Coming soon.
 ### low priority
 #### functionality
 * mount MTP devices
+* delete forever
 #### ui
 * optional preview pane
 * context sensitive views and columns
