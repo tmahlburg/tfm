@@ -538,7 +538,6 @@ class tfm(QMainWindow, Ui_tfm):
             for item in path_list:
                 send2trash(item)
 
-    # TODO: warn, if extension gets changed
     def action_rename_event(self):
         """
         Prompts the user to enter a new name and changes the selected file's
