@@ -1,4 +1,7 @@
-# v0.2.1 (WIP):
+# v0.3.1:
+* fix relative paths
+
+# v0.3.0:
 * mount ISO files
 * select last opened directory if possible
 * open multiple selected files

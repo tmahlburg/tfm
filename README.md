@@ -46,6 +46,7 @@ Coming soon.
 * delete from trash (should be implemented via a custom model/view)
 * open terminal in current directory
 * load file / dir / partition info in a background thread
+* delete forever
 #### ui
 * open with dialog
 * make links visually distinguishable
@@ -60,7 +61,6 @@ Coming soon.
 ### low priority
 #### functionality
 * mount MTP devices
-* delete forever
 #### ui
 * optional preview pane
 * context sensitive views and columns

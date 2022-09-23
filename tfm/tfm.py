@@ -116,9 +116,12 @@ class tfm(QMainWindow, Ui_tfm):
         self.item_info = QLabel()
         # self.dir_info = QLabel()
         self.part_info = QLabel()
+        self.build_info = QLabel()
         self.statusbar.addPermanentWidget(self.item_info)
         # self.statusbar.addPermanentWidget(self.dir_info)
         self.statusbar.addPermanentWidget(self.part_info)
+        self.statusbar.addPermanentWidget(self.build_info)
+        self.build_info.setText('DEV')
 
         self.part_info.setText(utility.part_info(self.current_path))
 
