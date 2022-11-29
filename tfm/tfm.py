@@ -53,7 +53,7 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.config_dir = os.path.join(
             QStandardPaths.writableLocation(
-                QStandardPaths().ConfigLocation),
+                QStandardPaths.ConfigLocation),
             type(self).__name__)
 
         self.current_path = utility.handle_args(args)
@@ -121,7 +121,7 @@ class tfm(QMainWindow, Ui_tfm):
         # self.statusbar.addPermanentWidget(self.dir_info)
         self.statusbar.addPermanentWidget(self.part_info)
         self.statusbar.addPermanentWidget(self.build_info)
-        self.build_info.setText('DEV')
+        self.build_info.setText('0.3.2 - DEV')
 
         self.part_info.setText(utility.part_info(self.current_path))
 
@@ -136,7 +136,7 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.menu_button = QToolButton()
         self.menu_button.setMenu(self.main_menu)
-        self.menu_button.setPopupMode(QToolButton().InstantPopup)
+        self.menu_button.setPopupMode(QToolButton.InstantPopup)
         self.menu_button.setDefaultAction(self.action_menu)
 
         self.toolbar.insertWidget(self.action_back, self.menu_button)
@@ -153,7 +153,7 @@ class tfm(QMainWindow, Ui_tfm):
 
         self.new_button = QToolButton()
         self.new_button.setMenu(self.new_menu)
-        self.new_button.setPopupMode(QToolButton().MenuButtonPopup)
+        self.new_button.setPopupMode(QToolButton.MenuButtonPopup)
         self.new_button.setDefaultAction(self.action_new_dir)
 
         self.toolbar.insertWidget(self.action_back, self.new_button)
