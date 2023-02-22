@@ -55,6 +55,7 @@ Coming soon.
 * drag and drop folders as bookmarks in the bookmark view
 * bookmark current dir
 * bookmark directory name as tool tip
+* about dialog
 #### infrastructure
 * address all in code #TODOs
 

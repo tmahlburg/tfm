@@ -17,6 +17,7 @@ pyudev = "*"
 flake8 = "*"
 build = "*"
 twine = "*"
+pysmb = "*"
 
 [requires]
 python_version = "3"
