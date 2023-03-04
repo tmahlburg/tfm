@@ -1,6 +1,7 @@
 import os
 import tarfile
 import zipfile
+import rarfile
 
 from PySide6.QtCore import QRunnable, QObject, QFileInfo, Signal, Slot
 
@@ -95,7 +96,6 @@ class extract_worker(QRunnable):
             with zipfile.ZipFile(self.archive_path, 'r') as archive:
                 self.maximum = len(archive.namelist())
                 self.signals.ready.emit(self.maximum)
-
                 file_count = 0
                 self.signals.progress.emit(file_count)
                 self.signals.progress_message.emit(self.progress_str(
@@ -108,5 +108,23 @@ class extract_worker(QRunnable):
                     self.signals.progress.emit(file_count)
                     self.signals.progress_message.emit(self.progress_str(
                                                        file_count))
+
+        elif rarfile.is_rarfile(self.archive_path):
+            with rarfile.RarFile(self.archive_path, 'r') as archive:
+                self.maximum = len(archive.namelist())
+                self.signals.ready.emit(self.maximum)
+                file_count = 0
+                self.signals.progress.emit(file_count)
+                self.signals.progress_message.emit(self.progress_str(
+                                                   file_count))
+                for file in archive.infolist():
+                    if self.is_canceled:
+                        break
+                    archive.extract(file, target_dir)
+                    file_count += 1
+                    self.signals.progress.emit(file_count)
+                    self.signals.progress_message.emit(self.progress_str(
+                                                       file_count))
+
 
         self.signals.finished.emit()

@@ -3,6 +3,7 @@ import logging
 from typing import List
 from tarfile import is_tarfile
 from zipfile import is_zipfile
+from rarfile import is_rarfile
 from subprocess import CalledProcessError
 
 from PySide6.QtWidgets import (QApplication, QFileSystemModel, QLineEdit,
@@ -416,7 +417,7 @@ class tfm(QMainWindow, Ui_tfm):
                 self.table_view.removeAction(self.action_mount_iso)
             else:
                 self.table_view.removeAction(self.action_add_to_bookmarks)
-                if (is_tarfile(files[0]) or is_zipfile(files[0])):
+                if (is_tarfile(files[0]) or is_zipfile(files[0]) or is_rarfile(files[0])):
                     self.table_view.addAction(self.action_extract_here)
                     if (os.path.splitext(files[0])[1] == '.iso'):
                         self.table_view.addAction(self.action_mount_iso)

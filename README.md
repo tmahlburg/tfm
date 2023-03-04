@@ -14,7 +14,7 @@ If you still want to try it, see below.
 * drag and drop (always moves)
 * cli to open with a path or file url supplied
 * show, mount and unmount devices and iso files using udisks2
-* auto extract zip and tar files
+* auto extract zip, rar and tar files
 
 ## How to install
 There are python packages for the alpha version to download on pypi. Install at your own risk using:
@@ -25,7 +25,7 @@ Then run using:
 ```
 python3 -m tfm
 ```
-Also install the external requirements `udisks2` and `util-linux`.
+Also install the external requirements `udisks2`, `unrar` (or `unar` or `bsdtar`) and `util-linux`.
 
 ## Screenshots
 Coming soon.

@@ -150,7 +150,6 @@ class paste_worker(QRunnable):
             self.signals.ready.emit(maximum)
 
             base_path = self.get_base_path(path_list)
-            print(base_path)
 
             # copy files to new location
             for path in path_list:
