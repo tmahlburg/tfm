@@ -1,3 +1,9 @@
+# v0.3.3:
+* fix pasting behaiviour when pasting a directory
+
+# v0.3.2:
+* fix Qt6 renaming
+
 # v0.3.1:
 * fix relative paths
 
