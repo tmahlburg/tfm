@@ -123,7 +123,10 @@ class paste_worker(QRunnable):
         :type path_list: List[str]
         """
         if (len(path_list) > 1):
-            return os.path.commonpath(path_list) + '/'
+            base_path = os.path.commonpath(path_list)
+            if base_path in path_list and base_path != '/':
+                return os.path.abspath(os.path.join(base_path, '..')) + '/'
+            return base_path + '/'
         return (os.path.dirname(os.path.commonpath(path_list)) + '/')
 
     # Handle existing files better -> skip, overwrite, rename
@@ -147,6 +150,7 @@ class paste_worker(QRunnable):
             self.signals.ready.emit(maximum)
 
             base_path = self.get_base_path(path_list)
+            print(base_path)
 
             # copy files to new location
             for path in path_list:
