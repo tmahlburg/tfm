@@ -123,6 +123,7 @@ def message_dialog(msg: str, type: QMessageBox.Icon) -> QMessageBox:
     msg_box.setIcon(type)
     return msg_box
 
+
 def get_MIME(files_as_indexes: List[QModelIndex]) -> Tuple[List[str],
                                                            List[QUrl]]:
     """
