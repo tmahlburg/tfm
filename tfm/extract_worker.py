@@ -126,5 +126,4 @@ class extract_worker(QRunnable):
                     self.signals.progress_message.emit(self.progress_str(
                                                        file_count))
 
-
         self.signals.finished.emit()
