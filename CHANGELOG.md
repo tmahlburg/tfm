@@ -1,5 +1,7 @@
 # v0.3.3:
 * fix pasting behaiviour when pasting a directory
+* add support for rar-compressed files
+* better name handling with compressed files
 
 # v0.3.2:
 * fix Qt6 renaming

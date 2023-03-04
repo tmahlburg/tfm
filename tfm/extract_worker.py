@@ -70,7 +70,7 @@ class extract_worker(QRunnable):
         # define target directory
         target_dir = QFileInfo(self.archive_path)
         target_dir = os.path.join(target_dir.path(),
-                                  target_dir.baseName())
+                                  target_dir.completeBaseName())
 
         while (os.path.isdir(target_dir)):
             target_dir += '_'
