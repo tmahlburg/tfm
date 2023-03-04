@@ -43,8 +43,7 @@ Coming soon.
 * differentiate delete action by source
 * fuzzy search in folder
 * restore from trash (should be implemented via a custom model/view)
-* delete from trash (should be implemented via a custom model/view)
-* open terminal in current directory
+* empty trash
 * load file / dir / partition info in a background thread
 * delete forever
 #### ui
@@ -62,6 +61,7 @@ Coming soon.
 ### low priority
 #### functionality
 * mount MTP devices
+* open terminal in current directory
 #### ui
 * optional preview pane
 * context sensitive views and columns

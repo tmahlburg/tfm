@@ -57,6 +57,7 @@ class tfm(QMainWindow, Ui_tfm):
                 QStandardPaths.ConfigLocation),
             type(self).__name__)
 
+        print(args)
         self.current_path = utility.handle_args(args)
         self.default_path = self.current_path
 
