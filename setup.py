@@ -17,8 +17,8 @@ setuptools.setup(
     install_requires=[
         'pyside6',
         'prefixed',
-        'send2trash',
         'pyudev',
+        'rarfile'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

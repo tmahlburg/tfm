@@ -22,7 +22,6 @@ from .paste_worker import paste_worker as pw
 from .extract_worker import extract_worker as ew
 import tfm.utility as utility
 
-from send2trash import send2trash
 from pyudev import Context, Device, Monitor, MonitorObserver
 
 
@@ -517,6 +516,7 @@ class tfm(QMainWindow, Ui_tfm):
             self.table_view.selectionModel().selectedIndexes())
         self.clipboard.setMimeData(mime_data)
 
+    # TODO: handle permission problems
     def action_delete_event(self):
         """
         Throws the current selection in the trash after asking for
@@ -542,7 +542,7 @@ class tfm(QMainWindow, Ui_tfm):
 
         if (button_clicked == QMessageBox.Yes):
             for item in path_list:
-                send2trash(item)
+                QFile(item).moveToTrash()
 
     def action_rename_event(self):
         """
