@@ -163,17 +163,27 @@ class paste_worker(QRunnable):
                     QDir().mkpath(new_path)
                 elif (QFile().exists(path)
                         and not QFile().exists(new_path)):
-                    if (QFile().copy(path, new_path)):
-                        files_copied += 1
-                        self.signals.progress.emit(files_copied)
-                        self.signals.progress_message.emit(
-                            'Pasting file ' + str(files_copied) + ' of '
-                            + str(maximum) + '...')
+                    if not cut:
+                        if (QFile().copy(path, new_path)):
+                            files_copied += 1
+                            self.signals.progress.emit(files_copied)
+                            self.signals.progress_message.emit(
+                                'Pasting file ' + str(files_copied) + ' of '
+                                + str(maximum) + '...')
+                        else:
+                            raise OSError
                     else:
-                        raise OSError
+                        if (QFile().rename(path, new_path)):
+                            files_copied += 1
+                            self.signals.progress.emit(files_copied)
+                            self.signals.progress_message.emit(
+                                'Pasting file ' + str(files_copied) + ' of '
+                                + str(maximum) + '...')
+                        else:
+                            raise OSError
             # removed cut files
-            if cut:
-                for file_path in path_list:
-                    if (not QFile().remove(file_path)):
-                        raise OSError
+            #if cut:
+            #    for file_path in path_list:
+            #        if (not QFile().remove(file_path)):
+            #            raise OSError
         self.signals.finished.emit()
