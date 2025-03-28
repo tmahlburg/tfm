@@ -6,7 +6,7 @@ from typing import List, Tuple
 from PySide6.QtWidgets import QFileSystemModel, QMessageBox
 from PySide6.QtCore import QDir, QFileInfo, QMimeData, QUrl, QModelIndex
 
-from prefixed import Float
+from humanize import naturalsize
 
 
 def indexes_to_paths(files_as_indexes: List[QModelIndex]) -> List[str]:
@@ -55,10 +55,10 @@ def part_info(path: str) -> str:
     """
     # get fs statistics using statvfs system call
     part_stats = os.statvfs(path)
-    fs_size = '{:!.1j}B'.format(Float(part_stats.f_frsize
-                                      * part_stats.f_blocks))
-    fs_free = '{:!.1j}B'.format(Float(part_stats.f_frsize
-                                      * part_stats.f_bfree))
+    fs_size = naturalsize(part_stats.f_frsize * part_stats.f_blocks,
+                          binary=True)
+    fs_free = naturalsize(part_stats.f_frsize * part_stats.f_bfree,
+                          binary=True)
     return (fs_free + ' of ' + fs_size + ' free')
 
 
@@ -79,7 +79,7 @@ def file_info(paths: List[str]) -> str:
             size += file.size()
         elif (len(paths) > 1):
             return str(len(paths)) + ' items selected'
-    size = '{:!.2j}B'.format(Float(size))
+    size = naturalsize(size, binary=True)
     if (len(paths) > 1):
         return str(len(paths)) + ' files selected, using ' + size
     file = QFileInfo(paths[0])

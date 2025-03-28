@@ -7,7 +7,6 @@ verify_ssl = true
 
 [packages]
 pyside6 = "*"
-prefixed = "*"
 setuptools = "*"
 wheel = "*"
 sphinx = "*"
@@ -18,6 +17,7 @@ build = "*"
 twine = "*"
 pysmb = "*"
 rarfile = "*"
+humanize = "*"
 
 [requires]
 python_version = "3"
