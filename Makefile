@@ -21,7 +21,7 @@ docs: tfm/*.py
 test: tfm/*.py tests/*.py
 	pytest
 
-build: tfm/*.py setup.py pyproject.toml
+build: tfm/*.py  pyproject.toml
 	python3 -m build
 
 upload: dist/*.tar.gz dist/*.whl

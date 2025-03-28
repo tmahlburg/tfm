@@ -182,7 +182,7 @@ class paste_worker(QRunnable):
                         else:
                             raise OSError
             # removed cut files
-            #if cut:
+            # if cut:
             #    for file_path in path_list:
             #        if (not QFile().remove(file_path)):
             #            raise OSError
